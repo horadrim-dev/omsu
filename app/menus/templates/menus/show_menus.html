@@ -1,19 +1,24 @@
-  <h2>Деятельность</h1> 
+<h2>
+  Деятельность 
+  {% if category %}
+  > {{ category.title }}
+  {% endif %}
+</h2> 
 
-  <div class="row row-cols-1 row-cols-md-4 g-4 my-3">
+<div class="row row-cols-1 row-cols-md-4 g-4 my-3">
 
-    {% for menu in menus %}
-        <div class="col">
-          <div class="card" class="hover-shadow">
-            <a href="{{ menu.alias }}" >
-              <div class="card-body">
-                  <h5 class="card-title">{{ menu.title }}</h5>
-                <p class="card-text">{{ menu.description}}</p>
-              </div>
-            </a>
-          </div>
+  {% for menu in menus %}
+      <div class="col">
+        <div class="card" class="hover-shadow">
+          <a href="activity/{{ menu.alias }}" >
+            <div class="card-body">
+                <h5 class="card-title">{{ menu.title }}</h5>
+              <p class="card-text">{{ menu.description}}</p>
+            </div>
+          </a>
         </div>
-    {% endfor %}
+      </div>
+  {% endfor %}
 
-  </div>
-  <button type="button" class="btn btn-success">Success</button>
+</div>
+<button type="button" class="btn btn-success">Success</button>
