@@ -1,0 +1,55 @@
+<h2>
+  Деятельность 
+  {% if category %}
+  > {{ category.title }}
+  {% endif %}
+  {% if subcategory %}
+  > {{ subcategory.title }}
+  {% endif %}
+</h2> 
+
+<div class="row row-cols-1 row-cols-md-4 g-4 my-3">
+
+  {% for menu in menus %}
+      <div class="col">
+        <div class="card" class="hover-shadow">
+          <a href="
+            {% if add_path %}
+                {% url 'activity' %}{{ menu.alias }}
+            {% else %}
+                {{ menu.alias }}
+            {% endif %}
+            " >
+            <div class="card-body">
+                <h5 class="card-title">{{ menu.title }}</h5>
+              <p class="card-text">{{ menu.description}}</p>
+            </div>
+          </a>
+        </div>
+      </div>
+  {% endfor %}
+
+</div>
+<button type="button" class="btn btn-success">Success</button>
+
+{% if submenus %}
+    <div style="float:right; width:200px;">
+        <ul>
+        {% for menu in submenus %}
+        <li><a href="{{ menu.alias }}">{{ menu.title }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+{% if contents %}
+<div class='container'>
+    {% for key, value in contents.items %}
+        {{ key }}
+        <h2>{{ value.0.title }}</h2>
+    <p>{{ value.0.text }}</p>
+    {% endfor %}
+</div>
+{% endif %}
+
+
