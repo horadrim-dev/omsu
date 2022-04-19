@@ -1,3 +1,5 @@
+{% load static %}
+
 <h2>
   Деятельность 
   {% if category %}
@@ -47,7 +49,7 @@
     {% for key, value in contents.items %}
         {{ key }}
         <h2>{{ value.0.title }}</h2>
-    <p>{{ value.0.text }}</p>
+    <p>{{ value.0.text|safe }}</p>
     {% endfor %}
 </div>
 {% endif %}

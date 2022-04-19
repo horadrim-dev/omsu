@@ -1,5 +1,6 @@
 from tkinter import CASCADE
 from django.db import models
+from ckeditor_uploader.fields import RichTextUploadingField
 
 # Create your models here.
 class Menu(models.Model):
@@ -15,7 +16,7 @@ class Page(models.Model):
     menu_id = models.ForeignKey('Menu', on_delete=models.CASCADE)
 
     title = models.CharField(max_length=1000)
-    text = models.TextField()
+    text = RichTextUploadingField()
 
     def __str__(self):
         return self.title
