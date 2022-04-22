@@ -1,0 +1,20 @@
+/* ZOOM HOVER EFFECT */
+a.zoom-wrapper img {
+	-webkit-transform: scale(1);
+	transform: scale(1);
+	-webkit-transition: .2s ease-in-out;
+	transition: .2s ease-in-out;
+}
+a.zoom-wrapper:hover img {
+	-webkit-transform: scale(1.02);
+	transform: scale(1.02);
+}
+
+
+
+body {
+    background: #f6f9ff;
+}
+#content, header, .right{
+    box-shadow:0px 0 30px rgba(1, 41, 112, 0.1);
+}

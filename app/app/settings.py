@@ -148,3 +148,11 @@ CKEDITOR_UPLOAD_PATH = 'uploads/'
 # функция обработки файлов при загрузке
 CKEDITOR_FILENAME_GENERATOR = 'app.utils.get_filename'
 # X_FRAME_OPTIONS = 'SAMEORIGIN'
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        #'toolbar': 'full',
+        'height': 500,
+        'width': 800,
+    },
+}

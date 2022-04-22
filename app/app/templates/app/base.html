@@ -11,6 +11,9 @@
 
     <!-- Bootstrap CSS -->
     <link href="{% static 'app/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/magnific-popup.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/custom.css' %}" rel="stylesheet">
+
     <style>
       .card:hover{
         {% comment %} transform: scale(1.01); {% endcomment %}
@@ -24,7 +27,7 @@
         color: #777;
       }
     </style>
-    <title>Hello, world!</title>
+    <title>Администрация г.Прокопьевска</title>
   </head>
   <body>
     {% comment %} <header class="d-flex justify-content-center py-3">
@@ -36,14 +39,14 @@
         <li class="nav-item"><a href="#" class="nav-link">About</a></li>
       </ul>
     </header> {% endcomment %}
-    <div class="container">
-      <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+    <div class="container-fluid">
+      <header class="d-flex flex-wrap justify-content-center py-3 ps-3 border-bottom">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-          <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-          <span class="fs-4">Администрация города Прокопьевска</span>
+          <img src="{% static 'app/img/gerb-prk-small.png' %}">
+          <span class="ms-2 fs-4">Администрация города Прокопьевска</span>
         </a>
 
-        <ul class="nav nav-pills">
+        <ul class="nav align-items-center nav-pills">
           <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
           <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
@@ -80,22 +83,9 @@
     </div>
     {% endblock top %}
 
-    {% comment %} <div class="container">
-      <button type="button" class="btn btn-primary">Primary</button>
-      <button type="button" class="btn btn-secondary">Secondary</button>
-      <button type="button" class="btn btn-success">Success</button>
-      <button type="button" class="btn btn-danger">Danger</button>
-      <button type="button" class="btn btn-warning">Warning</button>
-      <button type="button" class="btn btn-info">Info</button>
-      <button type="button" class="btn btn-light">Light</button>
-      <button type="button" class="btn btn-dark">Dark</button>
-      <button type="button" class="btn btn-link">Link</button>
-    </div> {% endcomment %}
-    <div class="container">
-      {% block activity %}
-        {% show_menus %}
-      {% endblock activity %}
-    </div>
+  {% block activity %}
+    {% show_menus %}
+  {% endblock activity %}
     
     <div class="container">
         {% block base_footer %}
@@ -152,7 +142,10 @@
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <script src="{% static 'app/js/bootstrap.bundle.min.js' %}"></script>
-
+    <script src="{% static 'app/js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'app/js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'app/js/custom.js' %}"></script>
+    
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
