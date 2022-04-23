@@ -3,8 +3,8 @@
 
 {% breadcrumbs bc_items %}
 
-<h1>TYT{{ gt }}</h1>
-<h1>TYT{{ get}}</h1>
+{% comment %} <h1>TYT{{ gt }}</h1>
+<h1>TYT{{ get}}</h1> {% endcomment %}
 
 {% if menus %}
 <div id="content" class="container p-5 ">
@@ -45,6 +45,7 @@
     <div class="col-md-10">
       {% if contents %}
       <div id="content" class='container py-4'>
+        <button id="back" type="button" class="btn float-start"><i class="bi bi-arrow-left"></i></button>
         {% for key, value in contents.items %}
         <h2 class="border-bottom pb-3">{{ value.0.title }}</h2>
         {{ key }}
