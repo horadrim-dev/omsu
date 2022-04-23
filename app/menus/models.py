@@ -14,7 +14,7 @@ class Menu(models.Model):
         'Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
     is_fixed = models.BooleanField(default=False, verbose_name="Зафиксировать дочерние пункты меню?",
                                    help_text="Если отмечено - дочерние пункты меню не будут раскрываться, если не отмечено -  будут.")
-    description = models.TextField(blank=True,
+    description = models.CharField(max_length=100, blank=True,
         verbose_name="Описание", help_text="Краткое описание содержимого меню")
 
     def save(self, *args, **kwargs):
