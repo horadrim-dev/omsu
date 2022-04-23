@@ -4,6 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.categories, name='activity'),
-    path('<slug:category>/', views.subcategories),
-    path('<slug:category>/<slug:slug>/', views.content),
+    # path('<slug:category>/', views.subcategories),
+    # path('<slug:category>/<slug:slug>/', views.content),
+    path('<slug:cat1>/', views.menus),
+    path('<slug:cat1>/<slug:cat2>/', views.menus),
+    path('<slug:cat1>/<slug:cat2>/<slug:cat3>/', views.menus),
 ]
