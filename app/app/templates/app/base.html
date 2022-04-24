@@ -11,11 +11,11 @@
 
     <!-- Bootstrap CSS -->
     <link href="{% static 'app/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'app/css/bootstrap.megamenu.css' %}" rel="stylesheet">
     <link href="{% static 'app/css/bootstrap-icons.css' %}" rel="stylesheet">
     <link href="{% static 'app/css/magnific-popup.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/jquery.dmenu.css' %}" rel="stylesheet">
     <link href="{% static 'app/css/custom.css' %}" rel="stylesheet">
-
+    
     <style>
       .card:hover{
         {% comment %} transform: scale(1.01); {% endcomment %}
@@ -44,8 +44,8 @@
     {% include 'app/header.html' %}
 
     {% block top %}
-    <div class="container">
-      <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="container py-4">
+      <div id="carouselExampleControls" class="carousel slide " data-bs-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
             <img src="..." class="d-block w-100" alt="..." style="background-color:#eee">
@@ -128,10 +128,11 @@
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="{% static 'app/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- jQuery-->
     <script src="{% static 'app/js/jquery-3.6.0.min.js' %}"></script>
+
+    <script src="{% static 'app/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'app/js/jquery.magnific-popup.min.js' %}"></script>
-    <script src="{% static 'app/js/jquery.dmenu.js' %}"></script>
     <script src="{% static 'app/js/custom.js' %}"></script>
     
     <!-- Option 2: Separate Popper and Bootstrap JS -->

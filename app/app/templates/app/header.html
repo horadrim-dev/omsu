@@ -1,17 +1,142 @@
 {% load static %}
-<div class="container-fluid">
-    <header class="d-flex flex-wrap justify-content-center py-3 ps-3 border-bottom">
-        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-            <img src="{% static 'app/img/gerb-prk-small.png' %}">
-            <span class="ms-2 fs-4">Администрация города Прокопьевска</span>
-        </a>
-
-        <ul class="nav align-items-center nav-pills">
-            <li class="nav-item"><a href="#" class="nav-link active" aria-current="page">Home</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Features</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">Pricing</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">FAQs</a></li>
-            <li class="nav-item"><a href="#" class="nav-link">About</a></li>
+<header>
+    <div class="text-end bg-white py-2 me-4">
+        <ul class="list-inline mb-0 text-decoration-none">
+            <li class="list-inline-item"><a href=""><i class="bi bi-diagram-3"></i> Карта сайта</a></li>
+            <li class="list-inline-item"><a href=""><i class="bi bi-eye"></i> Версия для слабовидящих</a></li>
         </ul>
-    </header>
-</div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light navbar-light py-0 border-top shadow">
+        <div class="container-fluid">
+            <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbar-content">
+                <div class="hamburger-toggle">
+                    <div class="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-content">
+
+                <div class="logo">
+                    <a href="/"
+                        class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                        <img style="" src="{% static 'app/img/gerb-prk-small.png' %}">
+                        <div class="logo-text">
+                            <span class="text-primary ms-2 fs-5">Администрация города Прокопьевска</span>
+                            <span class="text-muted ms-2 fs-6">официальный сайт</span>
+                        </div>
+                    </a>
+                </div>
+                <ul class="navbar-nav mr-auto mb-2 mb-lg-0 ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house"></i> Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-building"></i> Город</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside">Деятельность</a>
+                        <ul class="dropdown-menu shadow">
+                            <li><a class="dropdown-item" href="#">Gallery</a></li>
+                            <li><a class="dropdown-item" href="blog.html">Blog</a></li>
+                            <li class="dropstart">
+                                <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Submenu
+                                    Left</a>
+                                <ul class="dropdown-menu shadow">
+                                    <li><a class="dropdown-item" href=""> Third level 1</a></li>
+                                    <li><a class="dropdown-item" href=""> Third level 2</a></li>
+                                    <li><a class="dropdown-item" href=""> Third level 3</a></li>
+                                    <li><a class="dropdown-item" href=""> Third level 4</a></li>
+                                    <li><a class="dropdown-item" href=""> Third level 5</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropend">
+                                <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
+                                    data-bs-auto-close="outside">Submenu Right</a>
+                                <ul class="dropdown-menu shadow">
+                                    <li><a class="dropdown-item" href=""> Second level 1</a></li>
+                                    <li><a class="dropdown-item" href=""> Second level 2</a></li>
+                                    <li><a class="dropdown-item" href=""> Second level 3</a></li>
+                                    <li class="dropend">
+                                        <a href="#" class="dropdown-item dropdown-toggle"
+                                            data-bs-toggle="dropdown">Let's go
+                                            deeper!</a>
+                                        <ul class="dropdown-menu dropdown-submenu shadow">
+                                            <li><a class="dropdown-item" href=""> Third level 1</a></li>
+                                            <li><a class="dropdown-item" href=""> Third level 2</a></li>
+                                            <li><a class="dropdown-item" href=""> Third level 3</a></li>
+                                            <li><a class="dropdown-item" href=""> Third level 4</a></li>
+                                            <li><a class="dropdown-item" href=""> Third level 5</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="dropdown-item" href=""> Third level 5</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-stack"></i> Документы</a>
+                    </li>
+                    <li class="nav-item dropdown dropdown-mega position-static">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside"><i class="bi bi-send"></i> Пресс-центр</a>
+                        <div class="dropdown-menu shadow">
+                            <div class="mega-content px-4">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-12 col-sm-4 col-md-3 py-4">
+                                            <h5>Title</h5>
+                                            <div class="list-group">
+                                                <a class="list-group-item" href="#">Mega Menu Link</a>
+                                                <a class="list-group-item" href="#">Mega Menu Link</a>
+                                                <a class="list-group-item" href="#">Mega Menu Link</a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-4 col-md-3 py-4">
+                                            <h5>Card Title</h5>
+                                            <div class="card">
+                                                <img src="img/banner-image.jpg" class="img-fluid" alt="image">
+                                                <div class="card-body">
+                                                    <p class="card-text">Description goes here...</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-sm-4 col-md-3 py-4">
+                                            <h5>Title</h5>
+                                            <p>Description goes here...</p>
+                                        </div>
+                                        <div class="col-12 col-sm-12 col-md-3 py-4">
+                                            <h5>Title</h5>
+                                            <div class="list-group">
+                                                <a class="list-group-item" href="#">Menu Link</a>
+                                                <a class="list-group-item" href="#">Menu Link</a>
+                                                <a class="list-group-item" href="#">Menu Link</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <form class="d-flex ms-auto">
+                    <div class="input-group">
+                        <input class="form-control border-0 mr-2" type="search" placeholder="Найти" aria-label="Поиск">
+                        <button class="btn btn-primary border-0" type="submit">Поиск</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </nav>
+</header>
