@@ -42,6 +42,15 @@
 
 <div class="container">
   <div class="row mb-3 gx-5">
+    <div class="col-md-2 right">
+      {% if submenus %}
+      <ul class="nav flex-column nav-tabs">
+        {% for menu in submenus %}
+        <li class="nav-item border-bottom"><a class="nav-link" href="{{ menu.alias }}">{{ menu.title }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
     <div class="col-md-10">
       {% if contents %}
       <div id="content" class='container py-4'>
@@ -55,14 +64,5 @@
       {% endif %}
     </div>
 
-    <div class="col-md-2 right">
-      {% if submenus %}
-      <ul class="nav flex-column nav-tabs">
-        {% for menu in submenus %}
-        <li class="nav-item border-bottom"><a class="nav-link" href="{{ menu.alias }}">{{ menu.title }}</a></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
   </div>
 </div>
