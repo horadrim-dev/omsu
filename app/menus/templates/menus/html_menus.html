@@ -3,9 +3,6 @@
 
 {% breadcrumbs bc_items %}
 
-{% comment %} <h1>TYT{{ gt }}</h1>
-<h1>TYT{{ get}}</h1> {% endcomment %}
-
 {% if menus %}
 <div id="content" class="container p-5 ">
   {% if not subcategory %}
@@ -43,7 +40,7 @@
 {% endif %}
 
 <div class="container">
-  <div class="row mb-3 gx-5">
+  <div class="row mb-3">
     <div class="col-md-2 right">
       {% if submenus %}
       <ul class="nav flex-column nav-tabs">
@@ -53,16 +50,10 @@
       </ul>
       {% endif %}
     </div>
-    <div class="col-md-10">
+    <div class="col-md-10 bg-white">
+
       {% if contents %}
-      <div id="content" class='container py-4'>
-        <button id="back" type="button" class="btn float-start"><i class="bi bi-arrow-left"></i></button>
-        {% for key, value in contents.items %}
-        <h2 class="border-bottom pb-3">{{ value.0.title }}</h2>
-        {{ key }}
-        <p>{{ value.0.text|safe }}</p>
-        {% endfor %}
-      </div>
+        {% include 'menus/html_content.html' %}
       {% endif %}
     </div>
 

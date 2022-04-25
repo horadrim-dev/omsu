@@ -63,10 +63,17 @@ def get_content(menu_id: int):
     contents = {}
 
     contents['page'] = Page.objects.filter(menu_id=menu_id)
+    # contents.append(list(Page.objects.filter(menu_id=menu_id)))
 
-    for content_type in contents.values():
-        if len(content_type) > 0:
+    num_contents = 0
+    for content  in contents.values():
+        if len(content) > 0:
             has_content = True
+            num_contents += len(content)
+
+    contents['config'] = {
+        'num_contents': num_contents
+    }
 
     if has_content:
         return contents
