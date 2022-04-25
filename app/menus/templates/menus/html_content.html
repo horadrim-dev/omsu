@@ -1,11 +1,11 @@
-<div id="content" class='container py-4'>
+<div id="content" class='p-4'>
     <button id="back" type="button" class="btn float-start"><i class="bi bi-arrow-left"></i></button>
 
     <h2 class="border-bottom mb-4 pb-3">{{ category.title }}</h2>
 
     {% if contents.config.num_contents > 1 %}
 
-        <ul class="nav nav-pills nav-justified border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
+        <ul class="nav nav-pills nav-justified lh-lg border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
             {% for page in contents.page %}
             <li class="nav-item" role="presentation">
                 <button 

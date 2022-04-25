@@ -40,22 +40,23 @@
 {% endif %}
 
 <div class="container">
-  <div class="row mb-3">
-    <div class="col-md-2 right">
-      {% if submenus %}
-      <ul class="nav flex-column nav-tabs">
-        {% for menu in submenus %}
-        <li class="nav-item border-bottom"><a class="nav-link" href="{{ menu.alias }}">{{ menu.title }}</a></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
-    <div class="col-md-10 bg-white">
+  <div class="row g-0 mb-3">
+    <div class="col-md-10 bg-white shadow">
 
       {% if contents %}
         {% include 'menus/html_content.html' %}
       {% endif %}
     </div>
+    <div class="col-md-2 border right">
+      {% if submenus %}
+      <ul class="nav ">
+        {% for menu in submenus %}
+        <li class="nav-item border-bottom lh-lg"><a class="nav-link" href="{{ menu.alias }}">{{ menu.title }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </div>
+
 
   </div>
 </div>
