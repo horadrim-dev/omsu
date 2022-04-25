@@ -23,30 +23,46 @@ header,
 	box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
 }
 
-header .navbar-nav {
-	line-height: 4rem;
+header .navbar-nav  {
+	line-height: 2rem;
 }
+
 header .navbar-nav .dropdown-menu {
 	line-height: 2rem;
 }
+
 header .dropdown-menu {
 	border-top: 0;
 }
 
-.logo {
-	width:500px;
+header .navbar-nav .nav-item a {
+	white-space: nowrap;
 }
+
+header .navbar-nav .nav-item a i {
+	margin-right: 4px;
+}
+
+.logo {
+	height: 80px;
+}
+
 .logo img {
 	height: 60px;
 }
+
 .logo .logo-text {
 	line-height: 1.5rem;
 }
-/* @media (min-width: 480px) {
-	.dropdown:hover .dropdown-menu:nth-of-type(1){
-		display: block;
+
+
+@media (min-width: 1380px) {
+	header .navbar-nav {
+		line-height: 4rem;
 	}
-	.dropdown-menu {
-		margin-top: 0;
+}
+@media (max-width: 990px) {
+	header #navbar-content {
+		padding-bottom: .5rem;
 	}
-} */
+}
