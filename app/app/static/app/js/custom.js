@@ -36,6 +36,7 @@ document.addEventListener('click', function (e) {
 })
 
 $(document).ready(function () {
+	// вешаем lightbox на все картинки в #content
 	$('#content img').wrap(function () {
 			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 		})
@@ -60,7 +61,7 @@ $(document).ready(function () {
 		history.back();
 	});
 
-	// На больших экранах заставляем dropdown выпадать по hover
+	// заставляем dropdown выпадать по hover (на больших экранах)
 	if ($(window).width() > '1000') {
 		$('.dropdown').hover(function () {
 			$(this).find('.dropdown-menu').first().addClass('show');
@@ -68,6 +69,16 @@ $(document).ready(function () {
 			$(this).find('.dropdown-menu').first().removeClass('show');
 		});
 	};
+
+	// при клике по tab обновляем хеш в URL
+	$('a[role="tab').click(function (e) {
+		window.location.hash = this.hash;
+	});
+	// обрабатываем хеш из URL (открываем вкладку)
+	var lastTab = window.location.hash;
+	if (lastTab) {
+		$('[href="' + lastTab + '"]').tab('show');
+	}
 });
 /*
 	$('#content').magnificPopup({

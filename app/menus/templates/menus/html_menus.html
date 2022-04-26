@@ -49,7 +49,7 @@
     </div>
     <div class="col-md-2 border right">
       {% if submenus %}
-      <ul class="nav ">
+      <ul class="nav nav-justified">
         {% for menu in submenus %}
         <li class="nav-item border-bottom lh-lg"><a class="nav-link" href="{{ menu.alias }}">{{ menu.title }}</a></li>
         {% endfor %}
