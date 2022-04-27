@@ -1,5 +1,6 @@
 from webbrowser import get
 from django.shortcuts import render
+from django.http import JsonResponse
 from . models import Menu, Page
 
 
@@ -15,46 +16,46 @@ def categories(request):
     return render(request, 'menus/block_menus.html', context)
 
 
-def subcategories(request, category=None):
-    context = {}
-    category = Menu.objects.filter(alias=category)[0]
-    menus = Menu.objects.filter(parent_id=category.id)
-    bc_items = {
-        'Деятельность': 'activity',
-        category.title: category.alias,
-    }
-    contents = {}
-    contents['page'] = Page.objects.filter(menu_id=category.id)
+# def subcategories(request, category=None):
+#     context = {}
+#     category = Menu.objects.filter(alias=category)[0]
+#     menus = Menu.objects.filter(parent_id=category.id)
+#     bc_items = {
+#         'Деятельность': 'activity',
+#         category.title: category.alias,
+#     }
+#     contents = {}
+#     contents['page'] = Page.objects.filter(menu_id=category.id)
 
-    context = {
-        'bc_items': bc_items,
-        'category': category,
-        'menus': menus,
-        'contents': contents
-    }
-    return render(request, 'menus/block_menus.html', context)
+#     context = {
+#         'bc_items': bc_items,
+#         'category': category,
+#         'menus': menus,
+#         'contents': contents
+#     }
+#     return render(request, 'menus/block_menus.html', context)
 
 
-def content(request, category=None, slug=None):
-    context = {}
+# def content(request, category=None, slug=None):
+#     context = {}
 
-    category = Menu.objects.filter(alias=category)[0]
-    subcategory = Menu.objects.filter(alias=slug)[0]
-    submenus = Menu.objects.filter(parent_id=subcategory.id)
-    bc_items = {
-        'Деятельность': 'activity',
-        category.title: category.alias,
-        subcategory.title: subcategory.alias
-    }
+#     category = Menu.objects.filter(alias=category)[0]
+#     subcategory = Menu.objects.filter(alias=slug)[0]
+#     submenus = Menu.objects.filter(parent_id=subcategory.id)
+#     bc_items = {
+#         'Деятельность': 'activity',
+#         category.title: category.alias,
+#         subcategory.title: subcategory.alias
+#     }
 
-    context = {
-        'bc_items': bc_items,
-        'category': category,
-        'subcategory': subcategory,
-        'submenus': submenus,
-        'contents': get_content(subcategory.id)
-    }
-    return render(request, 'menus/block_menus.html', context)
+#     context = {
+#         'bc_items': bc_items,
+#         'category': category,
+#         'subcategory': subcategory,
+#         'submenus': submenus,
+#         'contents': get_content(subcategory.id)
+#     }
+#     return render(request, 'menus/block_menus.html', context)
 
 
 def get_content(menu_id: int):
@@ -115,4 +116,7 @@ def menus(request, *args, **kwargs):
         'menus': menus,
         'submenus': submenus
     }
-    return render(request, 'menus/block_menus.html', context)
+    if request.GET.get('data') == 'component':
+        return render(request, 'menus/html_menus.html', context)
+    else:
+        return render(request, 'menus/block_menus.html', context)

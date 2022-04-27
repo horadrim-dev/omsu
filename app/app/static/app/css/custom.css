@@ -12,19 +12,40 @@ a.zoom-wrapper:hover img {
 }
 
 
-
+/* .container {
+	max-width: 1500px;
+} */
 body {
 	background: #f6f9ff;
 }
-.nav-item:hover {
-	background: #f0f0f0c2;
+#topmenu-bar a {
+	text-decoration: none;
 }
-#content,
+#mainmenu-bar {
+	z-index:1000;
+}
+/* #content,
 header,
 .right {
 	box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+} */
+#content {
+	background-color: #fff;
+}
+#content .card:hover{
+box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+}
+#content .card a{
+text-decoration:none;
+color:#000;
+}
+#content .card-text{
+color: #777;
 }
 
+#right-side .card:hover{
+	box-shadow: none;
+}
 header .navbar-nav {
 	line-height: 2rem;
 }
@@ -43,15 +64,14 @@ header .navbar-nav .nav-item a {
 
 header .nav-item:hover {
 	background: none;
-}
-header .nav-item:hover,
-header .nav-item.active {
-	box-shadow: inset 0 -4px 0 0 #667dff;
+	box-shadow: inset 0 -4px 0 rgb(171, 166, 255);
 }
 
 header .navbar-nav .nav-item a i {
 	margin-right: 4px;
 }
+
+
 
 .logo {
 	height: 80px;
@@ -81,10 +101,21 @@ header .navbar-nav .nav-item a i {
 
 .nav-pills .nav-link.active,
 .nav-pills .show>.nav-link {
-	color: #0d6efd ;
+	color: #666;
 	background: none;
-	border: 1px #0d6efd solid;
+	/* border: 1px #0d6efd solid; */
+}
+#content .nav-link:hover {
+	box-shadow: 2px 2px 5px rgba(174, 174, 174, 0.5), 1px 1px 5px rgb(255, 255, 255);
+}
+#content .nav-link.active{
+	box-shadow: inset 2px 2px 5px rgba(100, 100, 100, 0.5), 1px 1px 5px rgb(255, 255, 255);
 }
 .nav-pills .nav-link {
 	color:#666;
+}
+
+#submenu .nav-item:hover { 
+	background-color: #fff;
+	box-shadow: 2px 2px 5px rgba(174, 174, 174, 0.5), 1px 1px 5px rgb(255, 255, 255);
 }

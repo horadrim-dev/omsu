@@ -1,62 +1,84 @@
 {% load static %}
 {% load breadcrumbs %}
 
-{% breadcrumbs bc_items %}
+<div id="component">
 
-{% if menus %}
-<div id="content" class="container p-5 ">
-  {% if not subcategory %}
-  <h2 class="border-bottom pb-3">
-    Деятельность
-    {% if category %}
-    - {{ category.title }}
+  {% breadcrumbs bc_items %}
+
+  {% if menus %}
+  <div id="content" class="container p-5 ">
+    {% if not subcategory %}
+    <h2 class="border-bottom pb-3">
+      Деятельность
+      {% if category %}
+      - {{ category.title }}
+      {% endif %}
+    </h2>
     {% endif %}
-  </h2>
-  {% endif %}
 
-  {{ category.description|safe }}
+    {{ category.description|safe }}
 
-  <div class="row row-cols-1 row-cols-md-4 g-4 my-3">
-    {% for menu in menus %}
-    <div class="col">
-      <div class="card" class="hover-shadow">
-        <a href="
+    <div class="row row-cols-1 row-cols-md-4 g-4 my-3">
+      {% for menu in menus %}
+      <div class="col">
+        <div class="card" class="hover-shadow">
+          <a href="
                 {% if add_path %}
                     {% url 'activity' %}{{ menu.alias }}
                 {% else %}
                     {{ menu.alias }}
                 {% endif %}
                 ">
-          <div class="card-body">
-            <h5 class="card-title">{{ menu.title }}</h5>
-            <p class="card-text">{{ menu.short_description}}</p>
-          </div>
-        </a>
+            <div class="card-body">
+              <h5 class="card-title">{{ menu.title }}</h5>
+              <p class="card-text">{{ menu.short_description}}</p>
+            </div>
+          </a>
+        </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
-</div>
-{% endif %}
+  {% endif %}
 
-<div class="container">
-  <div class="row g-0 mb-3">
-    <div class="col-md-10 bg-white shadow">
-
-      {% if contents %}
+  
+  {% if contents.config.num_contents > 0 %}
+  <div class="container">
+    <div class="row g-0 mb-3">
+      <div class="col-md-10 shadow">
+        {% if contents %}
         {% include 'menus/html_content.html' %}
-      {% endif %}
-    </div>
-    <div class="col-md-2 border right">
-      {% if submenus %}
-      <ul class="nav nav-justified">
-        {% for menu in submenus %}
-        <li class="nav-item border-bottom lh-lg"><a class="nav-link" href="{{ menu.alias }}">{{ menu.title }}</a></li>
-        {% endfor %}
-      </ul>
-      {% endif %}
-    </div>
+        {% endif %}
+      </div>
+      <div id="right-side" class="col border">
+        <div id="right-side-content">
+          {% if submenus %}
+          <div id="submenu">
+            <ul class="nav flex-column nav-justified">
+              {% for menu in submenus %}
+              <li class="nav-item border-bottom lh-lg">
+                <a class="nav-link 
+                        {% if category.is_fixed %}
+                        ajax" target="component"
+                        href="{{ menu.alias }}?data=component"
+                        {% else %}
+                        href="{{ menu.alias }}"
+                        {% endif %}
+                        >
+                  {{ menu.title }}
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% endif %}
+
+        
+        </div>
+      </div>
 
 
+    </div>
   </div>
+  {% endif %}
 </div>

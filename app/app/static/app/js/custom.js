@@ -78,7 +78,22 @@ $(document).ready(function () {
 	var lastTab = window.location.hash;
 	if (lastTab) {
 		$('[href="' + lastTab + '"]').tab('show');
-	}
+	};
+
+	$('a.ajax').on('click', function () {
+		$.ajax({
+			url: this.href,
+			method: 'get',
+			dataType: 'html',
+			success: function (data) {
+				$('#component').html(data);
+				alert('NOT BAD!' + $(this).attr("target"));
+			}
+		});
+	});
+
+	$("#right-side-content").stick_in_parent({offset_top:100});
+	$("#mainmenu-bar").stick_in_parent({parent:'body'});
 });
 /*
 	$('#content').magnificPopup({
