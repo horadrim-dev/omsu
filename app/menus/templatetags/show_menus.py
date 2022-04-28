@@ -4,13 +4,18 @@ from menus.models import Menu
 register = template.Library()
 
 @register.inclusion_tag('menus/show_menus.html')
-def show_menus():
+def show_menus(parent=None):
+    context = {}
 
-    menus = Menu.objects.filter(parent_id__isnull=True)
+    if parent:
+        category = Menu.objects.get(alias = parent)
+        menus = Menu.objects.filter(parent_id = category.id)
+    else:
+        category = None
+        menus = Menu.objects.filter(parent_id__isnull=True)
 
-    context = {
-        'add_path': True,
-        'category': None,
-        'menus': menus
-    }
+    context['add_path'] = True
+    context['category'] = category
+    context['menus'] = menus
+
     return context

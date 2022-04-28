@@ -1,7 +1,9 @@
 {% load static %}
 {% load breadcrumbs %}
 
+{% if data == 'normal' %}
 <div id="component">
+{% endif %}
 
   {% breadcrumbs bc_items %}
 
@@ -9,9 +11,8 @@
   <div id="content" class="container p-5 ">
     {% if not subcategory %}
     <h2 class="border-bottom pb-3">
-      Деятельность
       {% if category %}
-      - {{ category.title }}
+      {{ category.title }}
       {% endif %}
     </h2>
     {% endif %}
@@ -62,7 +63,7 @@
                         ajax" target="component"
                         href="{{ menu.alias }}?data=component"
                         {% else %}
-                        href="{{ menu.alias }}"
+                        " href="{{ menu.alias }}"
                         {% endif %}
                         >
                   {{ menu.title }}
@@ -81,4 +82,7 @@
     </div>
   </div>
   {% endif %}
+
+{% if data == 'normal' %}
 </div>
+{% endif %}

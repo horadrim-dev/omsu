@@ -3,7 +3,7 @@ from . import views
 # Create your views here.
 
 urlpatterns = [
-    path('', views.categories, name='activity'),
+    path('', views.menus, {'parent':'activity'} ,name='activity'),
     # path('<slug:category>/', views.subcategories),
     # path('<slug:category>/<slug:slug>/', views.content),
     # path('', views.menus, name='activity'),

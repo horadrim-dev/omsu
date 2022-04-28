@@ -9,15 +9,17 @@ from app.utils import slugify_rus
 
 class Menu(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
-    alias = models.SlugField(blank=True,
+    alias = models.SlugField(blank=True, unique=True,
                              max_length=100, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     parent = models.ForeignKey(
         'Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
+    is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
     is_fixed = models.BooleanField(default=False, verbose_name="Зафиксировать дочерние пункты меню?",
                                    help_text="Если отмечено - дочерние пункты меню не будут раскрываться, если не отмечено -  будут.")
+    icon = models.CharField(max_length=32, default="", blank=True, verbose_name="Иконка", help_text="Необязательно. Названия брать <a href='https://icons.getbootstrap.com/' target='_blank'>отсюда.</a>")
     short_description = models.CharField(max_length=100, blank=True,
         verbose_name="Краткое описание", help_text="Краткое описание содержимого меню")
-    description = RichTextUploadingField(verbose_name="Описание")
+    description = RichTextUploadingField(verbose_name="Описание", blank=True)
 
     def save(self, *args, **kwargs):
         # только при создании объекта, id еще не существует

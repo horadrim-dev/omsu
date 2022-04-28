@@ -80,18 +80,22 @@ $(document).ready(function () {
 		$('[href="' + lastTab + '"]').tab('show');
 	};
 
-	$('a.ajax').on('click', function () {
+	// ajax
+	$('a.ajax').on('click', function (e) {
+		// alert(this.href + " /// " + this.target);
+		var target = "#" + this.target;
 		$.ajax({
 			url: this.href,
 			method: 'get',
 			dataType: 'html',
 			success: function (data) {
-				$('#component').html(data);
-				alert('NOT BAD!' + $(this).attr("target"));
+				$(target).html(data);
 			}
 		});
+		e.preventDefault();
 	});
 
+	// плавающие блоки
 	$("#right-side-content").stick_in_parent({offset_top:100});
 	$("#mainmenu-bar").stick_in_parent({parent:'body'});
 });
