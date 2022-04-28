@@ -3,6 +3,7 @@ from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
+from django.db.models import F
 
 # Create your models here.
 
@@ -13,6 +14,7 @@ class Menu(models.Model):
                              max_length=100, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     parent = models.ForeignKey(
         'Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
+    level = models.PositiveSmallIntegerField(default=1, blank=True, null=True)
     is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
     is_fixed = models.BooleanField(default=False, verbose_name="Зафиксировать дочерние пункты меню?",
                                    help_text="Если отмечено - дочерние пункты меню не будут раскрываться, если не отмечено -  будут.")
@@ -24,9 +26,24 @@ class Menu(models.Model):
     def save(self, *args, **kwargs):
         # только при создании объекта, id еще не существует
         if not self.id:
+            # заполняем алиас
             self.alias = slugify_rus(self.title)
 
+        # заполняем поле уровня вложенности меню
+        if self.parent_id:
+            self.level = Menu.objects.get(id=self.parent_id).level + 1
+            self.rec_update_subitems_level()
+
         super(Menu, self).save(*args, **kwargs)
+
+    def rec_update_subitems_level(parent):
+        '''Обновляет уровень вложенности в дочерних пунктах меню'''
+        subitems = Menu.objects.filter(parent_id = parent.id)
+        subitems.update(
+            level=parent.level + 1
+        )
+        for subitem in subitems:
+            subitem.rec_update_subitems_level()
 
     def __str__(self):
         return self.title
