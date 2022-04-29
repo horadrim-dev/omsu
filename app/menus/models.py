@@ -3,7 +3,7 @@ from django.db import models
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
-from django.db.models import F
+# from django.db.models import F
 
 # Create your models here.
 
@@ -32,7 +32,10 @@ class Menu(models.Model):
         # заполняем поле уровня вложенности меню
         if self.parent_id:
             self.level = Menu.objects.get(id=self.parent_id).level + 1
-            self.rec_update_subitems_level()
+        else:
+            self.level = 1
+        
+        self.rec_update_subitems_level()
 
         super(Menu, self).save(*args, **kwargs)
 
@@ -44,6 +47,30 @@ class Menu(models.Model):
         )
         for subitem in subitems:
             subitem.rec_update_subitems_level()
+
+    def get_subitems(parent=None, maxlevel=None):
+        '''формирует дерево дочерних элементов'''
+        if parent:
+            if maxlevel:
+                if parent.level >= maxlevel:
+                    return None
+            items = Menu.objects.filter(parent_id=parent.id, is_published=True)
+        else:
+            items = Menu.objects.filter(level=1, is_published=True)
+
+        if len(items) == 0:
+            return None
+
+        result = []
+        for item in items:
+            result.append(
+                {
+                    'item':item,
+                    'subitems': item.get_subitems(maxlevel=maxlevel)
+                }
+            )
+        
+        return result
 
     def __str__(self):
         return self.title

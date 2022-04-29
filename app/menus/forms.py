@@ -8,4 +8,4 @@ class AdminMenuForm(ModelForm):
         # конкретно выбрать отображаемые поля
         # fields = ['pub_date', 'headline', 'content', 'reporter']
         # исключить поля
-        exclude = ['level']
+        exclude = []
