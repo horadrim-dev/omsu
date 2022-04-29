@@ -26,8 +26,9 @@ class Menu(models.Model):
     def save(self, *args, **kwargs):
         # только при создании объекта, id еще не существует
         if not self.id:
-            # заполняем алиас
-            self.alias = slugify_rus(self.title)
+            if not self.alias:
+                # заполняем алиас
+                self.alias = slugify_rus(self.title)
 
         # заполняем поле уровня вложенности меню
         if self.parent_id:
@@ -35,12 +36,16 @@ class Menu(models.Model):
         else:
             self.level = 1
         
-        self.rec_update_subitems_level()
-
         super(Menu, self).save(*args, **kwargs)
+
+        # обновляем дочерние объекты
+        self.rec_update_subitems_level()
 
     def rec_update_subitems_level(parent):
         '''Обновляет уровень вложенности в дочерних пунктах меню'''
+        if not parent.id:
+            raise ValueError("У объекта еще нет ID")
+
         subitems = Menu.objects.filter(parent_id = parent.id)
         subitems.update(
             level=parent.level + 1
