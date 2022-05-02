@@ -7,10 +7,9 @@
         {% endif %}
     ">  
         {% if level_1.subitems != None %}
-        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside">
+        <a class="nav-link dropdown-toggle" data-bs-auto-close="outside" aria-expanded="false" href="{{level_1.url}}">
         {% else %}
-        <a class="nav-link" aria-current="page" href="#">
+        <a class="nav-link" aria-current="page" href="{{level_1.url}}">
         {% endif %}
             {% if level_1.item.icon %}
             <i class="bi bi-{{level_1.item.icon}}"></i>
@@ -23,10 +22,10 @@
             {% for level_2 in level_1.subitems %}
                 {% if level_2.subitems != None %}
                 <li class="dropend">
-                    <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">
+                    <a href="{{level_2.url}}" class="dropdown-item dropdown-toggle">
                 {% else %}
                 <li>
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="{{ level_2.url }}">
                 {% endif %}
                         {% if level_2.item.icon %}
                         <i class="bi bi-{{level_2.item.icon}}"></i>
@@ -37,7 +36,7 @@
                     {% if level_2.subitems != None %}
                     <ul class="dropdown-menu shadow">
                         {% for level_3 in level_2.subitems %}
-                        <li><a class="dropdown-item" href="">
+                        <li><a class="dropdown-item" href="{{level_3.url}}">
                             {% if level_3.item.icon %}
                             <i class="bi bi-{{level_3.item.icon}}"></i>
                             {% endif %}

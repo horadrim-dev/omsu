@@ -53,25 +53,29 @@ class Menu(models.Model):
         for subitem in subitems:
             subitem.rec_update_subitems_level()
 
-    def get_subitems(parent=None, maxlevel=None):
+    def get_subitems(parent=None, parent_url="/", maxlevel=None):
         '''формирует дерево дочерних элементов'''
         if parent:
             if maxlevel:
+                # если достигнут порог уровня - выходим
                 if parent.level >= maxlevel:
                     return None
             items = Menu.objects.filter(parent_id=parent.id, is_published=True)
         else:
             items = Menu.objects.filter(level=1, is_published=True)
 
+        # если дочерних элементов нет - выходим
         if len(items) == 0:
             return None
 
         result = []
         for item in items:
+            url  = parent_url + item.alias + "/"
             result.append(
                 {
-                    'item':item,
-                    'subitems': item.get_subitems(maxlevel=maxlevel)
+                    'item': item,
+                    'url': url,
+                    'subitems': item.get_subitems(parent_url=url, maxlevel=maxlevel)
                 }
             )
         

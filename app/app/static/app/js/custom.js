@@ -68,6 +68,15 @@ $(document).ready(function () {
 		}, function () {
 			$(this).find('.dropdown-menu').first().removeClass('show');
 		});
+
+		$('.dropdown-menu .dropend, .dropdown-menu .dropstart').hover(function () {
+			$(this).find('.dropdown-menu').first().addClass('show');
+			$(this).find('.dropdown-menu').first().attr('data-bs-popper', 'none')
+		}, function () {
+			$(this).find('.dropdown-menu').first().removeClass('show');
+			$(this).find('.dropdown-menu').first().removeAttr('data-bs-popper')
+		});
+		
 	};
 
 	// при клике по tab обновляем хеш в URL
