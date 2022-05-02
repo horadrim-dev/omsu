@@ -2,9 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .forms import AdminMenuForm
-from .models import Menu, Page
-
-admin.site.register(Page)
+from .models import Menu
 
 
 # @admin.register(Menu)

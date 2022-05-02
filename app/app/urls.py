@@ -28,6 +28,7 @@ urlpatterns = [
     path('activity/', include('menus.urls')),
     path('', views.main),
     path('home/', views.main),
+    path('news/', include('newsfeed.urls', namespace='newsfeed')),
 ] #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -84,13 +84,3 @@ class Menu(models.Model):
     def __str__(self):
         return self.title
 
-
-class Page(models.Model):
-    menu_id = models.ForeignKey(
-        'Menu', on_delete=models.CASCADE, verbose_name="Привязка к меню")
-
-    title = models.CharField(max_length=1000, verbose_name="Заголовок")
-    text = RichTextUploadingField()
-
-    def __str__(self):
-        return self.title

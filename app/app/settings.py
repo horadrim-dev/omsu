@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'menus', 
+    'content', 
+    'newsfeed',
     'ckeditor',
     'ckeditor_uploader',
 ]
