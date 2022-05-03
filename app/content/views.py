@@ -16,7 +16,7 @@ def get_content(menu_id: int):
             has_content = True
             num_contents += len(content)
 
-    contents['config'] = {
+    contents['info'] = {
         'num_contents': num_contents
     }
 
@@ -24,3 +24,7 @@ def get_content(menu_id: int):
         return contents
     else:
         return False
+
+def render_content(request, context):
+
+    return render(request, 'content/test.html', context)

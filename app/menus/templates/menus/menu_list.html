@@ -1,0 +1,15 @@
+<ul class="nav flex-column nav-justified">
+    {% for menu in menus %}
+    <li class="nav-item border-bottom lh-lg">
+    <a class="nav-link 
+            {% comment %} {% if category.is_fixed %}
+            ajax" target="component" href="{{ menu.alias }}?data=component" 
+            {% else %} {% endcomment %}
+            " href="{{ menu.alias }}" 
+            {% comment %} {% endif %} {% endcomment %} 
+    >
+        {{ menu.title }}
+    </a>
+    </li>
+    {% endfor %}
+</ul>

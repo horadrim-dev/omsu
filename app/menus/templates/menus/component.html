@@ -1,0 +1,12 @@
+{% extends 'app/base_component.html' %}
+{% load breadcrumbs %}
+
+{% block  component %}
+
+    {% breadcrumbs bc_items %}
+
+    <div id="component">
+        {% include 'menus/html_menus.html' %}
+    </div>
+
+{% endblock component %}

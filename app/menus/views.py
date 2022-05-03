@@ -2,7 +2,7 @@
 from django.shortcuts import render
 # from django.http import JsonResponse
 from . models import Menu
-from content.views import get_content
+from content import views as content_views
 
 
 def menus(request, parent=None, *args, **kwargs):
@@ -13,10 +13,10 @@ def menus(request, parent=None, *args, **kwargs):
         current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
 
     current_menu = Menu.objects.get(alias=current_alias)
-    submenus = Menu.objects.filter(parent_id=current_menu.id)
+    menus = Menu.objects.filter(parent_id=current_menu.id)
 
     category = current_menu
-    contents = get_content(current_menu.id)
+    contents = content_views.get_content(current_menu.id)
 
     bc_items = [('Деятельность', 'activity')]
     for slug in list(kwargs.values()):
@@ -24,11 +24,11 @@ def menus(request, parent=None, *args, **kwargs):
             (Menu.objects.get(alias=slug).title, slug)
         )
 
-    if contents:
-        menus = None
-    else:
-        menus = submenus
-        submenus = None
+    # if contents:
+    #     menus = None
+    # else:
+    #     menus = submenus
+    #     submenus = None
 
     context = {
         'data': 'normal',
@@ -36,10 +36,11 @@ def menus(request, parent=None, *args, **kwargs):
         'category': category,
         'contents': contents,
         'menus': menus,
-        'submenus': submenus
+        # 'submenus': submenus
     }
-    if request.GET.get('data') == 'component':
-        context['data'] = 'component'
-        return render(request, 'menus/html_menus.html', context)
-    else:
-        return render(request, 'menus/block_menus.html', context)
+    # if request.GET.get('data') == 'component':
+    #     context['data'] = 'component'
+    #     return render(request, 'menus/html_menus.html', context)
+    # else:
+        # return render(request, 'menus/block_menus.html', context)
+    return content_views.render_content(request, context)

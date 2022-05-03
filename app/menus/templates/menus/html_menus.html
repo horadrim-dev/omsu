@@ -1,88 +1,32 @@
 {% load static %}
-{% load breadcrumbs %}
 
-{% if data == 'normal' %}
-<div id="component">
-{% endif %}
+<div class="container">
+  <div class="row g-0 mb-3">
+    <div class="col-md-10 shadow">
 
-  {% breadcrumbs bc_items %}
-
-  {% if menus %}
-  <div id="content" class="container p-5 ">
-    {% if not subcategory %}
-    <h2 class="border-bottom pb-3">
-      {% if category %}
-      {{ category.title }}
-      {% endif %}
-    </h2>
-    {% endif %}
-
-    {{ category.description|safe }}
-
-    <div class="row row-cols-1 row-cols-md-4 g-4 my-3">
-      {% for menu in menus %}
-      <div class="col">
-        <div class="card" class="hover-shadow">
-          <a href="
-                {% if only_html %}
-                    {% url 'activity' %}{{ menu.alias }}
-                {% else %}  
-                {{ menu.alias }}
-                {% endif %}
-                "> 
-            <div class="card-body">
-              <h5 class="card-title">{{ menu.title }}</h5>
-              <p class="card-text">{{ menu.short_description}}</p>
-            </div>
-          </a>
-        </div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
-
-  
-  {% if contents.config.num_contents > 0 %}
-  <div class="container">
-    <div class="row g-0 mb-3">
-      <div class="col-md-10 shadow">
-        {% if contents %}
-        {% include 'menus/html_content.html' %}
+      <div id="content" class='p-5'>
+        <button id="back" type="button" class="btn float-start">
+          <i class="bi bi-arrow-left"></i>
+        </button>
+        {% if contents.info.num_contents > 0 %}
+        {% include 'menus/content.html' %}
+        {% else %}
+        {% include 'menus/menu_blocks.html' %}
         {% endif %}
       </div>
-      <div id="right-side" class="col border">
-        <div id="right-side-content">
-          {% if submenus %}
-          <div id="submenu">
-            <ul class="nav flex-column nav-justified">
-              {% for menu in submenus %}
-              <li class="nav-item border-bottom lh-lg">
-                <a class="nav-link 
-                        {% if category.is_fixed %}
-                        ajax" target="component"
-                        href="{{ menu.alias }}?data=component"
-                        {% else %}
-                        " href="{{ menu.alias }}"
-                        {% endif %}
-                        >
-                  {{ menu.title }}
-                </a>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-          {% endif %}
-
-        
-        </div>
-      </div>
-
 
     </div>
-  </div>
-  {% endif %}
+    <div id="right-side" class="col border">
 
-{% if data == 'normal' %}
+      <div id="right-side-content">
+        {% if menus and contents %}
+        <div id="submenu">
+          {% include 'menus/menu_list.html' %}
+        </div>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
 </div>
-{% endif %}

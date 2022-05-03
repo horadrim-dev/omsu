@@ -3,7 +3,7 @@ from menus.models import Menu
 
 register = template.Library()
 
-@register.inclusion_tag('menus/block_menus.html')
+@register.inclusion_tag('menus/show_menus.html')
 def show_menus(parent=None):
     context = {}
 
@@ -14,7 +14,7 @@ def show_menus(parent=None):
         category = None
         menus = Menu.objects.filter(parent_id__isnull=True)
 
-    context['only_html'] = True
+    context['add_path'] = True
     context['category'] = category
     context['menus'] = menus
 
