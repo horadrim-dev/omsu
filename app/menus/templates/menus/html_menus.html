@@ -24,12 +24,12 @@
       <div class="col">
         <div class="card" class="hover-shadow">
           <a href="
-                {% if add_path %}
+                {% if only_html %}
                     {% url 'activity' %}{{ menu.alias }}
-                {% else %}
-                    {{ menu.alias }}
+                {% else %}  
+                {{ menu.alias }}
                 {% endif %}
-                ">
+                "> 
             <div class="card-body">
               <h5 class="card-title">{{ menu.title }}</h5>
               <p class="card-text">{{ menu.short_description}}</p>
