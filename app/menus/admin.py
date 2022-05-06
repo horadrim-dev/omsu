@@ -10,7 +10,9 @@ class MenuAdmin(admin.ModelAdmin):
     # поле alias будет автоматически заполнено на основе заголовка
     # prepopulated_fields = {
     #     "alias" : ("title",)
-    # }
+    # 
+    list_display = ('title', 'id', 'alias', 'short_description', 'order', 'level', 'debug_info')
+
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:
             kwargs['form'] = AdminMenuForm

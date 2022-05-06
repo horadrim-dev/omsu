@@ -40,7 +40,7 @@ def menus(request, parent=None, *args, **kwargs):
     }
     # if request.GET.get('data') == 'component':
     #     context['data'] = 'component'
-    #     return render(request, 'menus/html_menus.html', context)
+    #     return render(request, 'menus/menus.html', context)
     # else:
         # return render(request, 'menus/block_menus.html', context)
     return content_views.render_content(request, context)
