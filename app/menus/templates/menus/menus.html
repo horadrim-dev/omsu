@@ -9,7 +9,7 @@
           <i class="bi bi-arrow-left"></i>
         </button>
         <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
-
+{{section.title}}{{section.alias}}
         {% if contents.info.num_contents > 0 %}
         {% include 'menus/content.html' %}
         {% else %}

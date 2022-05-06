@@ -5,23 +5,30 @@ from . models import Menu
 from content import views as content_views
 
 
-def menus(request, parent=None, *args, **kwargs):
+def menus(request, section=None, *args, **kwargs):
 
-    if parent:
-        current_alias = parent  # берем корневой элемент
-    else:
+    # if parent:
+    #     current_alias = parent  # берем корневой элемент
+    # else:
+    #     current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
+
+
+    if len(kwargs) > 0:
         current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
+        current_menu = Menu.objects.get(alias=current_alias)
+    else:
+        current_menu = section 
 
-    current_menu = Menu.objects.get(alias=current_alias)
     menus = Menu.objects.filter(parent_id=current_menu.id)
 
-    bc_items = [('Деятельность', 'activity')]
+    bc_items = [(section.title, section.alias)]
     for slug in list(kwargs.values()):
         bc_items.append(
             (Menu.objects.get(alias=slug).title, slug)
         )
 
     context = {
+        'section':section,
         'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,

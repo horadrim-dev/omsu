@@ -29,5 +29,4 @@ def render_content(request, context):
 
 
     context['contents'] = get_content(context['page'].id)
-
     return render(request, 'content/test.html', context)

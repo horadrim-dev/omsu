@@ -17,6 +17,9 @@ from django.contrib import admin
 from django.urls import path, include
 from . import views
 
+from menus.models import Menu
+# from menus import views as menus_views
+
 # УДАЛИТЬ +static() и эти библиотеки на боевом сервере
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,10 +28,12 @@ urlpatterns = [
     path('grappelli/', include('grappelli.urls')), # grappelli URLS
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('activity/', include('menus.urls')),
+    # path('activity/', include('menus.urls')),
     path('', views.main),
-    path('home/', views.main),
+    # path('home/', views.main),
     path('news/', include('newsfeed.urls', namespace='newsfeed')),
 ] #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+for menu in Menu.objects.filter(level=1):
+    urlpatterns += [path(menu.alias + '/', include('menus.urls'), {'section':menu})]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

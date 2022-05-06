@@ -16,7 +16,8 @@ a.zoom-wrapper:hover img {
 	max-width: 1500px;
 } */
 body {
-	background: #f6f9ff;
+	/* background: #f6f9ff; */
+	background: #fdfdfd;
 }
 #topmenu-bar a {
 	text-decoration: none;
