@@ -15,28 +15,17 @@ def menus(request, parent=None, *args, **kwargs):
     current_menu = Menu.objects.get(alias=current_alias)
     menus = Menu.objects.filter(parent_id=current_menu.id)
 
-    category = current_menu
-    contents = content_views.get_content(current_menu.id)
-
     bc_items = [('Деятельность', 'activity')]
     for slug in list(kwargs.values()):
         bc_items.append(
             (Menu.objects.get(alias=slug).title, slug)
         )
 
-    # if contents:
-    #     menus = None
-    # else:
-    #     menus = submenus
-    #     submenus = None
-
     context = {
         'data': 'normal',
         'bc_items': bc_items,
-        'category': category,
-        'contents': contents,
+        'page': current_menu,
         'menus': menus,
-        # 'submenus': submenus
     }
     # if request.GET.get('data') == 'component':
     #     context['data'] = 'component'

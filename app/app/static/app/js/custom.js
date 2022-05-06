@@ -90,19 +90,19 @@ $(document).ready(function () {
 	};
 
 	// ajax
-	$('a.ajax').on('click', function (e) {
-		// alert(this.href + " /// " + this.target);
-		var target = "#" + this.target;
-		$.ajax({
-			url: this.href,
-			method: 'get',
-			dataType: 'html',
-			success: function (data) {
-				$(target).html(data);
-			}
-		});
-		e.preventDefault();
-	});
+	// $('a.ajax').on('click', function (e) {
+	// 	// alert(this.href + " /// " + this.target);
+	// 	var target = "#" + this.target;
+	// 	$.ajax({
+	// 		url: this.href,
+	// 		method: 'get',
+	// 		dataType: 'html',
+	// 		success: function (data) {
+	// 			$(target).html(data);
+	// 		}
+	// 	});
+	// 	e.preventDefault();
+	// });
 
 	// плавающие блоки
 	$("#right-side-content").stick_in_parent({offset_top:100});

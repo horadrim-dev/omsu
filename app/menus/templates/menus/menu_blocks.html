@@ -1,34 +1,23 @@
-
-{% if not contents %}
-    {% if not subcategory %}
-    <h2 class="border-bottom pb-3">
-      {% if category %}
-      {{ category.title }}
-      {% endif %}
-    </h2>
-    {% endif %}
-
-    {{ category.description|safe }}
-
-    <div class="row row-cols-1 row-cols-md-4 g-4 my-3">
-      {% for menu in menus %}
-      <div class="col">
-        <div class="card" class="hover-shadow">
-          <a href="
-                {% if add_path %}
-                    {% url 'activity' %}{{ menu.alias }}
-                {% else %}  
-                {{ menu.alias }}
-                {% endif %}
-                ">
-            <div class="card-body">
-              <h5 class="card-title">{{ menu.title }}</h5>
-              <p class="card-text">{{ menu.short_description}}</p>
-            </div>
-          </a>
+<div class="page-description">
+  {{ page.description|safe }}
+</div>
+<div class="row row-cols-1 row-cols-md-4 g-4 my-3">
+  {% for menu in menus %}
+  <div class="col">
+    <div class="card" class="hover-shadow">
+      <a href="
+            {% if add_path %}
+                {% url 'activity' %}{{ menu.alias }}
+            {% else %}  
+            {{ menu.alias }}
+            {% endif %}
+            ">
+        <div class="card-body">
+          <h5 class="card-title">{{ menu.title }}</h5>
+          <p class="card-text">{{ menu.short_description}}</p>
         </div>
-      </div>
-      {% endfor %}
+      </a>
     </div>
-
-{% endif %}
+  </div>
+  {% endfor %}
+</div>

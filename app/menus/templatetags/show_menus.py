@@ -8,14 +8,14 @@ def show_menus(parent=None):
     context = {}
 
     if parent:
-        category = Menu.objects.get(alias = parent)
-        menus = Menu.objects.filter(parent_id = category.id)
+        page = Menu.objects.get(alias = parent)
+        menus = Menu.objects.filter(parent_id = page.id)
     else:
-        category = None
+        page = None
         menus = Menu.objects.filter(parent_id__isnull=True)
 
     context['add_path'] = True
-    context['category'] = category
+    context['page'] = page
     context['menus'] = menus
 
     return context

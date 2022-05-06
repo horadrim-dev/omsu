@@ -1,39 +1,37 @@
-<h2 id="content-title" class="border-bottom mb-4 pb-3">{{ category.title }}</h2>
-
 <div id="content-body">
-{% if contents.config.num_contents > 1 %}
+{% if contents.info.num_contents > 1 %}
     <ul class="nav nav-pills nav-justified border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
-        {% for page in contents.page %}
+        {% for post in contents.posts %}
         <li class="nav-item" role="presentation">
             <a href="#{{forloop.counter}}"
                 class="nav-link {% if forloop.first %}active{% endif %}" 
-                id="pills-tab-page-{{forloop.counter}}" 
+                id="pills-tab-post-{{forloop.counter}}" 
                 data-bs-toggle="pill"
-                data-bs-target="#pills-page-{{forloop.counter}}" 
+                data-bs-target="#pills-post-{{forloop.counter}}" 
                 type="button" 
                 role="tab" 
-                aria-controls="pills-page-{{forloop.counter}}"
+                aria-controls="pills-post-{{forloop.counter}}"
                 aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
                 >
-                {{ page.title }}
+                {{ post.title }}
         </a>
         </li>
         {% endfor %}
     </ul>
 
     <div class="tab-content" id="pills-tabContent">
-        {% for page in contents.page %}
+        {% for post in contents.posts%}
         <div class="tab-pane fade p-4 {% if forloop.first %}show active{% endif %}" 
-            id="pills-page-{{forloop.counter}}" 
+            id="pills-post-{{forloop.counter}}" 
             role="tabpanel"
-            aria-labelledby="pills-tab-page-{{forloop.counter}}"
+            aria-labelledby="pills-tab-post-{{forloop.counter}}"
             >
-            {{ page.text|safe }}
+            {{ post.text|safe }}
         </div>
         {% endfor %}
 
     </div>
 {% else %}
-    {{ contents.page.0.text|safe }}
+    {{ contents.posts.0.text|safe }}
 {% endif %}
 </div>

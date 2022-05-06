@@ -3,11 +3,11 @@ from .models import Post
 # Create your views here.
 
 def get_content(menu_id: int):
-    '''Проверяет есть ли контент, привязанный к меню'''
+    ''' Возвращает контент, привязанный к меню'''
     has_content = False
     contents = {}
 
-    contents['page'] = Post.objects.filter(menu_id=menu_id)
+    contents['posts'] = Post.objects.filter(menu_id=menu_id)
     # contents.append(list(Page.objects.filter(menu_id=menu_id)))
 
     num_contents = 0
@@ -26,5 +26,8 @@ def get_content(menu_id: int):
         return False
 
 def render_content(request, context):
+
+
+    context['contents'] = get_content(context['page'].id)
 
     return render(request, 'content/test.html', context)
