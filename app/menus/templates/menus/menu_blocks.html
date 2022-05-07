@@ -7,7 +7,7 @@
     <div class="card" class="hover-shadow">
       <a href="
             {% if add_path %}
-                {% url section %}{{ menu.alias }}
+                {% url  section|add:':index' %}{{ menu.alias }}
             {% else %}  
             {{ menu.alias }}
             {% endif %}

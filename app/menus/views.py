@@ -12,7 +12,6 @@ def menus(request, section=None, *args, **kwargs):
     # else:
     #     current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
 
-
     if len(kwargs) > 0:
         current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
         current_menu = Menu.objects.get(alias=current_alias)
@@ -29,7 +28,7 @@ def menus(request, section=None, *args, **kwargs):
 
     context = {
         'section':section,
-        'data': 'normal',
+        # 'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,
         'menus': menus,

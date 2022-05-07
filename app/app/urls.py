@@ -33,7 +33,15 @@ urlpatterns = [
     # path('home/', views.main),
     path('news/', include('newsfeed.urls', namespace='newsfeed')),
 ] #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-for menu in Menu.objects.filter(level=1):
-    urlpatterns += [path(menu.alias + '/', include('menus.urls'), {'section':menu})]
+
+for section in Menu.objects.filter(level=1):
+    urlpatterns += [
+        path(
+            section.alias + '/', 
+            include(('menus.urls', section.alias), 
+            namespace=section.alias), 
+            {'section':section}
+        )
+    ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
