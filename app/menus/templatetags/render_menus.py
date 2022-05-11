@@ -3,8 +3,8 @@ from menus.models import Menu
 
 register = template.Library()
 
-@register.inclusion_tag('menus/show_menus.html')
-def show_menus(section=None, parent=None):
+@register.inclusion_tag('menus/render_menus.html')
+def render_menus(section=None, parent=None):
     context = {}
 
     if section:
@@ -16,7 +16,7 @@ def show_menus(section=None, parent=None):
         page = None
         menus = Menu.objects.filter(level=1)
 
-    context['add_path'] = True
+    context['from_module'] = True
     context['section'] = section
     context['page'] = page
     context['menus'] = menus

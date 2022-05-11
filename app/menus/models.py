@@ -131,7 +131,7 @@ class Menu(models.Model):
         for subitem in subitems:
             subitem.update_subitems_level()
 
-    def get_subitems(parent=None, parent_url="/", maxlevel=None):
+    def get_subitems(parent=None, maxlevel=None):
         '''формирует дерево дочерних элементов'''
         if parent:
             if maxlevel:
@@ -148,12 +148,12 @@ class Menu(models.Model):
 
         result = []
         for item in items:
-            url  = parent_url + item.alias + "/"
+            # url  = parent_url + item.alias + "/"
             result.append(
                 {
                     'item': item,
-                    'url': url,
-                    'subitems': item.get_subitems(parent_url=url, maxlevel=maxlevel)
+                    'url': item.url,
+                    'subitems': item.get_subitems(maxlevel=maxlevel)
                 }
             )
         

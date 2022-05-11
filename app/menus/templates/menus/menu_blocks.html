@@ -5,13 +5,7 @@
   {% for menu in menus %}
   <div class="col">
     <div class="card" class="hover-shadow">
-      <a href="
-            {% comment %} {% if add_path %}
-                {% url  section|add:':index' %}{{ menu.alias }}
-            {% else %}   {% endcomment %}
-            {{ menu.url}}
-            {% comment %} {% endif %} {% endcomment %}
-            ">
+      <a href="{{ menu.url}}">
         <div class="card-body">
           <h5 class="card-title">{{ menu.title }}</h5>
           <p class="card-text">{{ menu.short_description}}</p>

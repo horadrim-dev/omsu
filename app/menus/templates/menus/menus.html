@@ -5,9 +5,11 @@
     <div class="col-md-10 me-3 shadow">
 
       <div id="content" class='p-5'>
-        <button id="back" type="button" class="btn float-start">
-          <i class="bi bi-arrow-left"></i>
-        </button>
+        {% if not from_module %}
+          <button id="back" type="button" class="btn float-start">
+            <i class="bi bi-arrow-left"></i>
+          </button>
+        {% endif %}
         <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
         {{parent}}
         {% if contents.info.num_contents > 0 %}
