@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from .models import Post
+from .models import Post, Feed
+# from menus.models import Menu
 # Create your views here.
 
 def get_content(menu_id: int):
@@ -8,6 +9,7 @@ def get_content(menu_id: int):
     contents = {}
 
     contents['posts'] = Post.objects.filter(menu_id=menu_id)
+    contents['feeds'] = Feed.objects.filter(menu__id=menu_id)
     # contents.append(list(Page.objects.filter(menu_id=menu_id)))
 
     num_contents = 0

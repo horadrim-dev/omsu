@@ -3,7 +3,8 @@
     <ul class="nav nav-pills nav-justified border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
         {% for post in contents.posts %}
         <li class="nav-item" role="presentation">
-            <a href="#{{forloop.counter}}"
+            <a href="#{{post.alias}}"
+            {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
                 class="nav-link {% if forloop.first %}active{% endif %}" 
                 id="pills-tab-post-{{forloop.counter}}" 
                 data-bs-toggle="pill"
@@ -17,10 +18,26 @@
         </a>
         </li>
         {% endfor %}
+        {% for feed in contents.feeds %}
+        <li class="nav-item" role="presentation">
+            <a href="#{{feed.alias}}"
+                class="nav-link" 
+                id="pills-tab-feed-{{forloop.counter}}" 
+                data-bs-toggle="pill"
+                data-bs-target="#pills-feed-{{forloop.counter}}" 
+                type="button" 
+                role="tab" 
+                aria-controls="pills-feed-{{forloop.counter}}"
+                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                >
+                {{ feed.title }}
+        </a>
+        </li>
+        {% endfor %}
     </ul>
 
     <div class="tab-content" id="pills-tabContent">
-        {% for post in contents.posts%}
+        {% for post in contents.posts %}
         <div class="tab-pane fade p-4 {% if forloop.first %}show active{% endif %}" 
             id="pills-post-{{forloop.counter}}" 
             role="tabpanel"
@@ -29,9 +46,19 @@
             {{ post.text|safe }}
         </div>
         {% endfor %}
+        {% for feed in contents.feeds %}
+        <div class="tab-pane fade p-4 " 
+            id="pills-feed-{{forloop.counter}}" 
+            role="tabpanel"
+            aria-labelledby="pills-tab-feed-{{forloop.counter}}"
+            >
+            {{ feed.description|safe }}
+        </div>
+        {% endfor %}
 
     </div>
 {% else %}
     {{ contents.posts.0.text|safe }}
+    {{ contents.feeds.0.description|safe }}
 {% endif %}
 </div>
