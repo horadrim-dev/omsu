@@ -7,10 +7,20 @@ from ckeditor.fields import RichTextField
 
 class Post(models.Model):
     menu = models.ForeignKey(
-        Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню")
+        Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню", blank=True, null=True)
 
     title = models.CharField(max_length=1000, verbose_name="Заголовок")
     text = RichTextUploadingField()
+
+    def __str__(self):
+        return self.title
+
+class Feed(models.Model):
+
+    menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
+
+    title = models.CharField(max_length=1000, verbose_name="Заголовок")
+    description = RichTextUploadingField()
 
     def __str__(self):
         return self.title

@@ -6,11 +6,11 @@
   <div class="col">
     <div class="card" class="hover-shadow">
       <a href="
-            {% if add_path %}
+            {% comment %} {% if add_path %}
                 {% url  section|add:':index' %}{{ menu.alias }}
-            {% else %}  
-            {{ menu.alias }}
-            {% endif %}
+            {% else %}   {% endcomment %}
+            {{ menu.url}}
+            {% comment %} {% endif %} {% endcomment %}
             ">
         <div class="card-body">
           <h5 class="card-title">{{ menu.title }}</h5>

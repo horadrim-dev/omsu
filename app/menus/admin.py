@@ -11,7 +11,7 @@ class MenuAdmin(admin.ModelAdmin):
     # prepopulated_fields = {
     #     "alias" : ("title",)
     # 
-    list_display = ('title', 'id', 'alias', 'short_description', 'order', 'level', 'debug_info')
+    list_display = ('title', 'id', 'alias', 'url', 'short_description', 'order', 'level', 'debug_info')
 
     def get_form(self, request, obj=None, **kwargs):
         if request.user.is_superuser:

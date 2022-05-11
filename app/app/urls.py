@@ -31,7 +31,7 @@ urlpatterns = [
     # path('activity/', include('menus.urls')),
     path('', views.main),
     # path('home/', views.main),
-    path('news/', include('newsfeed.urls', namespace='newsfeed')),
+    # path('news/', include('newsfeed.urls', namespace='newsfeed')),
 ] #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 for section in Menu.objects.filter(level=1):
