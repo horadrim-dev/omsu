@@ -9,7 +9,14 @@ def get_content(menu_id: int):
     contents = {}
 
     contents['posts'] = Post.objects.filter(menu_id=menu_id)
-    contents['feeds'] = Feed.objects.filter(menu__id=menu_id)
+
+    contents['postfeeds'] = []
+    feeds = Feed.objects.filter(menu__id=menu_id) 
+    for feed in feeds:
+        contents['postfeeds'].append({
+            'feed': feed,
+            'posts': feed.post_set.all()
+        })
     # contents.append(list(Page.objects.filter(menu_id=menu_id)))
 
     num_contents = 0
