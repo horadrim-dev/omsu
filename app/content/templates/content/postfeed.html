@@ -1,0 +1,10 @@
+{{ postfeed.feed.description|safe }}
+<div class="clearfix"></div>
+<ul class="list-group list-group-flush">
+{% for post in postfeed.posts %}
+    <li class="list-group-item mb-3">
+        <h4>{{post.title}}</h5>
+        {{post.text|safe}}
+    </li>
+{% endfor %}
+</ul>

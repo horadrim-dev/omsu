@@ -12,8 +12,7 @@
         {% endif %}
         <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
         {{ contents.info}}
-        {{parent}}
-        {% if contents.info.num.total > 0 %}
+        {% if contents %}
         {% include 'content/page_content.html' %}
         {% else %}
         {% include 'menus/menu_blocks.html' %}

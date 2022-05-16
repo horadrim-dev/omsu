@@ -1,0 +1,60 @@
+<ul class="nav nav-pills nav-justified border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
+    {% for post in contents.posts %}
+    <li class="nav-item" role="presentation">
+        <a href="#{{post.alias}}"
+        {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
+            class="nav-link {% if forloop.first %}active{% endif %}" 
+            id="pills-tab-post-{{forloop.counter}}" 
+            data-bs-toggle="pill"
+            data-bs-target="#pills-post-{{forloop.counter}}" 
+            type="button" 
+            role="tab" 
+            aria-controls="pills-post-{{forloop.counter}}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            >
+            {{ post.title }}
+    </a>
+    </li>
+    {% endfor %}
+    {% for postfeed in contents.postfeeds %}
+    <li class="nav-item" role="presentation">
+        <a href="#{{postfeed.feed.alias}}"
+            class="nav-link" 
+            id="pills-tab-feed-{{forloop.counter}}" 
+            data-bs-toggle="pill"
+            data-bs-target="#pills-feed-{{forloop.counter}}" 
+            type="button" 
+            role="tab" 
+            aria-controls="pills-feed-{{forloop.counter}}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            >
+            <i class="bi bi-list"></i>
+            {{ postfeed.feed.title }}
+    </a>
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="tab-content" id="pills-tabContent">
+    {% for post in contents.posts %}
+    <div class="tab-pane fade p-4 {% if forloop.first %}show active{% endif %}" 
+        id="pills-post-{{forloop.counter}}" 
+        role="tabpanel"
+        aria-labelledby="pills-tab-post-{{forloop.counter}}"
+        >
+        {% include 'content/post.html' %}
+    </div>
+    {% endfor %}
+    {% for postfeed in contents.postfeeds %}
+    <div class="tab-pane fade p-4 " 
+        id="pills-feed-{{forloop.counter}}" 
+        role="tabpanel"
+        aria-labelledby="pills-tab-feed-{{forloop.counter}}"
+        >
+
+        {% include 'content/postfeed.html' %}
+
+    </div>
+    {% endfor %}
+
+</div>

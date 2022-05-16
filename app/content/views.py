@@ -22,14 +22,14 @@ def get_content(menu_id: int):
     
     # собираем информацию
     num_total = 0
-    info = {'num':{}}
+    info = {'count':{}}
     for key, content  in contents.items():
         if len(content) > 0:
             has_content = True
             num_total += len(content)
-            info['num'].update({key: len(content)})
+            info['count'].update({key: len(content)})
 
-    info['num']['total'] = num_total
+    info['count']['total'] = num_total
 
     contents['info'] = info
 
@@ -39,7 +39,6 @@ def get_content(menu_id: int):
         return False
 
 def render_content(request, context):
-
 
     context['contents'] = get_content(context['page'].id)
     return render(request, 'content/content.html', context)

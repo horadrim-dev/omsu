@@ -1,92 +1,19 @@
 <div id="content-body">
-{% if contents.info.num.total > 1 %}
-    <ul class="nav nav-pills nav-justified border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
-        {% for post in contents.posts %}
-        <li class="nav-item" role="presentation">
-            <a href="#{{post.alias}}"
-            {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
-                class="nav-link {% if forloop.first %}active{% endif %}" 
-                id="pills-tab-post-{{forloop.counter}}" 
-                data-bs-toggle="pill"
-                data-bs-target="#pills-post-{{forloop.counter}}" 
-                type="button" 
-                role="tab" 
-                aria-controls="pills-post-{{forloop.counter}}"
-                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-                >
-                {{ post.title }}
-        </a>
-        </li>
-        {% endfor %}
-        {% for postfeed in contents.postfeeds %}
-        <li class="nav-item" role="presentation">
-            <a href="#{{postfeed.feed.alias}}"
-                class="nav-link" 
-                id="pills-tab-feed-{{forloop.counter}}" 
-                data-bs-toggle="pill"
-                data-bs-target="#pills-feed-{{forloop.counter}}" 
-                type="button" 
-                role="tab" 
-                aria-controls="pills-feed-{{forloop.counter}}"
-                aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-                >
-                <i class="bi bi-list"></i>
-                {{ postfeed.feed.title }}
-        </a>
-        </li>
-        {% endfor %}
-    </ul>
 
-    <div class="tab-content" id="pills-tabContent">
-        {% for post in contents.posts %}
-        <div class="tab-pane fade p-4 {% if forloop.first %}show active{% endif %}" 
-            id="pills-post-{{forloop.counter}}" 
-            role="tabpanel"
-            aria-labelledby="pills-tab-post-{{forloop.counter}}"
-            >
-            {{ post.text|safe }}
-        </div>
-        {% endfor %}
-        {% for postfeed in contents.postfeeds %}
-        <div class="tab-pane fade p-4 " 
-            id="pills-feed-{{forloop.counter}}" 
-            role="tabpanel"
-            aria-labelledby="pills-tab-feed-{{forloop.counter}}"
-            >
-            {{ postfeed.feed.description|safe }}
-            <div class="clearfix my-4"></div>
+{% if contents.info.count.total > 1 %}
 
-            <ul class="list-group list-group-flush">
-            {% for post in postfeed.posts %}
-                {% comment %} <div class="card my-4"> {% endcomment %}
-                {% comment %} <div class="card-header">
-                    {{post.title}}
-                </div> {% endcomment %}
-                {% comment %} <div class="card-body">
-                    <h5 class="card-title">{{post.title}}</h5> {% endcomment %}
-                    {% comment %} <p class="card-text">{{post.text|safe}}</p> {% endcomment %}
-                    {% comment %} <a href="#" class="btn btn-primary">Go somewhere</a> {% endcomment %}
-                {% comment %} </div>
-                </div> {% endcomment %}
-                    <li class="list-group-item">{{post.title}}</li>
-                
-            {% endfor %}
-            </ul>
-        </div>
-        {% endfor %}
+    {% include 'content/multicontent.html' %}
 
-    </div>
 {% else %}
-    {{ contents.posts.0.text|safe }}
-    {{ contents.postfeeds.0.feed.description|safe }}
-    <div class="clearfix"></div>
-    <ul class="list-group list-group-flush">
-    {% for post in contents.postfeeds.0.posts %}
-        <li class="list-group-item mb-3">
-            <h4>{{post.title}}</h5>
-            {{post.text|safe}}
-        </li>
-    {% endfor %}
-    </ul>
+
+    {% with contents.posts.0 as post %}
+        {% include 'content/post.html' %}
+    {% endwith %}
+
+    {% with contents.postfeeds.0 as postfeed %}
+        {% include 'content/postfeed.html' %}
+    {% endwith %}
+
 {% endif %}
+
 </div>
