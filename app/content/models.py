@@ -36,7 +36,7 @@ class Post(models.Model):
                              max_length=1000, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     menu = models.ForeignKey(
         Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню", blank=True, null=True)
-    feed = models.ManyToManyField(Feed, blank=True, null=True, verbose_name="Категория")
+    feed = models.ManyToManyField(Feed, blank=True, verbose_name="Категория")
     text = RichTextUploadingField()
 
     def __str__(self):

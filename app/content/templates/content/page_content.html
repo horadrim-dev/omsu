@@ -30,7 +30,7 @@
                 aria-controls="pills-feed-{{forloop.counter}}"
                 aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
                 >
-                <i class="bi bi-send"></i>
+                <i class="bi bi-list"></i>
                 {{ postfeed.feed.title }}
         </a>
         </li>
@@ -56,18 +56,22 @@
             {{ postfeed.feed.description|safe }}
             <div class="clearfix my-4"></div>
 
+            <ul class="list-group list-group-flush">
             {% for post in postfeed.posts %}
-                <div class="card my-4">
+                {% comment %} <div class="card my-4"> {% endcomment %}
                 {% comment %} <div class="card-header">
                     {{post.title}}
                 </div> {% endcomment %}
-                <div class="card-body">
-                    <h5 class="card-title">{{post.title}}</h5>
-                    <p class="card-text">{{post.text|safe}}</p>
+                {% comment %} <div class="card-body">
+                    <h5 class="card-title">{{post.title}}</h5> {% endcomment %}
+                    {% comment %} <p class="card-text">{{post.text|safe}}</p> {% endcomment %}
                     {% comment %} <a href="#" class="btn btn-primary">Go somewhere</a> {% endcomment %}
-                </div>
-                </div>
-        {% endfor %}
+                {% comment %} </div>
+                </div> {% endcomment %}
+                    <li class="list-group-item">{{post.title}}</li>
+                
+            {% endfor %}
+            </ul>
         </div>
         {% endfor %}
 
@@ -75,6 +79,26 @@
 {% else %}
     {{ contents.posts.0.text|safe }}
     {{ contents.postfeeds.0.feed.description|safe }}
-    {{ contents.postfeeds.0.posts }}
+    <div class="clearfix"></div>
+    <ul class="list-group list-group-flush">
+    {% for post in contents.postfeeds.0.posts %}
+        <li class="list-group-item">
+            <h5>{{post.title}}</h5>
+            {{post.text|safe}}
+        </li>
+            
+        {% comment %} <div class="card my-4"> {% endcomment %}
+        {% comment %} <div class="card-header">
+            {{post.title}}
+        </div> {% endcomment %}
+        {% comment %} <div class="card-body">
+            <h5 class="card-title">{{post.title}}</h5>
+            <p class="card-text">{{post.text|safe}}</p>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+        </div>
+         {% endcomment %}
+    {% endfor %}
+    </ul>
 {% endif %}
 </div>
