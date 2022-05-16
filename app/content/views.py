@@ -8,8 +8,10 @@ def get_content(menu_id: int):
     has_content = False
     contents = {}
 
+    # собираем посты
     contents['posts'] = Post.objects.filter(menu_id=menu_id)
 
+    # собираем ленты
     contents['postfeeds'] = []
     feeds = Feed.objects.filter(menu__id=menu_id) 
     for feed in feeds:
@@ -17,17 +19,19 @@ def get_content(menu_id: int):
             'feed': feed,
             'posts': feed.post_set.all()
         })
-    # contents.append(list(Page.objects.filter(menu_id=menu_id)))
-
-    num_contents = 0
-    for content  in contents.values():
+    
+    # собираем информацию
+    num_total = 0
+    info = {'num':{}}
+    for key, content  in contents.items():
         if len(content) > 0:
             has_content = True
-            num_contents += len(content)
+            num_total += len(content)
+            info['num'].update({key: len(content)})
 
-    contents['info'] = {
-        'num_contents': num_contents
-    }
+    info['num']['total'] = num_total
+
+    contents['info'] = info
 
     if has_content:
         return contents

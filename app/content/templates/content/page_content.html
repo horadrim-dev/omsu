@@ -1,5 +1,5 @@
 <div id="content-body">
-{% if contents.info.num_contents > 1 %}
+{% if contents.info.num.total > 1 %}
     <ul class="nav nav-pills nav-justified border-bottom pb-4 mb-3" id="pills-tab" role="tablist">
         {% for post in contents.posts %}
         <li class="nav-item" role="presentation">
@@ -82,22 +82,10 @@
     <div class="clearfix"></div>
     <ul class="list-group list-group-flush">
     {% for post in contents.postfeeds.0.posts %}
-        <li class="list-group-item">
-            <h5>{{post.title}}</h5>
+        <li class="list-group-item mb-3">
+            <h4>{{post.title}}</h5>
             {{post.text|safe}}
         </li>
-            
-        {% comment %} <div class="card my-4"> {% endcomment %}
-        {% comment %} <div class="card-header">
-            {{post.title}}
-        </div> {% endcomment %}
-        {% comment %} <div class="card-body">
-            <h5 class="card-title">{{post.title}}</h5>
-            <p class="card-text">{{post.text|safe}}</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-        </div>
-         {% endcomment %}
     {% endfor %}
     </ul>
 {% endif %}
