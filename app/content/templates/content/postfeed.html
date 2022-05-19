@@ -3,8 +3,12 @@
 <ul class="list-group list-group-flush">
 {% for post in postfeed.posts %}
     <li class="list-group-item mb-3">
-        <h4>{{post.title}}</h5>
-        {{post.text|safe}}
+        <a href="{{post.alias}}">
+            <h4>{{post.title}}</h5>
+        </a>
+        {% if layout != 'compact' %}
+            {{post.text|safe}}
+        {% endif %}
     </li>
 {% endfor %}
 </ul>

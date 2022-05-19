@@ -1,30 +1,43 @@
 # from webbrowser import get
+# from asyncio.windows_events import NULL
 from django.shortcuts import render
 # from django.http import JsonResponse
 from . models import Menu
 from content import views as content_views
 
+def get_menu_if_exists(slug=None):
+    if slug:
+        try:
+            obj = Menu.objects.get(alias=slug)
+        except:
+            return False
+
+        return obj
+
 
 def menus(request, section=None, *args, **kwargs):
 
-    # if parent:
-    #     current_alias = parent  # берем корневой элемент
-    # else:
-    #     current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
+    unknown_slugs = []
+    bc_items = [(section.title, section.alias)]
+    current_menu = section 
 
+    # перебираем кварги пока не наткнемся на несуществующий в меню
+    # все кварги-меню заносим в breadcrumbs
+    # все неизвестные кварги передаем дальше в контент
     if len(kwargs) > 0:
-        current_alias = list(kwargs.values())[-1]  # берем последний алиас из URL
-        current_menu = Menu.objects.get(alias=current_alias)
-    else:
-        current_menu = section 
+        urlpath = list(kwargs.values())
+
+        for i, slug in enumerate(urlpath):
+            obj = get_menu_if_exists(slug)
+            if obj:
+                current_menu = obj
+                bc_items.append((current_menu.title, slug))
+            else:
+                unknown_slugs += urlpath[i:]
+                break
+
 
     menus = Menu.objects.filter(parent_id=current_menu.id)
-
-    bc_items = [(section.title, section.alias)]
-    for slug in list(kwargs.values()):
-        bc_items.append(
-            (Menu.objects.get(alias=slug).title, slug)
-        )
 
     context = {
         'section':section,
@@ -38,4 +51,4 @@ def menus(request, section=None, *args, **kwargs):
     #     return render(request, 'menus/menus.html', context)
     # else:
         # return render(request, 'menus/block_menus.html', context)
-    return content_views.render_content(request, context)
+    return content_views.render_content(request, context, unknown_slugs)

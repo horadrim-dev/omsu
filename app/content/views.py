@@ -1,25 +1,38 @@
 from django.shortcuts import render
+from django.http import Http404
 from .models import Post, Feed
 # from menus.models import Menu
 # Create your views here.
 
-def get_content(menu_id: int):
+def get_content_if_exists(slug=None):
+    if slug:
+        try:
+            obj = Post.objects.filter(alias=slug).get()
+        except:
+            return False
+
+        return obj
+
+def get_content(from_menu_id:int=None, from_slug:str=None):
     ''' Возвращает контент, привязанный к меню'''
     has_content = False
     contents = {}
+    if from_menu_id:
+        # собираем посты
+        contents['posts'] = Post.objects.filter(menu_id=from_menu_id)
 
-    # собираем посты
-    contents['posts'] = Post.objects.filter(menu_id=menu_id)
+        # собираем ленты
+        contents['postfeeds'] = []
+        feeds = Feed.objects.filter(menu__id=from_menu_id) 
+        for feed in feeds:
+            contents['postfeeds'].append({
+                'feed': feed,
+                'posts': feed.post_set.all()
+            })
 
-    # собираем ленты
-    contents['postfeeds'] = []
-    feeds = Feed.objects.filter(menu__id=menu_id) 
-    for feed in feeds:
-        contents['postfeeds'].append({
-            'feed': feed,
-            'posts': feed.post_set.all()
-        })
-    
+    if from_slug:
+        contents['posts'] = Post.objects.filter(alias=from_slug)
+
     # собираем информацию
     num_total = 0
     info = {'count':{}}
@@ -38,7 +51,19 @@ def get_content(menu_id: int):
     else:
         return False
 
-def render_content(request, context):
+def render_content(request, context, unknown_slugs=None):
+    if unknown_slugs:
+        for slug in unknown_slugs:
+            content = get_content_if_exists(slug)
+            if content:
+                context['bc_items'].append((content.title, slug))
+            else:
+                raise Http404('Контент не найден')
+                
+        context['page'] = content
+        # context['contents'] = {'posts':[content]}
+        context['contents'] = get_content(from_slug=slug)
+    else:
+        context['contents'] = get_content(from_menu_id=context['page'].id)
 
-    context['contents'] = get_content(context['page'].id)
     return render(request, 'content/content.html', context)
