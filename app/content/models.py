@@ -41,7 +41,16 @@ class Feed(Content):
 class Post(Content):
 
     # title = models.CharField(max_length=1000, verbose_name="Заголовок")
+    # url = models.CharField(max_length=1000, default='', blank=True, null=True)
+
     menu = models.ForeignKey(
         Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню", blank=True, null=True)
     feed = models.ManyToManyField(Feed, blank=True, verbose_name="Категория")
     text = RichTextUploadingField()
+
+    def save(self, *args, **kwargs):
+        
+        # if self.feed:
+        #     self.url = Feed.objects.filter(post__id=self.id)
+
+        super(Post, self).save(*args, **kwargs)
