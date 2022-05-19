@@ -20,7 +20,7 @@ class Content(models.Model):
                 # заполняем алиас
                 self.alias = slugify_rus(self.title)
 
-        super(Feed, self).save(*args, **kwargs)
+        super(Content, self).save(*args, **kwargs)
 
 
     def __str__(self):
