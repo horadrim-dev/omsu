@@ -33,24 +33,18 @@ class Content(models.Model):
 class Feed(Content):
 
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
-    # alias = models.SlugField(default="", blank=True, unique=True,
-                            #  max_length=1000, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     description = RichTextUploadingField()
 
 
 class Post(Content):
-
-    # title = models.CharField(max_length=1000, verbose_name="Заголовок")
-    # url = models.CharField(max_length=1000, default='', blank=True, null=True)
 
     menu = models.ForeignKey(
         Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню", blank=True, null=True)
     feed = models.ManyToManyField(Feed, blank=True, verbose_name="Категория")
     text = RichTextUploadingField()
 
-    def save(self, *args, **kwargs):
-        
-        # if self.feed:
-        #     self.url = Feed.objects.filter(post__id=self.id)
-
-        super(Post, self).save(*args, **kwargs)
+class Attachment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name="Пост")
+    name = models.CharField(default="", max_length=1000, verbose_name="Название")
+    # file_type = models.CharField(default="", max_length=100, blank=True, verbose_name="Формат файла")
+    attachment = models.FileField(upload_to='attachments/', blank=True, verbose_name='Вложение')
