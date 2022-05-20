@@ -5,8 +5,8 @@ from .models import Content, Post, Feed
 # Create your views here.
 
 def get_content_if_exists(slug=None):
+    '''возвращает объект контента по slug'''
     if slug:
-
         for content_type in Content.__subclasses__():
             try:
                 return content_type.objects.get(alias=slug)
@@ -63,7 +63,6 @@ def render_content(request, context, unknown_slugs=None):
                 raise Http404('Контент не найден')
                 
         context['page'] = content
-        # context['contents'] = {'posts':[content]}
         context['contents'] = get_content(from_slug=slug)
     else:
         context['contents'] = get_content(from_menu_id=context['page'].id)
