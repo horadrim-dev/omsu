@@ -1,17 +1,19 @@
 from django.shortcuts import render
 from django.http import Http404
-from .models import Post, Feed
+from .models import Content, Post, Feed
 # from menus.models import Menu
 # Create your views here.
 
 def get_content_if_exists(slug=None):
     if slug:
-        try:
-            obj = Post.objects.filter(alias=slug).get()
-        except:
-            return False
 
-        return obj
+        for content_type in Content.__subclasses__():
+            try:
+                return content_type.objects.get(alias=slug)
+            except:
+                continue
+
+        return False
 
 def get_content(from_menu_id:int=None, from_slug:str=None):
     ''' Возвращает контент, привязанный к меню'''
