@@ -8,10 +8,15 @@ def get_content_if_exists(slug=None):
     '''возвращает объект контента по slug'''
     if slug:
         for content_type in Content.__subclasses__():
-            try:
-                return content_type.objects.get(alias=slug)
-            except:
-                continue
+            # try:
+                # return content_type.objects.get(alias=slug)
+                obj = content_type.objects.filter(alias=slug)
+                if len(obj) > 1:
+                    raise Http404('Получено несколько объектов с одинаковым alias')
+                elif len(obj) == 1:
+                    return obj[0]
+            # except:
+            #     continue
 
         return False
 

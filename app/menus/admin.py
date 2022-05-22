@@ -13,9 +13,9 @@ class MenuAdmin(admin.ModelAdmin):
     # 
     list_display = ('title', 'id', 'alias', 'url', 'short_description', 'order', 'level', 'debug_info')
 
-    def get_form(self, request, obj=None, **kwargs):
-        if request.user.is_superuser:
-            kwargs['form'] = AdminMenuForm
-        return super().get_form(request, obj, **kwargs)
+    # def get_form(self, request, obj=None, **kwargs):
+    #     if request.user.is_superuser:
+    #         kwargs['form'] = AdminMenuForm
+    #     return super().get_form(request, obj, **kwargs)
 
 admin.site.register(Menu, MenuAdmin)

@@ -1,16 +1,42 @@
 from ast import arg
+from re import A
+from tabnanny import verbose
 from django.db import models
+from django.dispatch import receiver
 from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
-
+import datetime
+import os
 # Create your models here.
+
+
+def attachment_upload_location(instance, filename):
+    '''Задает путь для сохранения вложений'''
+
+    path = 'attachments/'
+    # если у поста есть привязка к меню, сохраняем с аналогичной меню директорией
+    if instance.post.menu:
+        return path + '{}/{}'.format(instance.post.menu.url, filename)
+
+    # если привязки к меню нет, то сохраняем в директорию feeds/feed_alias
+    if instance.post.feed:
+        return path + '{}/{}/{}/{}'.format(
+            'feeds/', 
+            instance.post.feed.alias, 
+            instance.date_publish.strftime('/%Y/%m/%d/'), 
+            filename
+        )
+
+    return False
+
+
 class Content(models.Model):
 
-
-    title = models.CharField(default="", max_length=1000, verbose_name="Заголовок")
-    alias = models.SlugField(default="", blank=True, 
+    title = models.CharField(
+        default="", max_length=1000, verbose_name="Заголовок")
+    alias = models.SlugField(default="", blank=True, unique=True,
                              max_length=1000, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
 
     def save(self, lock_recursion=False, *args, **kwargs):
@@ -21,7 +47,6 @@ class Content(models.Model):
                 self.alias = slugify_rus(self.title)
 
         super(Content, self).save(*args, **kwargs)
-
 
     def __str__(self):
         return self.title
@@ -40,11 +65,28 @@ class Post(Content):
 
     menu = models.ForeignKey(
         Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню", blank=True, null=True)
-    feed = models.ManyToManyField(Feed, blank=True, verbose_name="Категория")
+    feed = models.ForeignKey(
+        Feed, on_delete=models.CASCADE, verbose_name="Лента постов", blank=True, null=True)
+    # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
     text = RichTextUploadingField()
 
+
 class Attachment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name="Пост")
-    name = models.CharField(default="", max_length=1000, verbose_name="Название")
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, verbose_name="Пост")
+    name = models.CharField(default="", max_length=1000,
+                            verbose_name="Название")
     # file_type = models.CharField(default="", max_length=100, blank=True, verbose_name="Формат файла")
-    attachment = models.FileField(upload_to='attachments/', blank=True, verbose_name='Вложение')
+    attachment = models.FileField(
+        upload_to=attachment_upload_location, verbose_name='Вложение')
+    date_publish = models.DateField(
+        default=datetime.date.today, verbose_name="Дата публикации")
+
+@receiver(models.signals.post_delete, sender=Attachment)
+def auto_delete_file_on_delete(sender, instance, **kwargs):
+    """
+    Удаляет файл при удалении объекта вложения
+    """
+    if instance.attachment:
+        if os.path.isfile(instance.attachment.path):
+            os.remove(instance.attachment.path)
