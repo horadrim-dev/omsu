@@ -1,7 +1,7 @@
 {{ single_post.post.text|safe }}
 <div class="clearfix"></div>
 {% if single_post.attachments %}
-<div class="attachments">
+<div class="attachments mt-3">
     <h4 class="mb-3"><i class="bi bi-paperclip"></i> Вложения:</h4>
     <ul class="list-group list-group-flush">
         {% for attachment in single_post.attachments %}
