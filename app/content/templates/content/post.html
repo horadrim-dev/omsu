@@ -1,1 +1,17 @@
-{{ post.text|safe }}
+{{ single_post.post.text|safe }}
+<div class="clearfix"></div>
+{% if single_post.attachments %}
+    <div class="attachments">
+        <h4><i class="bi bi-paperclip"></i> Вложения:</h4>
+        <ul class="list-group list-group-flush">
+            {% for attachment in single_post.attachments %}
+            <li class="list-group-item">
+                <i class="bi bi-filetype-{{attachment.extension}} fs-2"></i>
+                <a href="{{attachment.attached_file}}">{{attachment.name}}</a>
+                <br>
+                <small class="text-muted fs-6">(13 Мб). Добавлено 10.05.2022</small>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}

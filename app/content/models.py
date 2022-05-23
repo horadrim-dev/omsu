@@ -1,6 +1,6 @@
-from ast import arg
-from re import A
-from tabnanny import verbose
+# from ast import arg
+# from re import A
+# from tabnanny import verbose
 from django.db import models
 from django.dispatch import receiver
 from menus.models import Menu
@@ -9,12 +9,15 @@ from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
 import datetime
 import os
+import uuid
 # Create your models here.
 
 
 def attachment_upload_location(instance, filename):
     '''Задает путь для сохранения вложений'''
-
+    # _ , extension = os.path.splitext(filename)
+    filename = '%s.%s' % (slugify_rus(instance.name), instance.extension)
+    # assert False, '2' + filename
     path = 'attachments/'
     # если у поста есть привязка к меню, сохраняем с аналогичной меню директорией
     if instance.post.menu:
@@ -30,7 +33,6 @@ def attachment_upload_location(instance, filename):
         )
 
     return False
-
 
 class Content(models.Model):
 
@@ -72,21 +74,32 @@ class Post(Content):
 
 
 class Attachment(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post = models.ForeignKey(
         Post, on_delete=models.CASCADE, verbose_name="Пост")
     name = models.CharField(default="", max_length=1000,
                             verbose_name="Название")
-    # file_type = models.CharField(default="", max_length=100, blank=True, verbose_name="Формат файла")
-    attachment = models.FileField(
+    extension = models.CharField(default="", max_length=16, blank=True, verbose_name="Расширение файла")
+    attached_file = models.FileField(
         upload_to=attachment_upload_location, verbose_name='Вложение')
     date_publish = models.DateField(
         default=datetime.date.today, verbose_name="Дата публикации")
+
+
+    def __str__(self):
+        return self.name
+
+    def save(self,  *args, **kwargs):
+        # считываем расширение файла
+        self.extension = self.attached_file.path.split('.')[-1].lower()
+        # assert False, '1' + self.extension
+        return super(Attachment, self).save(*args, **kwargs)
 
 @receiver(models.signals.post_delete, sender=Attachment)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
     """
     Удаляет файл при удалении объекта вложения
     """
-    if instance.attachment:
-        if os.path.isfile(instance.attachment.path):
-            os.remove(instance.attachment.path)
+    if instance.attached_file:
+        if os.path.isfile(instance.attached_file.path):
+            os.remove(instance.attached_file.path)

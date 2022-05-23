@@ -4,6 +4,7 @@ from .models import Post, Feed, Attachment
 
 class AttachmentInline(admin.TabularInline):
     model = Attachment
+    exclude = ['extension']
 
 class PostAdmin(admin.ModelAdmin):
     # view_on_site = True

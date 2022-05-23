@@ -6,7 +6,7 @@
 
 {% else %}
 
-    {% with contents.posts.0 as post %}
+    {% with contents.posts.0 as single_post %}
         {% include 'content/post.html' %}
     {% endwith %}
 
@@ -14,6 +14,10 @@
         {% include 'content/postfeed.html' %}
     {% endwith %}
 
+    {% comment %} <h1>{{contents.posts.attachments}}</h1>
+    {% for a in contents.single_posts.attachments %}
+    <h1>{{a.attachment}}</h1>
+    {%endfor%} {% endcomment %}
 {% endif %}
 
 </div>
