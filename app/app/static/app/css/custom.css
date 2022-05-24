@@ -122,5 +122,6 @@ header .navbar-nav .nav-item a i {
 }
 /* TOOLTIPS */
 .custom-tooltip {
-	--bs-tooltip-bg: var(--bs-primary);
+	--bs-tooltip-bg: var(--bs-gray-600);
+	--bs-tooltip-color: var(--bs-light);
 }
