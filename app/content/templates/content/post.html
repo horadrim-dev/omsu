@@ -2,7 +2,13 @@
 <div class="clearfix"></div>
 {% if single_post.attachments %}
 <div class="attachments mt-3">
-    <h4 class="mb-3"><i class="bi bi-paperclip"></i> Вложения:</h4>
+    <a href="#"
+        data-bs-toggle="tooltip" data-bs-placement="top"
+        data-bs-custom-class="custom-tooltip"
+        title="Скачать все вложения архивом"
+        >
+        <h4 class="mb-3"><i class="bi bi-paperclip"></i> Вложения:</h4>
+    </a>
     <ul class="list-group list-group-flush">
         {% for attachment in single_post.attachments %}
         <a class="fs-6 text-decoration-none" 
@@ -23,7 +29,14 @@
                         {{attachment.date_publish}}</small>
                 </div>
                 </div>
-                    <small class="text-muted d-flex align-self-start"><i class="bi bi-download me-1"></i>153</small>
+                    <small class="text-muted d-flex align-self-start" 
+                        data-bs-toggle="tooltip" data-bs-placement="top"
+                        data-bs-custom-class="custom-tooltip"
+                        title="Количество загрузок"
+                        >
+                        <i class="bi bi-download me-1"></i>
+                        {{attachment.hits}}
+                    </small>
             </li>
         </a>
         {% endfor %}

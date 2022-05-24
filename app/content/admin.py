@@ -5,6 +5,7 @@ from .models import Post, Feed, Attachment
 class AttachmentInline(admin.TabularInline):
     model = Attachment
     exclude = ['extension']
+    readonly_fields = ('hits',)
 
 class PostAdmin(admin.ModelAdmin):
     # view_on_site = True
@@ -17,7 +18,7 @@ class PostAdmin(admin.ModelAdmin):
     #     'title', 'short_description',
     #     'posts__title', 'posts__short_description',
     # )
-    # readonly_fields = ('created_at', 'updated_at',)
+    # readonly_fields = ('hits',)
     # sortable_by = ('issue_number', 'publish_date',)
     save_as = True
     inlines = (AttachmentInline,)

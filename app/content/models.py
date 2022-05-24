@@ -76,21 +76,22 @@ class Post(Content):
 
 class Attachment(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    post = models.ForeignKey(
-        Post, on_delete=models.CASCADE, verbose_name="Пост")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name="Пост")
     name = models.CharField(default="", max_length=1000,
                             verbose_name="Название")
-    extension = models.CharField(default="", max_length=16, blank=True, verbose_name="Расширение файла")
-    attached_file = models.FileField(
-        upload_to=attachment_upload_location, verbose_name='Вложение')
-    date_publish = models.DateField(
-        default=datetime.date.today, verbose_name="Дата публикации")
-
+    extension = models.CharField(default="", max_length=16, blank=True, 
+                                verbose_name="Расширение файла")
+    attached_file = models.FileField(upload_to=attachment_upload_location, 
+                                    verbose_name='Вложение')
+    date_publish = models.DateField(default=datetime.date.today, 
+                                    verbose_name="Дата публикации")
+    hits = models.PositiveIntegerField(default=0, verbose_name="Кол-во загрузок")
 
     def __str__(self):
         return self.name
     
     def url(self):
+        '''Формирует url для скачивания'''
         return reverse('attachment_download', kwargs={'uuid': self.uuid})
 
     def save(self,  *args, **kwargs):

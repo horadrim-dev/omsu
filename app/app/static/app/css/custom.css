@@ -120,3 +120,7 @@ header .navbar-nav .nav-item a i {
 	background-color: #fff;
 	box-shadow: 2px 2px 5px rgba(174, 174, 174, 0.5), 1px 1px 5px rgb(255, 255, 255);
 }
+/* TOOLTIPS */
+.custom-tooltip {
+	--bs-tooltip-bg: var(--bs-primary);
+}

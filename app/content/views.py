@@ -92,13 +92,17 @@ def download_attachment(request, uuid, *args, **kwargs):
     try:
         attachment = Attachment.objects.get(uuid=uuid)
     except:
-        raise Http404('Запись в БД о таком файле не найдена')
+        raise Http404('Файл не найден.')
 
     if os.path.isfile(attachment.attached_file.path):
+        attachment.hits += 1
+        attachment.save()
         return FileResponse(
             open(attachment.attached_file.path, 'rb'),
             as_attachment=True,
             filename='{}.{}'.format(attachment.name[:100], attachment.extension)
         )
     else:
-        raise Http404('Файл не найден')
+        raise Http404(
+            'Файл "{}" в хранилище не найден.'.format(attachment.attached_file.path)
+        )
