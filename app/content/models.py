@@ -3,6 +3,7 @@
 # from tabnanny import verbose
 from django.db import models
 from django.dispatch import receiver
+from django.shortcuts import reverse
 from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
@@ -88,6 +89,9 @@ class Attachment(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def url(self):
+        return reverse('attachment_download', kwargs={'uuid': self.uuid})
 
     def save(self,  *args, **kwargs):
         # считываем расширение файла

@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from django.http import Http404
+from django.http import FileResponse, Http404
+from django.conf import settings
 from .models import Content, Post, Feed, Attachment
+import os
 # from menus.models import Menu
 # Create your views here.
 
@@ -83,3 +85,20 @@ def render_content(request, context, unknown_slugs=None):
         context['contents'] = get_content(from_menu_id=context['page'].id)
 
     return render(request, 'content/content.html', context)
+
+
+def download_attachment(request, uuid, *args, **kwargs):
+    media_root = settings.MEDIA_ROOT
+    try:
+        attachment = Attachment.objects.get(uuid=uuid)
+    except:
+        raise Http404('Запись в БД о таком файле не найдена')
+
+    if os.path.isfile(attachment.attached_file.path):
+        return FileResponse(
+            open(attachment.attached_file.path, 'rb'),
+            as_attachment=True,
+            filename='{}.{}'.format(attachment.name[:100], attachment.extension)
+        )
+    else:
+        raise Http404('Файл не найден')

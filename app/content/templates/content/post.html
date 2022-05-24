@@ -5,7 +5,12 @@
     <h4 class="mb-3"><i class="bi bi-paperclip"></i> Вложения:</h4>
     <ul class="list-group list-group-flush">
         {% for attachment in single_post.attachments %}
-        <a class="fs-6 text-decoration-none" href="{{attachment.attached_file}}">
+        <a class="fs-6 text-decoration-none" 
+            {% if attachment.extension == 'pdf' %}
+            target="_blank"
+            {% endif %}
+            href="{{attachment.url}}" >
+            {% comment %} href="{{attachment.attached_file.url}}"> {% endcomment %}
             <li class="list-group-item list-group-item-action d-flex align-items-center">
                 <i class="bi bi-filetype-{{attachment.extension}} fs-1 me-2"></i>
                 <div class="d-flex w-100 flex-column justify-content-between">
@@ -13,8 +18,9 @@
                         {{attachment.name}}
                     </h6>
                 <div class="d-flex">
-                    <small class="text-muted fs-6">({{attachment.attached_file.size|filesizeformat}}). Добавлено
-                        10.05.2022</small>
+                    <small class="text-muted fs-6">
+                        ({{attachment.attached_file.size|filesizeformat}}). Добавлено
+                        {{attachment.date_publish}}</small>
                 </div>
                 </div>
                     <small class="text-muted d-flex align-self-start"><i class="bi bi-download me-1"></i>153</small>
