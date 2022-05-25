@@ -35,12 +35,21 @@ def attachment_upload_location(instance, filename):
 
     return False
 
+class ContentManager(models.Manager):
+    def published(self):
+        return self.filter(published=True)
+
 class Content(models.Model):
 
     title = models.CharField(
         default="", max_length=1000, verbose_name="Заголовок")
     alias = models.SlugField(default="", blank=True, unique=True,
                              max_length=1000, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
+    published = models.BooleanField(default=True, verbose_name='Опубликовано')
+    created_at = models.DateField(default=datetime.date.today, 
+                                    verbose_name="Дата создания")
+
+    objects = ContentManager()
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # только при создании объекта, id еще не существует
@@ -97,7 +106,7 @@ class Attachment(models.Model):
     def save(self,  *args, **kwargs):
         # считываем расширение файла
         self.extension = self.attached_file.path.split('.')[-1].lower()
-        # assert False, '1' + self.extension
+
         return super(Attachment, self).save(*args, **kwargs)
 
 @receiver(models.signals.post_delete, sender=Attachment)

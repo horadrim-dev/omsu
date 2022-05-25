@@ -30,11 +30,11 @@ def get_content(from_menu_id:int=None, from_slug:str=None):
     contents['postfeeds'] = []
 
     if from_menu_id:
-        posts = Post.objects.filter(menu_id=from_menu_id) # собираем посты
-        feeds = Feed.objects.filter(menu__id=from_menu_id) # собираем ленты
+        posts = Post.objects.published().filter(menu_id=from_menu_id) # собираем посты
+        feeds = Feed.objects.published().filter(menu__id=from_menu_id) # собираем ленты
 
     if from_slug: # контент на абстрактных страницах
-        posts =  Post.objects.filter(alias=from_slug)
+        posts =  Post.objects.published().filter(alias=from_slug)
         feeds = None
 
     # post_ids = posts.values_list('id', flat=True)
@@ -49,7 +49,7 @@ def get_content(from_menu_id:int=None, from_slug:str=None):
         for feed in feeds:
             contents['postfeeds'].append({
                 'feed': feed,
-                'posts': feed.post_set.all()
+                'posts': feed.post_set.published().all()
             })
 
     # собираем информацию

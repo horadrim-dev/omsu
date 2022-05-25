@@ -10,8 +10,6 @@ a.zoom-wrapper:hover img {
 	-webkit-transform: scale(1.02);
 	transform: scale(1.02);
 }
-
-
 /* .container {
 	max-width: 1500px;
 } */
@@ -33,7 +31,7 @@ header,
 #content {
 	background-color: #fff;
 }
-#content img {
+img {
 	border-color: #dfdfdf;
 }
 #content .card:hover{
