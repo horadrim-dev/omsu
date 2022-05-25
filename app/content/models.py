@@ -4,6 +4,7 @@
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
+from django.utils import timezone
 from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
@@ -36,8 +37,9 @@ def attachment_upload_location(instance, filename):
     return False
 
 class ContentManager(models.Manager):
+
     def published(self):
-        return self.filter(published=True)
+        return self.filter(published=True, published_at__lte=datetime.date.today())
 
 class Content(models.Model):
 
@@ -46,17 +48,19 @@ class Content(models.Model):
     alias = models.SlugField(default="", blank=True, unique=True,
                              max_length=1000, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     published = models.BooleanField(default=True, verbose_name='Опубликовано')
-    created_at = models.DateField(default=datetime.date.today, 
+    published_at = models.DateField(default=datetime.date.today, 
+                                    verbose_name="Дата публикации")
+    created_at = models.DateTimeField(default=timezone.now,
                                     verbose_name="Дата создания")
+    hits = models.PositiveIntegerField(default=0, verbose_name="Кол-во просмотров")
 
     objects = ContentManager()
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # только при создании объекта, id еще не существует
-        if not self.id:
-            if not self.alias:
-                # заполняем алиас
-                self.alias = slugify_rus(self.title)
+        if not self.id or not self.alias:
+            # заполняем алиас
+            self.alias = slugify_rus(self.title)
 
         super(Content, self).save(*args, **kwargs)
 

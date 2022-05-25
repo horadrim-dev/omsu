@@ -12,7 +12,7 @@ def get_content_if_exists(slug=None):
         for content_type in Content.__subclasses__():
             # try:
                 # return content_type.objects.get(alias=slug)
-            obj = content_type.objects.filter(alias=slug)
+            obj = content_type.objects.published().filter(alias=slug)
             if len(obj) > 1:
                 raise Http404('Получено несколько объектов с одинаковым alias')
             elif len(obj) == 1:
