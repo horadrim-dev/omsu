@@ -2,12 +2,34 @@
 <div class="clearfix"></div>
 <ul class="list-group list-group-flush">
 {% for post in postfeed.posts %}
-    <li class="list-group-item mb-3">
+    <li class="list-group-item">
+
+    <div class="d-flex justify-content-between mb-0"> 
         <a href="{{post.alias}}">
             <h4>{{post.title}}</h5>
         </a>
+    </div>
+    <div class="d-flex flex-nowrap">
+        <small class="text-muted me-2" 
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            title="Дата публикации"
+            >
+            {{post.published_at}}
+        </small>
+        <small class="text-muted" 
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            title="Количество просмотров"
+            >
+            <i class="bi bi-eye me-1"></i>
+            {{post.hits}}
+        </small>
+    </div>
         {% if layout != 'compact' %}
-            {{post.text|safe}}
+            <div class="mt-1">
+                {{post.text|safe}}
+            </div>
         {% endif %}
     </li>
 {% endfor %}

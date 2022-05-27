@@ -40,6 +40,7 @@ class PostAdmin(admin.ModelAdmin):
         for obj in queryset:
             obj.id = None
             obj.title += ' (Копия - {})'.format(uuid.uuid4())
+            obj.published = False
             obj.save()
         message = str(len(queryset)) + ' элемент(ов) успешно скопирован(ы)'
         messages.add_message(request, messages.SUCCESS, message)
