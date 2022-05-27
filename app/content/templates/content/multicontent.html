@@ -40,7 +40,7 @@
 <div class="tab-content" id="pills-tabContent">
 
     {% for single_post in contents.posts %}
-    <div class="tab-pane fade p-4 {% if forloop.first %}show active{% endif %}" 
+    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
         id="pills-post-{{forloop.counter}}" 
         role="tabpanel"
         aria-labelledby="pills-tab-post-{{forloop.counter}}"
@@ -52,7 +52,7 @@
     {% endfor %}
 
     {% for postfeed in contents.postfeeds %}
-    <div class="tab-pane fade p-4 " 
+    <div class="tab-pane fade " 
         id="pills-feed-{{forloop.counter}}" 
         role="tabpanel"
         aria-labelledby="pills-tab-feed-{{forloop.counter}}"

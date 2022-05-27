@@ -1,3 +1,5 @@
+import os
+
 # функция обработки файлов при загрузке
 def get_filename(filename, request):
     return filename.lower()
@@ -18,3 +20,16 @@ def slugify_rus(s:str):
         return django_slugify(''.join(alphabet.get(w, w) for w in s.lower()))
 
     return slugify(s)
+
+
+def remove_empty_dirs(path_to_dir:str):
+    '''Рекурсивно обходит папки по заданному path и удаляет пустые
+    пока не встретит НЕ пустую'''
+    if os.path.exists(path_to_dir):
+        if not os.listdir(path_to_dir): # проверяем что папка пуста
+            os.rmdir(path_to_dir) # удаляем
+            remove_empty_dirs(os.path.split(path_to_dir[:-1])[0])
+        else:
+            return False
+    else:
+        raise NotADirectoryError

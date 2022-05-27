@@ -4,35 +4,36 @@
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
-from django.utils import timezone
+# from django.utils import timezone
+from django.conf import settings
 from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
-from app.utils import slugify_rus
+from app.utils import slugify_rus, remove_empty_dirs
 import datetime
 import os
 import uuid
 # Create your models here.
 
 
-def attachment_upload_location(instance, filename):
-    '''Задает путь для сохранения вложений'''
+def attachment_upload_location(instance, filename=None):
+    '''Формирует относительный путь для сохранения вложений'''
     # _ , extension = os.path.splitext(filename)
-    filename = '%s.%s' % (slugify_rus(instance.name), instance.extension)
-    # assert False, '2' + filename
-    path = 'attachments/'
+    filename = '.'.join([slugify_rus(instance.name), instance.extension])
+    path = 'attachments'
     # если у поста есть привязка к меню, сохраняем с аналогичной меню директорией
     if instance.post.menu:
-        return path + '{}/{}'.format(instance.post.menu.url, filename)
+        return ''.join([path, instance.post.menu.url, filename])
 
     # если привязки к меню нет, то сохраняем в директорию feeds/feed_alias
     if instance.post.feed:
-        return path + '{}/{}/{}/{}'.format(
-            'feeds/', 
+        return '/'.join([
+            path,
+            'feeds', 
             instance.post.feed.alias, 
-            instance.date_publish.strftime('/%Y/%m/%d/'), 
+            instance.published_at.strftime('%Y/%m/%d'), 
             filename
-        )
+        ])
 
     return False
 
@@ -50,8 +51,10 @@ class Content(models.Model):
     published = models.BooleanField(default=True, verbose_name='Опубликовано')
     published_at = models.DateField(default=datetime.date.today, 
                                     verbose_name="Дата публикации")
-    created_at = models.DateTimeField(default=timezone.now,
-                                    verbose_name="Дата создания")
+    # created_at = models.DateTimeField(default=timezone.now,
+    #                                 verbose_name="Дата создания")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Последнее изменение")
     hits = models.PositiveIntegerField(default=0, verbose_name="Кол-во просмотров")
 
     objects = ContentManager()
@@ -86,6 +89,15 @@ class Post(Content):
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
     text = RichTextUploadingField()
 
+    def relocate_attachments(self, *args, **kwargs):
+        '''Обновляет расположение вложений, связанных с постом'''
+        attachments = self.attachment_set.all()
+
+        for attachment in attachments:
+            attachment.update_location()
+        
+        return len(attachments)
+
 
 class Attachment(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -96,7 +108,7 @@ class Attachment(models.Model):
                                 verbose_name="Расширение файла")
     attached_file = models.FileField(upload_to=attachment_upload_location, 
                                     verbose_name='Вложение')
-    date_publish = models.DateField(default=datetime.date.today, 
+    published_at = models.DateField(default=datetime.date.today, 
                                     verbose_name="Дата публикации")
     hits = models.PositiveIntegerField(default=0, verbose_name="Кол-во загрузок")
 
@@ -107,11 +119,37 @@ class Attachment(models.Model):
         '''Формирует url для скачивания'''
         return reverse('attachment_download', kwargs={'uuid': self.uuid})
 
+    def update_location(self):
+        '''Проверяет правильно ли расположен файл, если нет -
+        перемещает в нужную директорию'''
+        filename = attachment_upload_location(self,'')
+
+        if self.attached_file.name != filename:
+            old_filepath = self.attached_file.path # абсолютный путь к старому файлу
+            old_dirpath = os.path.split(old_filepath)[0] # абсолютный путь к старой папке
+            filedir, short_filename = os.path.split(filename) # относительный путь к новой папке и новое имя файла
+            dirpath = '/'.join([settings.MEDIA_ROOT, filedir]) # абсолютный путь к новой папке
+            filepath = '/'.join([dirpath, short_filename]) # абсолютный путь к новому файлу
+            if not os.path.exists(dirpath): # проверяем что каталог существует
+                os.makedirs(dirpath)
+            os.rename(self.attached_file.path, filepath) # переносим файл
+            # удаляем старую директорию (если файлов больше нет)
+            remove_empty_dirs(old_dirpath) # app/utils.py
+            self.attached_file = filename # присваиваем полю новый путь
+            self.save()
+
+            return self.attached_file
+        else:
+            return False
+
     def save(self,  *args, **kwargs):
         # считываем расширение файла
         self.extension = self.attached_file.path.split('.')[-1].lower()
 
-        return super(Attachment, self).save(*args, **kwargs)
+        super(Attachment, self).save(*args, **kwargs)
+
+        self.update_location()
+
 
 @receiver(models.signals.post_delete, sender=Attachment)
 def auto_delete_file_on_delete(sender, instance, **kwargs):
@@ -121,3 +159,6 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
     if instance.attached_file:
         if os.path.isfile(instance.attached_file.path):
             os.remove(instance.attached_file.path)
+            
+# @receiver(models.signals.post_save, sender=Post)
+# def relocate_attachments(sender, instance, **kwargs):

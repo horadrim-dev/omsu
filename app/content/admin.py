@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin,  messages
 from .models import Post, Feed, Attachment
 import uuid
 # Register your models here.
@@ -8,39 +8,65 @@ class AttachmentInline(admin.TabularInline):
     exclude = ['extension']
     readonly_fields = ('hits',)
 
+
 class PostAdmin(admin.ModelAdmin):
     # view_on_site = True
     # date_hierarchy = 'publish_date'
     list_display = (
-        'title', 'published', 'published_at', 'created_at',
+        'title', 'published', 'published_at', 
         'menu', 'feed', 'id',
     )
     list_filter = ('published', 'menu', 'feed',)
-    search_fields = (
-        'title', 'published_at', 'created_at'
-        # 'title', 'short_description',
-        # 'posts__title', 'posts__short_description',
-    )
-    readonly_fields = ('id', 'created_at', 'hits')
+    search_fields = ('title', )
+    readonly_fields = ('id', 'hits')
     # sortable_by = ('issue_number', 'publish_date',)
     save_as = True
     inlines = (AttachmentInline,)
 
     actions = ('publish', 'unpublish', 'duplicate')
-    def publish(self, reguest, queryset):
+    def publish(self, request, queryset):
         queryset.update(published=True)
+        message = str(len(queryset)) + ' элемент(ов) опубликован(ы)'
+        messages.add_message(request, messages.SUCCESS, message)
     publish.short_description = 'Опубликовать'
 
-    def unpublish(self, reguest, queryset):
+    def unpublish(self, request, queryset):
         queryset.update(published=False)
+        message = str(len(queryset)) + ' элемент(ов) сняты с публикации'
+        messages.add_message(request, messages.SUCCESS, message)
     unpublish.short_description = 'Снять с публикации'
 
-    def duplicate(self, reguest, queryset):
+    def duplicate(self, request, queryset):
         for obj in queryset:
             obj.id = None
             obj.title += ' (Копия - {})'.format(uuid.uuid4())
             obj.save()
+        message = str(len(queryset)) + ' элемент(ов) успешно скопирован(ы)'
+        messages.add_message(request, messages.SUCCESS, message)
     duplicate.short_description = 'Дублировать'
+
+
+    def save_model(self, request, obj, form, change):
+        # assert False, (form.has_changed(), form.changed_data)
+        # messages.add_message(request, messages.INFO, 'changed_data = ' + str(form.changed_data))
+        # assert False, (obj)
+        if ('menu' in form.changed_data) or ('feed' in form.changed_data):
+            # assert False, (form.cleaned_data,'||||', form.changed_data)
+            num = obj.relocate_attachments()#form.cleaned_data.menu)
+            message = 'Ссылки на {} файл(а) обновлены.'.format(num)
+            messages.add_message(request, messages.INFO, message)
+
+        # if 'feed' in form.changed_data:
+        # assert False, (
+        #     form.data,'<br><br>////////', 
+        #     form.cleaned_data, '<br><br>//////',
+        #     form.changed_data, '<br><br>//////',
+        #     obj.title, '//////',
+        #     )
+        # assert False, form.changed_data
+
+        super().save_model(request, obj, form, change)
+
         # def publish_issues(self, request, queryset):
     #     updated = queryset.update(is_draft=False)
     #     messages.add_message(
