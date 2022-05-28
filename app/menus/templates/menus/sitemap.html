@@ -1,0 +1,85 @@
+{% extends 'menus/component.html' %}
+
+
+{% block component %}
+<div id="content" class="shadow p-5 fs-5 lh-lg">
+    <h2 id="content-title" class="border-bottom mb-4 pb-3">Карта сайта</h2>
+
+
+    {% if menu_tree|length > 0 %}
+    <ul>
+        {% for level_1 in menu_tree %}
+        <li>  
+            <a href="{{level_1.url}}">
+                {% if level_1.item.icon %}
+                <i class="bi bi-{{level_1.item.icon}}"></i>
+                {% endif %}
+                {{level_1.item.title }} 
+            </a>
+
+            {% if level_1.subitems != None %}
+            <ul>
+                {% for level_2 in level_1.subitems %}
+                    <li>
+                        <a href="{{ level_2.url }}">
+                            {% if level_2.item.icon %}
+                            <i class="bi bi-{{level_2.item.icon}}"></i>
+                            {% endif %}
+                            {{ level_2.item.title }}
+                        </a>
+
+                        {% if level_2.subitems != None %}
+                        <ul>
+                            {% for level_3 in level_2.subitems %}
+                            <li><a href="{{level_3.url}}">
+                                {% if level_3.item.icon %}
+                                <i class="bi bi-{{level_3.item.icon}}"></i>
+                                {% endif %}
+                                {{ level_3.item.title }}
+                                </a>
+
+                                {% if level_3.subitems != None %}
+                                <ul>
+                                    {% for level_4 in level_3.subitems %}
+                                    <li><a href="{{level_4.url}}">
+                                        {% if level_4.item.icon %}
+                                        <i class="bi bi-{{level_4.item.icon}}"></i>
+                                        {% endif %}
+                                        {{ level_4.item.title }}
+                                        </a>
+
+                                        {% if level_4.subitems != None %}
+                                        <ul>
+                                            {% for level_5 in level_4.subitems %}
+                                            <li><a href="{{level_5.url}}">
+                                                {% if level_5.item.icon %}
+                                                <i class="bi bi-{{level_5.item.icon}}"></i>
+                                                {% endif %}
+                                                {{ level_5.item.title }}
+                                                </a>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% endif %}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif%}
+
+
+
+</div>
+{% endblock %}

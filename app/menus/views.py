@@ -52,3 +52,9 @@ def menus(request, section=None, *args, **kwargs):
     # else:
         # return render(request, 'menus/block_menus.html', context)
     return content_views.render_content(request, context, unknown_slugs)
+
+def sitemap(request, *args, **kwargs):
+    context = {}
+    context['menu_tree'] = Menu.get_subitems(parent=None, maxlevel=None)
+    context['bc_items'] = [('Карта сайта', 'sitemap')]
+    return render(request, 'menus/sitemap.html', context)

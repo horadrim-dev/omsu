@@ -126,3 +126,8 @@ header .navbar-nav .nav-item a i {
 	--bs-tooltip-bg: var(--bs-gray-600);
 	--bs-tooltip-color: var(--bs-light);
 }
+
+.text-muted {
+  --bs-text-opacity: 1;
+  color: rgba(var(--bs-body-color-rgb),.50) !important;
+}

@@ -3,7 +3,7 @@ from django import template
 register = template.Library()
 
 @register.inclusion_tag('app/breadcrumbs.html')
-def breadcrumbs(bc_items:dict):
+def render_breadcrumbs(bc_items:dict):
     url_chain = ''
     breadcrumbs_items = {'Главная':''}
     breadcrumbs_items.update(bc_items)

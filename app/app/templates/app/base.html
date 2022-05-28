@@ -4,26 +4,34 @@
 
 <!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <!-- Bootstrap CSS -->
-    <link href="{% static 'app/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/bootstrap.megamenu.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/bootstrap-icons.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/magnific-popup.css' %}" rel="stylesheet">
-    <link href="{% static 'app/css/custom.css' %}" rel="stylesheet">
-    
-    <style>
-    </style>
-    <title>Администрация г.Прокопьевска</title>
-  </head>
-  <body>
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {% include 'app/header.html' %}
+  <!-- Bootstrap CSS -->
+  <link href="{% static 'app/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'app/css/bootstrap.megamenu.css' %}" rel="stylesheet">
+  <link href="{% static 'app/css/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'app/css/magnific-popup.css' %}" rel="stylesheet">
+  <link href="{% static 'app/css/custom.css' %}" rel="stylesheet">
 
+  <style>
+  </style>
+  <title>Администрация г.Прокопьевска</title>
+</head>
+
+<body>
+
+  {% include 'app/header.html' %}
+
+  <div id="breadcrumbs">
+    {% block breadcrumbs %}
+    {% endblock %}
+  </div>
+
+  <div id="top">
     {% block top %}
     <div class="container py-4">
       <div id="carouselExampleControls" class="carousel slide " data-bs-ride="carousel">
@@ -38,45 +46,50 @@
             <img src="..." class="d-block w-100" alt="..." style="background-color:#eee">
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+          data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
       </div>
-
     </div>
     {% endblock top %}
+  </div>
 
-  {% block component %}
-    {% render_menus 'activity' %}
-    {% render_menus 'activity' 'plan-goroda'%}
-    {% render_menus 'structure' %}
-    {% render_menus 'press' %}
-    {% render_menus 'gorod' %}
-  {% endblock component %}
-    
+  <div id="component">
+    <div class="container">
+      {% block component %}
+      {% render_menus 'activity' %}
+      {% render_menus 'activity' 'plan-goroda'%}
+      {% render_menus 'structure' %}
+      {% render_menus 'press' %}
+      {% render_menus 'gorod' %}
+      {% endblock component %}
+    </div>
   </div>
 
   {% include 'app/footer.html' %}
-    <!-- Optional JavaScript; choose one of the two! -->
+  <!-- Optional JavaScript; choose one of the two! -->
 
-    <!-- Option 1: Bootstrap Bundle with Popper -->
-    <!-- jQuery-->
-    <script src="{% static 'app/js/jquery-3.6.0.min.js' %}"></script>
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <!-- jQuery-->
+  <script src="{% static 'app/js/jquery-3.6.0.min.js' %}"></script>
 
-    <script src="{% static 'app/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'app/js/jquery.magnific-popup.min.js' %}"></script>
-    <script src="{% static 'app/js/jquery.sticky-kit.min.js' %}"></script>
-    <script src="{% static 'app/js/custom.js' %}"></script>
-    
-    <!-- Option 2: Separate Popper and Bootstrap JS -->
-    <!--
+  <script src="{% static 'app/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'app/js/jquery.magnific-popup.min.js' %}"></script>
+  <script src="{% static 'app/js/jquery.sticky-kit.min.js' %}"></script>
+  <script src="{% static 'app/js/custom.js' %}"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     -->
-  </body>
+</body>
+
 </html>

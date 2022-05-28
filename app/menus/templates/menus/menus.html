@@ -1,37 +1,51 @@
 {% comment %} {% load static %} {% endcomment %}
 
-<div class="container">
-  <div class="row g-0 mb-3">
-    <div class="col-md-10 me-3 shadow">
+{% comment %} <div class="container"> {% endcomment %}
+  <div id="content" class='shadow p-5'>
+    {% if not from_module %}
+    <button id="back" type="button" class="btn float-start">
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    {% endif %}
+    <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
+    <div class="row g-0 mb-3">
+      <div class="col-md-9 me-3">
 
-      <div id="content" class='p-5'>
-        {% if not from_module %}
-          <button id="back" type="button" class="btn float-start">
-            <i class="bi bi-arrow-left"></i>
-          </button>
-        {% endif %}
-        <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
         {% if contents %}
         {% include 'content/page_content.html' %}
         {% else %}
         {% include 'menus/menu_blocks.html' %}
         {% endif %}
+
       </div>
 
-    </div>
 
+      {% if menus and contents %}   {% comment "Изменить когда чтонибудь появится в правой колонке (кроме меню)" %}{% endcomment %}
+      <div id="right-side" class="col ps-3 border-start">
 
-    <div id="right-side" class="col border">
-
-      <div id="right-side-content">
-        {% if menus and contents %}
-        <div id="submenu">
-          {% include 'menus/menu_list.html' %}
+        <div id="right-side-content">
+          {% if menus and contents %}
+          <div id="submenu">
+            {% comment %} <h6>Подкатегории</h6> {% endcomment %}
+            <div class="card">
+        <div class="card-header">
+          Подкатегории
         </div>
-        {% endif %}
+        <div class="card-body">
+          {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
+          {% include 'menus/menu_list.html' %}
+          <p class="card-text">
 
+          </p>
+        </div>
       </div>
-    </div>
+          </div>
+          {% endif %}
 
+        </div>
+      </div>
+      {% endif %}
+
+    </div>
   </div>
-</div>
+  {% comment %} </div> {% endcomment %}

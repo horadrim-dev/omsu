@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from menus import views as menus_views
 
 from menus.models import Menu
 # from menus import views as menus_views
@@ -29,6 +30,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('download/', include('content.urls')),
+    path('sitemap/', menus_views.sitemap),
     # path('activity/', include('menus.urls')),
     path('', views.main),
     # path('home/', views.main),
