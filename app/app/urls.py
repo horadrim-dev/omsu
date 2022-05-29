@@ -16,10 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-from menus import views as menus_views
-
-from menus.models import Menu
-# from menus import views as menus_views
 
 # УДАЛИТЬ +static() и эти библиотеки на боевом сервере
 from django.conf import settings
@@ -30,21 +26,26 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('download/', include('content.urls')),
-    path('sitemap/', menus_views.sitemap),
-    # path('activity/', include('menus.urls')),
+    path('sitemap/', views.sitemap),
     path('', views.main),
+
+    path('<slug:cat1>/', views.route), #, name='index'),
+    path('<slug:cat1>/<slug:cat2>/', views.route),
+    path('<slug:cat1>/<slug:cat2>/<slug:cat3>/', views.route),
+    path('<slug:cat1>/<slug:cat2>/<slug:cat3>/<slug:cat4>/', views.route),
+    path('<slug:cat1>/<slug:cat2>/<slug:cat3>/<slug:cat4>/<slug:cat5>/', views.route),
     # path('home/', views.main),
     # path('news/', include('newsfeed.urls', namespace='newsfeed')),
 ] #+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
-for section in Menu.objects.filter(level=1):
-    urlpatterns += [
-        path(
-            section.alias + '/', 
-            include(('menus.urls', section.alias), 
-            namespace=section.alias), 
-            {'section':section}
-        )
-    ]
+# for section in Menu.objects.filter(level=1):
+#     urlpatterns += [
+#         path(
+#             section.alias + '/', 
+#             include(('menus.urls', section.alias), 
+#             namespace=section.alias), 
+#             {'section':section}
+#         )
+#     ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
