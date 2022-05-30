@@ -1,6 +1,7 @@
 from django.contrib import admin,  messages
 from .models import Post, Feed, Attachment
 import uuid
+from django import forms
 # Register your models here.
 
 class AttachmentInline(admin.TabularInline):
@@ -8,10 +9,16 @@ class AttachmentInline(admin.TabularInline):
     exclude = ['extension']
     readonly_fields = ('hits',)
 
+class PostForm(forms.ModelForm):
+    class Meta:
+        model = Post
+        # fields = []
+        exclude = ['intro_text']
 
 class PostAdmin(admin.ModelAdmin):
     # view_on_site = True
     # date_hierarchy = 'publish_date'
+    form = PostForm
     list_display = (
         'title', 'published', 'published_at', 
         'menu', 'feed', 'id',

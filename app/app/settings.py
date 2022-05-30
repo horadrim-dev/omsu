@@ -153,8 +153,19 @@ CKEDITOR_FILENAME_GENERATOR = 'app.utils.get_filename'
 
 CKEDITOR_CONFIGS = {
     'default': {
-        #'toolbar': 'full',
+        'toolbar': 'full', # редакируемый ниже набор 'Full',
         'height': 500,
-        'width': 800,
+        'width': 800, 
+        'toolbar_Full': [
+            ['Styles', 'Format', 'Bold', 'Italic', 'Underline', 'Strike', 'SpellChecker', 'Undo', 'Redo'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule'],
+            ['TextColor', 'BGColor'],
+            ['Smiley', 'SpecialChar'], ['Source'],
+            ['JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock'],
+            ['NumberedList','BulletedList'],
+            ['Indent','Outdent'],
+            ['Maximize'],
+        ],
     },
 }

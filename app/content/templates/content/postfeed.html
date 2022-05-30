@@ -17,20 +17,37 @@
             >
             {{post.published_at}}
         </small>
-        <small class="text-muted" 
+        <small class="text-muted me-2" 
             data-bs-toggle="tooltip" data-bs-placement="top"
             data-bs-custom-class="custom-tooltip"
             title="Количество просмотров"
             >
-            <i class="bi bi-eye me-1"></i>
+            <i class="bi bi-eye me-0"></i>
             {{post.hits}}
         </small>
-    </div>
-        {% if layout != 'compact' %}
-            <div class="mt-1">
-                {{post.text|safe}}
-            </div>
+        {% if post.count_attachments %}
+        <small class="text-muted me-2"
+            data-bs-toggle="tooltip" data-bs-placement="top"
+            data-bs-custom-class="custom-tooltip"
+            title="Количество вложений"
+            >
+            <i class="bi bi-paperclip me-0"></i>
+            {{post.count_attachments}}
+        </small>
         {% endif %}
+    </div>
+        {% comment %} {% if layout != 'compact' %} {% endcomment %}
+        <div class="mt-1">
+            {{post.intro_text|safe}}
+        </div>
+        {% comment %} {% endif %} {% endcomment %}
+        <div class="clearfix"></div>
+        <div class="d-flex justify-content-end">
+            <a href="{{post.alias}}" type="button" class="btn btn-outline-primary">
+                <i class="bi bi-book me-0"></i>
+                Читать
+            </a>
+        </div>
     </li>
 {% endfor %}
 </ul>

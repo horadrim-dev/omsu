@@ -72,6 +72,7 @@ class Content(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['-published_at']
 
 
 class Feed(Content):
@@ -87,7 +88,26 @@ class Post(Content):
     feed = models.ForeignKey(
         Feed, on_delete=models.CASCADE, verbose_name="Лента постов", blank=True, null=True)
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
+    intro_text = RichTextField(blank=True)
     text = RichTextUploadingField()
+
+    def save(self, *args, **kwargs):
+
+        intro = self.text.split('</p>')
+        if len(intro) > 1:
+            self.intro_text = intro[0] + '</p>'
+        else:
+            self.intro_text = '<p></p>'
+
+        super(Post, self).save(*args, **kwargs)
+
+    def count_attachments(self):
+        '''Возвращает количество связанных attachments'''
+        return self.attachment_set.all().count()
+
+    def get_attachments(self, *args, **kwargs):
+        '''Возвращает все связанные объекты attachments'''
+        return self.attachment_set.all()
 
     def relocate_attachments(self, *args, **kwargs):
         '''Обновляет расположение вложений, связанных с постом'''
@@ -97,6 +117,7 @@ class Post(Content):
             attachment.update_location()
         
         return len(attachments)
+
 
 
 class Attachment(models.Model):

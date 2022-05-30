@@ -42,14 +42,16 @@ def get_content(from_menu_id:int=None, from_slug:str=None):
     for post in posts:
         contents['posts'].append({
             'post' : post,
-            'attachments': post.attachment_set.all()
+            'attachments': post.get_attachments()
         })
+    posts.update()
     # contents['attachments'] = contents['posts'].attachment
     if feeds:
         for feed in feeds:
+            posts = feed.post_set.published().all()
             contents['postfeeds'].append({
                 'feed': feed,
-                'posts': feed.post_set.published().all()
+                'posts': posts,
             })
 
     # собираем информацию

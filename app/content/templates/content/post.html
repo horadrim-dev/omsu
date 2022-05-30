@@ -1,4 +1,4 @@
-<div class="position-relative">
+<div class="post">
 
     <div class="d-flex justify-content-end mb-3"> 
         <small class="text-muted me-2" 
@@ -17,9 +17,9 @@
             {{single_post.post.hits}}
         </small>
     </div>
-
-    {{ single_post.post.text|safe }}
-
+    <div class="text">
+        {{ single_post.post.text|safe }}
+    </div>
     <div class="clearfix"></div>
 
     {% if single_post.attachments %}
