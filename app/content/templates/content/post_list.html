@@ -1,7 +1,7 @@
 <div id="{{feed.alias}}-page-{{posts.number}}">
     <ul class="list-group list-group-flush">
     {% for post in posts %}
-        <li class="list-group-item">
+        <li class="list-group-item my-2">
 
         <div class="d-flex justify-content-between mb-0"> 
             <a href="{{post.alias}}">
@@ -55,6 +55,7 @@
 {% if posts.has_next %}
 
     <div class="d-grid gap-2">
+        <div class="my-2 border-top"></div>
         <button 
         id="{{feed.alias}}-loadmore"
         style="height:75px;"
@@ -72,11 +73,11 @@
                     $(target).wrap( '<div class="main_overlay_block"></div>' );
                     $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
                     $(target).addClass('loading_process');
-
                 },
                 success: function (data) {
                     $('#{{feed.alias}}-loadmore').remove();
                     $(target).append(data);
+                    $("html,body").animate({scrollTop: $('#{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100}, 200);
                 },
                 complete: function (){
                     $(target).unwrap();
