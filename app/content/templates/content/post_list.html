@@ -1,0 +1,81 @@
+<div id="{{feed.alias}}-page-{{posts.number}}">
+    <ul class="list-group list-group-flush">
+    {% for post in posts %}
+        <li class="list-group-item">
+
+        <div class="d-flex justify-content-between mb-0"> 
+            <a href="{{post.alias}}">
+                <h4>{{post.title}}</h5>
+            </a>
+        </div>
+        <div class="d-flex flex-nowrap">
+            <small class="text-muted me-2" 
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip"
+                title="Дата публикации"
+                >
+                {{post.published_at}}
+            </small>
+            <small class="text-muted me-2" 
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip"
+                title="Количество просмотров"
+                >
+                <i class="bi bi-eye me-0"></i>
+                {{post.hits}}
+            </small>
+            {% if post.count_attachments %}
+            <small class="text-muted me-2"
+                data-bs-toggle="tooltip" data-bs-placement="top"
+                data-bs-custom-class="custom-tooltip"
+                title="Количество вложений"
+                >
+                <i class="bi bi-paperclip me-0"></i>
+                {{post.count_attachments}}
+            </small>
+            {% endif %}
+        </div>
+            {% comment %} {% if layout != 'compact' %} {% endcomment %}
+            <div class="mt-1">
+                {{post.intro_text|safe}}
+            </div>
+            {% comment %} {% endif %} {% endcomment %}
+            <div class="clearfix"></div>
+            <div class="d-flex justify-content-end">
+                <a href="{{post.alias}}" type="button" class="btn btn-outline-primary">
+                    <i class="bi bi-book me-0"></i>
+                    Читать
+                </a>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% if posts.has_next %}
+
+    <div class="d-grid gap-2">
+        <button 
+        id="{{feed.alias}}-loadmore"
+        class="btn btn-outline-primary" type="button">Загрузить еще</button>
+    </div>
+
+    <script>
+        $('#{{feed.alias}}-loadmore').on('click', function (e) {
+            var target = "#{{feed.alias}}";
+            $.ajax({
+                url: "{% url 'feed_page' feed.alias %}?page={{posts.next_page_number}}",
+                method: 'get',
+                dataType: 'html',
+                beforeSend: function(xhr){
+                    $('#{{feed.alias}}-loadmore').addClass('loading');
+                    alert('hz');
+                },
+                success: function (data) {
+                    {% comment %} $('#{{feed.alias}}-loadmore').remove(); {% endcomment %}
+                    $(target).append(data);
+                }
+            });
+        });
+    </script>
+{% endif %}

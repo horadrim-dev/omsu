@@ -10,6 +10,8 @@ from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
 from app.utils import slugify_rus, remove_empty_dirs
+from django.core.paginator import Paginator
+from . import app_settings as content_settings
 import datetime
 import os
 import uuid
@@ -80,6 +82,11 @@ class Feed(Content):
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
     description = RichTextUploadingField()
 
+    def get_page(self, page=None):
+        paginator = Paginator(
+            self.post_set.published().all(), content_settings.NUM_POSTS_ON_FEED_PAGE
+        )
+        return paginator.get_page(page)
 
 class Post(Content):
 
@@ -94,8 +101,8 @@ class Post(Content):
     def save(self, *args, **kwargs):
 
         intro = self.text.split('</p>')
-        if len(intro) > 1:
-            self.intro_text = intro[0] + '</p>'
+        if len(intro) >= 2:
+            self.intro_text = intro[0] + '</p>' + intro[1] + '</p>'
         else:
             self.intro_text = '<p></p>'
 

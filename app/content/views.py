@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import FileResponse, Http404
 from django.conf import settings
+from django.core.paginator import Paginator
 from .models import Content, Post, Feed, Attachment
 import os
 # from menus.models import Menu
@@ -48,10 +49,10 @@ def get_content(from_menu_id:int=None, from_slug:str=None):
     # contents['attachments'] = contents['posts'].attachment
     if feeds:
         for feed in feeds:
-            posts = feed.post_set.published().all()
             contents['postfeeds'].append({
+                'hz':feed.post_set.published().all(),
                 'feed': feed,
-                'posts': posts,
+                'posts': feed.get_page(page=1),
             })
 
     # собираем информацию
@@ -90,7 +91,7 @@ def render_content(request, context, unknown_slugs=None):
 
 
 def download_attachment(request, uuid, *args, **kwargs):
-    media_root = settings.MEDIA_ROOT
+    # media_root = settings.MEDIA_ROOT
     try:
         attachment = Attachment.objects.get(uuid=uuid)
     except:
@@ -108,3 +109,17 @@ def download_attachment(request, uuid, *args, **kwargs):
         raise Http404(
             'Файл "{}" в хранилище не найден.'.format(attachment.attached_file.path)
         )
+
+def load_feed_page(request, slug=None, *args, **kwargs):
+    context = {}
+    try:
+        feed = Feed.objects.published().get(alias=slug)
+    except Exception:
+        raise Http404('Лента не найдена')
+    
+    context['feed'] = feed
+    context['posts'] = feed.get_page(
+        request.GET.get('page')
+    )
+
+    return render(request, 'content/post_list.html', context)

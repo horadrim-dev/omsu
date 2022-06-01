@@ -131,3 +131,20 @@ header .navbar-nav .nav-item a i {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-body-color-rgb),.50) !important;
 }
+
+/* AJAX */
+.overlay_block{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: url(https://web-finder.ru/files/preloader1.gif) center center no-repeat;
+  z-index: 9999;
+}
+.loading_process{
+  -webkit-filter: blur(5px);
+  -moz-filter: blur(5px);
+  filter: blur(5px);
+}
+.main_overlay_block{
+  position: relative;
+}
