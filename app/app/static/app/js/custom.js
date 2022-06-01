@@ -90,18 +90,18 @@ $(document).ready(function () {
 	};
 
 	// ajax
-	$( document ).ajaxStart(function() {
-	// $( "#loading" ).show();
-		$(block).wrap( '<div class="main_overlay_block"></div>' );
-		$('.main_overlay_block').prepend('<div class="overlay_block"></div>');
-		$(block).addClass('loading_process');
-	});
+	// $( document ).ajaxStart(function() {
+	// // $( "#loading" ).show();
+	// 	$(block).wrap( '<div class="main_overlay_block"></div>' );
+	// 	$('.main_overlay_block').prepend('<div class="overlay_block"></div>');
+	// 	$(block).addClass('loading_process');
+	// });
 
-	$( document ).ajaxComplete(function() {
-		$(block).unwrap();
-		$('.overlay_block').remove();
-		$(block).removeClass('loading_process');
-	});
+	// $( document ).ajaxComplete(function() {
+	// 	$(block).unwrap();
+	// 	$('.overlay_block').remove();
+	// 	$(block).removeClass('loading_process');
+	// });
 	// $('a.ajax').on('click', function (e) {
 	// 	// alert(this.href + " /// " + this.target);
 	// 	var target = "#" + this.target;

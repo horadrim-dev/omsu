@@ -57,6 +57,7 @@
     <div class="d-grid gap-2">
         <button 
         id="{{feed.alias}}-loadmore"
+        style="height:75px;"
         class="btn btn-outline-primary" type="button">Загрузить еще</button>
     </div>
 
@@ -68,12 +69,19 @@
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){
-                    $('#{{feed.alias}}-loadmore').addClass('loading');
-                    alert('hz');
+                    $(target).wrap( '<div class="main_overlay_block"></div>' );
+                    $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
+                    $(target).addClass('loading_process');
+
                 },
                 success: function (data) {
-                    {% comment %} $('#{{feed.alias}}-loadmore').remove(); {% endcomment %}
+                    $('#{{feed.alias}}-loadmore').remove();
                     $(target).append(data);
+                },
+                complete: function (){
+                    $(target).unwrap();
+                    $('.overlay_block').remove();
+                    $(target).removeClass('loading_process');
                 }
             });
         });
