@@ -54,7 +54,7 @@
 
 {% if posts.has_next %}
 
-    <div class="d-grid gap-2">
+    <div id="{{feed.alias}}-loadbox" class="d-grid gap-2">
         <div class="my-2 border-top"></div>
         <button 
         id="{{feed.alias}}-loadmore"
@@ -64,22 +64,26 @@
 
     <script>
         $('#{{feed.alias}}-loadmore').on('click', function (e) {
-            var target = "#{{feed.alias}}";
+            var target = "#{{feed.alias}}-loadbox";
             $.ajax({
                 url: "{% url 'feed_page' feed.alias %}?page={{posts.next_page_number}}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){
+                    // старт анимации загрузки
                     $(target).wrap( '<div class="main_overlay_block"></div>' );
                     $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
                     $(target).addClass('loading_process');
                 },
                 success: function (data) {
-                    $('#{{feed.alias}}-loadmore').remove();
-                    $(target).append(data);
-                    $("html,body").animate({scrollTop: $('#{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100}, 200);
+                    $(target).replaceWith(data); // добавляем полученный html
+                    // прокрутка к блоку
+                    $("html,body").animate({
+                        scrollTop: $('#{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100
+                    }, 200);
                 },
                 complete: function (){
+                    // снимаем анимацию загрузки
                     $(target).unwrap();
                     $('.overlay_block').remove();
                     $(target).removeClass('loading_process');

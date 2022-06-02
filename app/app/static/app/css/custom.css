@@ -132,7 +132,7 @@ header .navbar-nav .nav-item a i {
   color: rgba(var(--bs-body-color-rgb),.50) !important;
 }
 
-/* AJAX */
+/* AJAX ANIMATION*/
 .overlay_block{
   position: absolute;
   width: 100%;
