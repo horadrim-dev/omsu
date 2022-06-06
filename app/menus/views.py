@@ -49,7 +49,7 @@ def menus(request, *args, **kwargs):
     menus = Menu.objects.filter(parent_id=current_menu.id)
 
     context = {
-        'section':None,
+        # 'section':None,
         # 'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,

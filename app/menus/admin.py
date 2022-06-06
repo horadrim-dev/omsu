@@ -2,7 +2,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .forms import AdminMenuForm
-from .models import Menu
+from .models import Menu 
 
 
 # @admin.register(Menu)

@@ -1,6 +1,10 @@
 {% extends 'app/base.html' %}
+{% load render_breadcrumbs %}
 
 {% block breadcrumbs %}
+    {% if bc_items %}
+        {% render_breadcrumbs bc_items %}
+    {% endif %}
 {% endblock %}
 
 {% block top %}

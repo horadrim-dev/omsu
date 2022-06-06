@@ -45,12 +45,11 @@ def get_content(from_menu_id:int=None, from_slug:str=None):
             'post' : post,
             'attachments': post.get_attachments()
         })
-    posts.update()
+    # posts.update()
     # contents['attachments'] = contents['posts'].attachment
     if feeds:
         for feed in feeds:
             contents['postfeeds'].append({
-                'hz':feed.post_set.published().all(),
                 'feed': feed,
                 'posts': feed.get_page(page=1),
             })
@@ -110,7 +109,7 @@ def download_attachment(request, uuid, *args, **kwargs):
             'Файл "{}" в хранилище не найден.'.format(attachment.attached_file.path)
         )
 
-def load_feed_page(request, slug=None, *args, **kwargs):
+def load_feed_page(request, slug, *args, **kwargs):
     context = {}
     try:
         feed = Feed.objects.published().get(alias=slug)

@@ -1,6 +1,6 @@
 {% load static %}
-{% load render_menus %}
-
+{% load render_menu %}
+{% load render_grid %}
 
 <!doctype html>
 <html lang="en">
@@ -61,16 +61,18 @@
     </div>
     {% endblock top %}
   </div>
-
+  
+  {% render_grid %}
+  
   <div id="component">
     <div class="container">
       <div id="content" >
         {% block component %}
-        {% render_menus 'activity' %}
-        {% render_menus 'activity' 'plan-goroda'%}
-        {% render_menus 'structure' %}
-        {% render_menus 'press' %}
-        {% render_menus 'gorod' %}
+        {% render_menu 'activity' %}
+        {% render_menu 'plan-goroda'%}
+        {% render_menu 'structure' %}
+        {% render_menu 'press' %}
+        {% render_menu 'gorod' %}
         {% endblock component %}
       </div>
     </div>

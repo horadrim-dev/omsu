@@ -73,7 +73,9 @@ header .navbar-nav .nav-item a i {
 	margin-right: 4px;
 }
 
-
+.row {
+  --bs-gutter-x: 0;
+}
 
 .logo {
 	height: 80px;

@@ -1,5 +1,6 @@
 # from asyncore import loop
 from tkinter import CASCADE
+from unittest.util import _MAX_LENGTH
 from django.db import models, transaction
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
