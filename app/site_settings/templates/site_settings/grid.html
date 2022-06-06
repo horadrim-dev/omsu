@@ -1,6 +1,12 @@
 {% for section in sections %}
-<div class="row" style="height:300px;background-color:#{{section.background}}">
-        {{section.name}}
+<div class="row {{section.classes}}" style="height:100px;background-color:#{{section.background}}">
+    {% for block in section.block_set.all %}
+    <div class="{% if block.width %}col-{{block.width}}{% else %}col{% endif %}
+                p-2 {{block.classes}}" 
+            style="background-color:#{{block.background}}">
+        {{block.name}}
+    </div>
+    {% endfor %}
 </div>
 
 {% endfor %}
