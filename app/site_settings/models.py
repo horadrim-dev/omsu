@@ -5,7 +5,7 @@ from app.models import OrderedModel
 
 class Base(models.Model):
     name = models.CharField(default="", max_length=100, verbose_name="Название")
-    classes = models.CharField(max_length=256, verbose_name="CSS классы",blank=True, help_text="Можно использовать bootstrap классы.")
+    classes = models.CharField(max_length=256, verbose_name="CSS классы", blank=True, help_text="Можно использовать bootstrap классы.")
     background = models.CharField(default="ffffff", max_length=6)
 
     class Meta:
@@ -17,10 +17,16 @@ class Base(models.Model):
 
 class Section(Base, OrderedModel):
 
+    indents = models.BooleanField(default=True, verbose_name="Отступы по бокам")
+
     class Meta:
         verbose_name = "Секция"
         verbose_name_plural = "Секции"
         ordering = ['order']
+
+    def has_columns(self):
+        return True if len(Column.objects.filter(section=self.id)) > 0 else False
+
 
     def save(self, lock_recursion=False, *args, **kwargs):
 
@@ -31,26 +37,59 @@ class Section(Base, OrderedModel):
                 list_of_objects = list(Section.objects.all().exclude(id=self.id))
             )
 
+        if not self.has_columns():
+            Column(name="Колонка 1", section_id=self.id).save()
 
-class Block(Base, OrderedModel):
+
+class Column(Base, OrderedModel):
     section = models.ForeignKey('Section', verbose_name="Секция", on_delete=models.CASCADE)
     width = models.PositiveSmallIntegerField(default=0, blank=True, null=True, verbose_name="Ширина блока", 
         help_text="Ширина экрана разделяется на 12 частей. В сумме с остальными блоками ширина не должна быть больше 12. Если оставить 0, ширина будет вычислена автоматически.")
 
     class Meta:
-        verbose_name = "Блок"
-        verbose_name_plural = "Блоки"
+        verbose_name = "Колонка"
+        verbose_name_plural = "Колонки"
+        ordering = ['section', 'order']
+
+    def save(self, lock_recursion=False, *args, **kwargs):
+        # self.check_width()
+
+        super(Column, self).save(*args, **kwargs)
+
+        if not lock_recursion:
+            self.update_order(
+                list_of_objects = list(Column.objects.filter(section=self.section).exclude(id=self.id))
+            )
+    def __str__(self):
+        return '[{}/{}]: {}/{} '.format(self.section.order, self.order, self.section.name, self.name)
+
+
+class Module(Base, OrderedModel):
+    column = models.ForeignKey('Column', verbose_name="Позиция", on_delete=models.CASCADE)
+    # width = models.PositiveSmallIntegerField(default=0, blank=True, null=True, verbose_name="Ширина блока", 
+    #     help_text="Ширина экрана разделяется на 12 частей. В сумме с остальными блоками ширина не должна быть больше 12. Если оставить 0, ширина будет вычислена автоматически.")
+    show_title = models.BooleanField(default=True, verbose_name="Заголовок")
+    standart_design = models.BooleanField(default=True, verbose_name="Оформление по умолчанию")
+    centrize = models.BooleanField(default=False, verbose_name="Центрировать содержимое")
+
+    class Meta:
+        verbose_name = "Модуль"
+        verbose_name_plural = "Модули"
         ordering = ['order']
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # self.check_width()
 
-        super(Block, self).save(*args, **kwargs)
+        super(Module, self).save(*args, **kwargs)
 
         if not lock_recursion:
             self.update_order(
-                list_of_objects = list(Block.objects.filter(section=self.section).exclude(id=self.id))
+                list_of_objects = list(Module.objects.filter(column=self.column).exclude(id=self.id))
             )
+
+
+
+
 
     # def check_width(self):
     #     sum_width = self.width

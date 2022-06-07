@@ -1,13 +1,53 @@
 {% for section in sections %}
-<div class="row {{section.classes}}" style="height:100px;background-color:#{{section.background}}">
-    {% for block in section.block_set.all %}
-    <div class="{% if block.width %}col-{{block.width}}{% else %}col{% endif %}
-                p-2 {{block.classes}}" 
-            style="background-color:#{{block.background}}">
-        {{block.name}}
-    </div>
-    {% endfor %}
-</div>
+<section>
+    {% if section.indents %}
+    <div class="container">
+    {% endif %}
+        <div class="row {{section.classes}} ">
+            {% for column in section.column_set.all %}
+            <div class="mx-3
+                        {% if column.width %}col-{{column.width}}{% else %}col{% endif %}
+                        {{column.classes}}" 
+                    >
+                {% for module in column.module_set.all %}
 
+                    {% if module.standart_design %}
+
+                        <div class="card border-0 shadow my-3
+                                {% if module.centrize %}text-center{% endif %}
+                                {{module.classes}}"
+                                >
+                            {% comment %} <div class="card-header">
+                                {{module.name}}
+                            </div> {% endcomment %}
+                            <div class="card-body ">
+                                {% if module.show_title %}
+                                <h5 class="card-title">{{module.name}}</h5>
+                                {% endif %}
+                                <p class="card-text">{% lorem 30 w %}</p>
+                            </div>
+                        </div>
+
+                    {% else %}
+                        <div class="{% if module.centrize %}text-center{% endif %}
+                                {{module.classes}}"
+                                >
+                            {% if module.show_title %}
+                            {{module.name}}
+                            {% endif %}
+                            
+                            {% lorem 1 p %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                    {% comment %} {{section.name}} / {{ column.name}}
+                    {% lorem 1 p %} {% endcomment %}
+            </div>
+            {% endfor %}
+        </div>
+    {% if section.indents %}
+    </div>
+    {% endif %}
+</section>
 {% endfor %}
 
