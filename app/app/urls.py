@@ -27,7 +27,7 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('content/', include('content.urls')),
     path('sitemap/', views.sitemap),
-    path('', views.main),
+    path('', views.route, {'cat1':'home'}),
 
     path('<slug:cat1>/', views.route), #, name='index'),
     path('<slug:cat1>/<slug:cat2>/', views.route),

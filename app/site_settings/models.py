@@ -7,17 +7,26 @@ import datetime
 
 class GridManager(models.Manager):
 
-    def published(self):
-        if hasattr(self.model, 'published'):
-            return self.filter(published=True, published_at__lte=datetime.date.today())
-    
-    def on_page(self, menu:Menu):
+    def published_on_page(self, menu:Menu):
+        self.filter()
         if self.model is Section:
-            return self.filter(column__module__menu=menu).distinct()
+            return self.filter(
+                column__module__menu=menu,
+                column__module__published=True, 
+                column__module__published_at__lte=datetime.date.today()
+                ).distinct()
         elif self.model is Column:
-            return self.filter(module__menu=menu).distinct()
+            return self.filter(
+                module__menu=menu,
+                module__published=True, 
+                module__published_at__lte=datetime.date.today()
+                ).distinct()
         elif self.model is Module:
-            return self.filter(menu=menu)
+            return self.filter(
+                menu=menu,
+                published=True, 
+                published_at__lte=datetime.date.today()
+                )
 
 
 class Base(models.Model):
@@ -96,8 +105,6 @@ class Column(Base, OrderedModel):
 class Module(Base, OrderedModel):
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
     column = models.ForeignKey('Column', verbose_name="Позиция", on_delete=models.CASCADE)
-    # width = models.PositiveSmallIntegerField(default=0, blank=True, null=True, verbose_name="Ширина блока", 
-    #     help_text="Ширина экрана разделяется на 12 частей. В сумме с остальными блоками ширина не должна быть больше 12. Если оставить 0, ширина будет вычислена автоматически.")
     show_title = models.BooleanField(default=True, verbose_name="Заголовок")
     standart_design = models.BooleanField(default=True, verbose_name="Оформление по умолчанию")
     centrize = models.BooleanField(default=False, verbose_name="Центрировать содержимое")
@@ -107,7 +114,7 @@ class Module(Base, OrderedModel):
     class Meta:
         verbose_name = "Модуль"
         verbose_name_plural = "Модули"
-        ordering = ['order']
+        ordering = ['column']
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # self.check_width()

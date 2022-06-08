@@ -1,6 +1,6 @@
 {% load static %}
 {% load render_menu %}
-{% load render_grid %}
+{% comment %} {% load render_grid %} {% endcomment %}
 
 <!doctype html>
 <html lang="en">
@@ -63,7 +63,7 @@
   </div>
   
   {% block grid %}
-    {% render_grid %}
+    {% comment %} {% render_grid %} {% endcomment %}
   {% endblock grid %}
   <div id="component">
     <div class="container">
