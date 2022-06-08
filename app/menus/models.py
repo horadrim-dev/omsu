@@ -185,5 +185,8 @@ class Menu(models.Model):
 
     def __str__(self):
         return self.leveled_title()
+
     class Meta:
         ordering = ['list_order']
+        verbose_name = "Меню"
+        verbose_name_plural = "Меню"

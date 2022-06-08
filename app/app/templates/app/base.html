@@ -62,8 +62,9 @@
     {% endblock top %}
   </div>
   
-  {% render_grid %}
-  
+  {% block grid %}
+    {% render_grid %}
+  {% endblock grid %}
   <div id="component">
     <div class="container">
       <div id="content" >

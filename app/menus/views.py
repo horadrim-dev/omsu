@@ -3,6 +3,7 @@
 from django.shortcuts import render
 from django.http import Http404 # JsonResponse
 from . models import Menu
+from site_settings.models import Section
 from content import views as content_views
 
 def get_menu_if_exists(slug=None):
@@ -17,18 +18,13 @@ def get_menu_if_exists(slug=None):
 
 def menus(request, *args, **kwargs):
 
-    # assert False, (args, kwargs, url_list, url_list.pop(0))
     slugs = list(kwargs.values())
     try:
-        section = Menu.objects.filter(alias=slugs.pop(0)).get()
+        current_menu = Menu.objects.filter(alias=slugs.pop(0)).get()
     except Exception:
         raise Http404('Раздел не найден')
-    # assert False, url_list
-    # if len(objects) < len(url_list):
-    #     raise Http404('Страница не найдена')
     unknown_slugs = []
-    bc_items = [(section.title, section.alias)]
-    current_menu = section 
+    bc_items = [(current_menu.title, current_menu.alias)]
 
     # перебираем кварги пока не наткнемся на несуществующий в меню
     # все кварги-меню заносим в breadcrumbs
@@ -48,12 +44,24 @@ def menus(request, *args, **kwargs):
 
     menus = Menu.objects.filter(parent_id=current_menu.id)
 
+    sections = [
+        {
+            'obj': section, 'columns': [
+                {
+                    'obj': column, 'modules':[
+                        module for module in column.module_set.on_page(current_menu)
+                    ]
+                } for column in section.column_set.on_page(current_menu)
+            ]
+        } for section in Section.objects.on_page(current_menu)
+    ]
+
     context = {
-        # 'section':None,
         # 'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,
         'menus': menus,
+        'sections': sections
     }
     # if request.GET.get('data') == 'component':
     #     context['data'] = 'component'

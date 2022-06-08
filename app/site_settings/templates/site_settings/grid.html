@@ -1,15 +1,15 @@
 {% for section in sections %}
 <section>
-    {% if section.indents %}
+    {% if section.obj.indents %}
     <div class="container">
     {% endif %}
-        <div class="row {{section.classes}} ">
-            {% for column in section.column_set.all %}
+        <div class="row {{section.obj.classes}}">
+            {% for column in section.columns %}
             <div class="
-                        {% if column.width %}col-{{column.width}}{% else %}col{% endif %}
-                        {{column.classes}}" 
+                        {% if column.obj.width %}col-{{column.obj.width}}{% else %}col{% endif %}
+                        {{column.obj.classes}}" 
                     >
-                {% for module in column.module_set.all %}
+                {% for module in column.modules %}
 
                     {% if module.standart_design %}
 
@@ -40,12 +40,10 @@
                         </div>
                     {% endif %}
                 {% endfor %}
-                    {% comment %} {{section.name}} / {{ column.name}}
-                    {% lorem 1 p %} {% endcomment %}
             </div>
             {% endfor %}
         </div>
-    {% if section.indents %}
+    {% if section.obj.indents %}
     </div>
     {% endif %}
 </section>

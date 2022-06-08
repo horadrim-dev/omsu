@@ -1,5 +1,9 @@
 {% extends 'app/base_component.html' %}
 
+{% block grid %}
+    {% include 'site_settings/grid.html' %}
+{% endblock grid %}
+
 {% block  component %}
     {% include 'menus/menus.html' %}
 {% endblock component %}

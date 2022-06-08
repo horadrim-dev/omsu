@@ -1,14 +1,32 @@
 from django.db import models, transaction
-from django.forms import ValidationError
+# from django.forms import ValidationError
 from app.models import OrderedModel
 from menus.models import Menu
+import datetime
 # Create your models here.
+
+class GridManager(models.Manager):
+
+    def published(self):
+        if hasattr(self.model, 'published'):
+            return self.filter(published=True, published_at__lte=datetime.date.today())
+    
+    def on_page(self, menu:Menu):
+        if self.model is Section:
+            return self.filter(column__module__menu=menu).distinct()
+        elif self.model is Column:
+            return self.filter(module__menu=menu).distinct()
+        elif self.model is Module:
+            return self.filter(menu=menu)
+
 
 class Base(models.Model):
     name = models.CharField(default="", max_length=100, verbose_name="Название")
     classes = models.CharField(max_length=256, verbose_name="CSS классы", blank=True, help_text="Можно использовать bootstrap классы.")
-    background = models.CharField(default="ffffff", max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Последнее изменение")
 
+    objects = GridManager()
     class Meta:
         abstract = True
 
@@ -41,6 +59,13 @@ class Section(Base, OrderedModel):
         if not self.has_columns():
             Column(name="Колонка 1", section_id=self.id).save()
 
+    def has_columns_with_modules(self):
+        has = False
+        for col in self.column_set.all():
+            if col.has_published_modules():
+                has = True
+                break
+        return has
 
 class Column(Base, OrderedModel):
     section = models.ForeignKey('Section', verbose_name="Секция", on_delete=models.CASCADE)
@@ -65,6 +90,8 @@ class Column(Base, OrderedModel):
     def __str__(self):
         return '[{}/{}]: {}/{} '.format(self.section.order, self.order, self.section.name, self.name)
 
+    def has_published_modules(self):
+        return True if self.module_set.published().count() else False
 
 class Module(Base, OrderedModel):
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
@@ -74,7 +101,9 @@ class Module(Base, OrderedModel):
     show_title = models.BooleanField(default=True, verbose_name="Заголовок")
     standart_design = models.BooleanField(default=True, verbose_name="Оформление по умолчанию")
     centrize = models.BooleanField(default=False, verbose_name="Центрировать содержимое")
-
+    published = models.BooleanField(default=True, verbose_name='Опубликовано')
+    published_at = models.DateField(default=datetime.date.today, 
+                                    verbose_name="Дата публикации")
     class Meta:
         verbose_name = "Модуль"
         verbose_name_plural = "Модули"
