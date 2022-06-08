@@ -17,6 +17,7 @@ class Menu(models.Model):
     parent = models.ForeignKey(
         'Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
     order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
+    list_order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     level = models.PositiveSmallIntegerField(default=1, blank=True, null=True)
     url = models.CharField(max_length=1000, default='', blank=True, null=True)
 
@@ -49,6 +50,7 @@ class Menu(models.Model):
         # обновляем порядок
         if not lock_recursion:
             self.update_order()
+            self.update_list_order()
             # обновляем URL в дочерних объектах
             self.update_urls()
         # обновляем дочерние объекты
@@ -119,6 +121,21 @@ class Menu(models.Model):
                             menus[obj_num].save(update_fields=['order'], lock_recursion=True)
                             obj_num += 1
 
+    def update_list_order(self, parent_id=None, start_order=1):
+            '''обновляет порядок всех элементов при выводе списком'''
+            # получаем соседние объекты
+            menus = list(Menu.objects.filter(parent_id=parent_id))
+            if len(menus) == 0:
+                return start_order
+
+            new_order = start_order
+            for obj in menus:
+                obj.list_order = new_order
+                obj.save(update_fields=['list_order'], lock_recursion=True)
+                new_order = obj.update_list_order(parent_id=obj.id, start_order= new_order + 1)
+            return new_order
+                
+
 
     def update_subitems_level(parent):
         '''Обновляет уровень вложенности в дочерних пунктах меню'''
@@ -160,9 +177,13 @@ class Menu(models.Model):
         
         return result
 
+    def leveled_title(self):
+        if self.level > 1:
+            return '|---' * (self.level - 1) + self.title
+        else:
+            return self.title
+
     def __str__(self):
-        return self.title
-
-
+        return self.leveled_title()
     class Meta:
-        ordering = ['parent_id', 'order']
+        ordering = ['list_order']

@@ -1,6 +1,7 @@
 from django.db import models, transaction
 from django.forms import ValidationError
 from app.models import OrderedModel
+from menus.models import Menu
 # Create your models here.
 
 class Base(models.Model):
@@ -60,11 +61,13 @@ class Column(Base, OrderedModel):
             self.update_order(
                 list_of_objects = list(Column.objects.filter(section=self.section).exclude(id=self.id))
             )
+
     def __str__(self):
         return '[{}/{}]: {}/{} '.format(self.section.order, self.order, self.section.name, self.name)
 
 
 class Module(Base, OrderedModel):
+    menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
     column = models.ForeignKey('Column', verbose_name="Позиция", on_delete=models.CASCADE)
     # width = models.PositiveSmallIntegerField(default=0, blank=True, null=True, verbose_name="Ширина блока", 
     #     help_text="Ширина экрана разделяется на 12 частей. В сумме с остальными блоками ширина не должна быть больше 12. Если оставить 0, ширина будет вычислена автоматически.")

@@ -5,7 +5,7 @@
     {% endif %}
         <div class="row {{section.classes}} ">
             {% for column in section.column_set.all %}
-            <div class="mx-3
+            <div class="
                         {% if column.width %}col-{{column.width}}{% else %}col{% endif %}
                         {{column.classes}}" 
                     >
@@ -13,7 +13,7 @@
 
                     {% if module.standart_design %}
 
-                        <div class="card border-0 shadow my-3
+                        <div class="card border-0 shadow m-3
                                 {% if module.centrize %}text-center{% endif %}
                                 {{module.classes}}"
                                 >
