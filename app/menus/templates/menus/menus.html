@@ -1,38 +1,28 @@
-{% comment %} {% load static %} {% endcomment %}
+{% extends 'site_settings/grid.html' %}
 
-{% comment %} <div class="container"> {% endcomment %}
-  <div class="shadow p-5 mb-5">
-    {% if not from_module %}
-    <button id="back" type="button" class="btn float-start">
-      <i class="bi bi-arrow-left"></i>
-    </button>
-    {% endif %}
-    <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
-    <div class="row g-0 mb-3">
-      <div class="col-md-9 me-3">
+{% block content %}
 
-        {% if contents %}
-        {% include 'content/page_content.html' %}
-        {% else %}
+
+      {% block content_block %}
         {% include 'menus/menu_blocks.html' %}
-        {% endif %}
-
-      </div>
+      {% endblock content_block %}
 
 
-      {% if menus and contents %}   {% comment "Изменить когда чтонибудь появится в правой колонке (кроме меню)" %}{% endcomment %}
+{% endblock content %}
+      {% comment %} </div> {% endcomment %}
+
+
+      {% comment %} {% if menus and contents %}  
       <div id="right-side" class="col ps-3 border-start">
 
         <div id="right-side-content">
           {% if menus and contents %}
           <div id="submenu">
-            {% comment %} <h6>Подкатегории</h6> {% endcomment %}
             <div class="card">
         <div class="card-header">
           Подкатегории
         </div>
         <div class="card-body">
-          {% comment %} <h5 class="card-title">Special title treatment</h5> {% endcomment %}
           {% include 'menus/menu_list.html' %}
           <p class="card-text">
 
@@ -44,8 +34,6 @@
 
         </div>
       </div>
-      {% endif %}
+      {% endif %} {% endcomment %}
 
-    </div>
-  </div>
-  {% comment %} </div> {% endcomment %}
+    {% comment %} </div> {% endcomment %}

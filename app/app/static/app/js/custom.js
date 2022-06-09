@@ -117,7 +117,7 @@ $(document).ready(function () {
 	// });
 
 	// плавающие блоки
-	$("#right-side-content").stick_in_parent({offset_top:100});
+	// $("#right-side-content").stick_in_parent({offset_top:100});
 	$("#mainmenu-bar").stick_in_parent({parent:'body'});
 
 	// активируем подсказки

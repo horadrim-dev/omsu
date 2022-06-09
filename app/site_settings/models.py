@@ -11,19 +11,19 @@ class GridManager(models.Manager):
         self.filter()
         if self.model is Section:
             return self.filter(
-                column__module__menu=menu,
+                models.Q(column__module__menu=menu) | models.Q(column__module__show_on_every_page=True),
                 column__module__published=True, 
                 column__module__published_at__lte=datetime.date.today()
                 ).distinct()
         elif self.model is Column:
             return self.filter(
-                module__menu=menu,
+                models.Q(module__menu=menu) | models.Q(module__show_on_every_page=True),
                 module__published=True, 
                 module__published_at__lte=datetime.date.today()
                 ).distinct()
         elif self.model is Module:
             return self.filter(
-                menu=menu,
+                models.Q(menu=menu) | models.Q(show_on_every_page=True),
                 published=True, 
                 published_at__lte=datetime.date.today()
                 )
@@ -104,6 +104,8 @@ class Column(Base, OrderedModel):
 
 class Module(Base, OrderedModel):
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
+    show_on_every_page = models.BooleanField(default=False, verbose_name="Отображать на всех страницах сайта",
+        help_text="Если выбрано - значения из поля \"меню\" будут проигнорированы.")
     column = models.ForeignKey('Column', verbose_name="Позиция", on_delete=models.CASCADE)
     show_title = models.BooleanField(default=True, verbose_name="Заголовок")
     standart_design = models.BooleanField(default=True, verbose_name="Оформление по умолчанию")

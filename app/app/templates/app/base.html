@@ -1,5 +1,6 @@
 {% load static %}
 {% load render_menu %}
+{% load render_breadcrumbs %}
 {% comment %} {% load render_grid %} {% endcomment %}
 
 <!doctype html>
@@ -29,6 +30,9 @@
 
   <div id="breadcrumbs">
     {% block breadcrumbs %}
+      {% if bc_items %}
+          {% render_breadcrumbs bc_items %}
+      {% endif %}
     {% endblock %}
   </div>
 
@@ -63,9 +67,9 @@
   </div>
   
   {% block grid %}
-    {% comment %} {% render_grid %} {% endcomment %}
+    {% comment %} {% include 'site_settings/grid.html' %} {% endcomment %}
   {% endblock grid %}
-  <div id="component">
+  {% comment %} <div id="component">
     <div class="container">
       <div id="content" >
         {% block component %}
@@ -77,7 +81,7 @@
         {% endblock component %}
       </div>
     </div>
-  </div>
+  </div> {% endcomment %}
 
   {% include 'app/footer.html' %}
   <!-- Optional JavaScript; choose one of the two! -->

@@ -1,51 +1,70 @@
-{% for section in sections %}
-<section>
-    {% if section.obj.indents %}
-    <div class="container">
-    {% endif %}
-        <div class="row {{section.obj.classes}}">
-            {% for column in section.columns %}
-            <div class="
-                        {% if column.obj.width %}col-{{column.obj.width}}{% else %}col{% endif %}
-                        {{column.obj.classes}}" 
-                    >
-                {% for module in column.modules %}
+{% extends 'app/base.html' %}
 
-                    {% if module.standart_design %}
+{% block grid %}
 
-                        <div class="card border-0 shadow m-3
-                                {% if module.centrize %}text-center{% endif %}
-                                {{module.classes}}"
-                                >
-                            {% comment %} <div class="card-header">
-                                {{module.name}}
-                            </div> {% endcomment %}
-                            <div class="card-body ">
-                                {% if module.show_title %}
-                                <h5 class="card-title">{{module.name}}</h5>
-                                {% endif %}
-                                <p class="card-text">{% lorem 30 w %}</p>
+    {% for section in sections %}
+    <section>
+        {% if section.obj.indents %}
+        <div class="container">
+        {% endif %}
+            <div class="row justify-content-center {{section.obj.classes}}">
+                {% for column in section.columns %}
+                <div class="
+                            {% if column.obj.width %}col-{{column.obj.width}}{% else %}col{% endif %}
+                            {{column.obj.classes}}" 
+                        >
+                    {% for module in column.modules %}
+
+                        {% if module.name == "CONTENT" %}
+
+                            <div id="content" class="shadow p-5 m-3">
+                                <button id="back" type="button" class="btn float-start">
+                                    <i class="bi bi-arrow-left"></i>
+                                </button>
+                                <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
+
+                                {% block content %}
+                                {% endblock content %}
                             </div>
-                        </div>
 
-                    {% else %}
-                        <div class="{% if module.centrize %}text-center{% endif %}
-                                {{module.classes}}"
-                                >
-                            {% if module.show_title %}
-                            {{module.name}}
-                            {% endif %}
-                            
-                            {% lorem 1 p %}
-                        </div>
-                    {% endif %}
+                        {% elif module.standart_design %}
+
+                            <div class="card border-0 shadow m-3
+                                    {% if module.centrize %}text-center{% endif %}
+                                    {{module.classes}}"
+                                    >
+                                {% comment %} <div class="card-header">
+                                    {{module.name}}
+                                </div> {% endcomment %}
+                                <div class="card-body ">
+                                    {% if module.show_title %}
+                                    <h5 class="card-title">{{module.name}}</h5>
+                                    {% endif %}
+                                    <p class="card-text">{% lorem 30 w %}</p>
+                                </div>
+                            </div>
+
+                        {% else %}
+
+                            <div class="{% if module.centrize %}text-center{% endif %}
+                                    {{module.classes}}"
+                                    >
+                                {% if module.show_title %}
+                                {{module.name}}
+                                {% endif %}
+                                
+                                {% lorem 1 p %}
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
                 {% endfor %}
             </div>
-            {% endfor %}
+        {% if section.obj.indents %}
         </div>
-    {% if section.obj.indents %}
-    </div>
-    {% endif %}
-</section>
-{% endfor %}
+        {% endif %}
+    </section>
+    {% endfor %}
 
+{% endblock grid %}

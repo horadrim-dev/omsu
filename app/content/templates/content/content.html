@@ -1,1 +1,9 @@
-{% extends 'menus/component.html' %}
+{% extends 'menus/menus.html' %}
+
+{% block content_block %}
+    {% if contents %}
+        {% include 'content/page_content.html' %}
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock content_block %}
