@@ -1,7 +1,6 @@
 {% extends 'app/base.html' %}
 
 {% block grid %}
-
     {% for section in sections %}
     <section>
         {% if section.obj.indents %}
@@ -15,7 +14,7 @@
                         >
                     {% for module in column.modules %}
 
-                        {% if module.name == "CONTENT" %}
+                        {% if module.obj.name == "CONTENT" %}
 
                             <div id="content" class="shadow p-5 m-3">
                                 <button id="back" type="button" class="btn float-start">
@@ -27,33 +26,35 @@
                                 {% endblock content %}
                             </div>
 
-                        {% elif module.standart_design %}
+                        {% elif module.obj.standart_design %}
 
                             <div class="card border-0 shadow m-3
-                                    {% if module.centrize %}text-center{% endif %}
-                                    {{module.classes}}"
+                                    {% if module.obj.centrize %}text-center{% endif %}
+                                    {{module.obj.classes}}"
                                     >
                                 {% comment %} <div class="card-header">
                                     {{module.name}}
                                 </div> {% endcomment %}
                                 <div class="card-body ">
-                                    {% if module.show_title %}
-                                    <h5 class="card-title">{{module.name}}</h5>
+                                    {% if module.obj.show_title %}
+                                    <h5 class="card-title">{{module.obj.name}}</h5>
                                     {% endif %}
-                                    <p class="card-text">{% lorem 30 w %}</p>
+                                    <div class="card-text">
+                                        {% include 'site_settings/module_content.html' %}
+                                    </div>
                                 </div>
                             </div>
 
                         {% else %}
 
-                            <div class="{% if module.centrize %}text-center{% endif %}
-                                    {{module.classes}}"
+                            <div class="{% if module.obj.centrize %}text-center{% endif %}
+                                    {{module.obj.classes}}"
                                     >
-                                {% if module.show_title %}
-                                {{module.name}}
+                                <h5>{% if module.obj.show_title %}</h5>
+                                {{module.obj.name}}
                                 {% endif %}
                                 
-                                {% lorem 1 p %}
+                                {% include 'site_settings/module_content.html' %}
                             </div>
 
                         {% endif %}

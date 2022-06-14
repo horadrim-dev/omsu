@@ -63,13 +63,13 @@ $(document).ready(function () {
 
 	// заставляем dropdown выпадать по hover (на больших экранах)
 	if ($(window).width() > '1000') {
-		$('header .dropdown').hover(function () {
+		$('.dropdown').hover(function () {
 			$(this).find('.dropdown-menu').first().addClass('show');
 		}, function () {
 			$(this).find('.dropdown-menu').first().removeClass('show');
 		});
 
-		$('header .dropdown-menu .dropend, header .dropdown-menu .dropstart').hover(function () {
+		$('.dropdown-menu .dropend, .dropdown-menu .dropstart').hover(function () {
 			$(this).find('.dropdown-menu').first().addClass('show');
 			$(this).find('.dropdown-menu').first().attr('data-bs-popper', 'none')
 		}, function () {

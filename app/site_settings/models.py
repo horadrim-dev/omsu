@@ -1,5 +1,6 @@
 from django.db import models, transaction
 # from django.forms import ValidationError
+from content.models import Post, Feed
 from app.models import OrderedModel
 from menus.models import Menu
 import datetime
@@ -113,6 +114,14 @@ class Module(Base, OrderedModel):
     published = models.BooleanField(default=True, verbose_name='Опубликовано')
     published_at = models.DateField(default=datetime.date.today, 
                                     verbose_name="Дата публикации")
+
+    post_content = models.ForeignKey(
+        Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
+    feed_content = models.ForeignKey(
+        Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
+    menu_content = models.ForeignKey(
+        Menu, on_delete=models.SET_NULL, related_name="menu_content", verbose_name="Меню", blank=True, null=True)
+
     class Meta:
         verbose_name = "Модуль"
         verbose_name_plural = "Модули"

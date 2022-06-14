@@ -9,6 +9,10 @@ from app.utils import slugify_rus
 
 # Create your models here.
 
+class MenuManager(models.Manager):
+
+    def published(self):
+        return self.filter(published=True)
 
 class Menu(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
@@ -21,7 +25,7 @@ class Menu(models.Model):
     level = models.PositiveSmallIntegerField(default=1, blank=True, null=True)
     url = models.CharField(max_length=1000, default='', blank=True, null=True)
 
-    is_published = models.BooleanField(default=True, verbose_name="Опубликовано")
+    published = models.BooleanField(default=True, verbose_name="Опубликовано")
     is_fixed = models.BooleanField(default=False, verbose_name="Зафиксировать дочерние пункты меню?",
                                    help_text="Если отмечено - дочерние пункты меню не будут раскрываться, если не отмечено -  будут.")
     icon = models.CharField(max_length=32, default="", blank=True, verbose_name="Иконка", help_text="Необязательно. Названия брать <a href='https://icons.getbootstrap.com/' target='_blank'>отсюда.</a>")
@@ -29,6 +33,8 @@ class Menu(models.Model):
         verbose_name="Краткое описание", help_text="Краткое описание содержимого меню")
     description = RichTextUploadingField(verbose_name="Описание", blank=True)
     debug_info = models.TextField(default="", blank=True, null=True)
+
+    objects = MenuManager()
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # только при создании объекта, id еще не существует
@@ -156,9 +162,9 @@ class Menu(models.Model):
                 # если достигнут порог уровня - выходим
                 if parent.level >= maxlevel:
                     return None
-            items = Menu.objects.filter(parent_id=parent.id, is_published=True)
+            items = Menu.objects.filter(parent_id=parent.id, published=True)
         else:
-            items = Menu.objects.filter(level=1, is_published=True)
+            items = Menu.objects.filter(level=1, published=True)
 
         # если дочерних элементов нет - выходим
         if len(items) == 0:

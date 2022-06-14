@@ -2,11 +2,10 @@
 
 {% block content %}
 
+      {% include 'menus/menu_blocks.html' %}
 
       {% block content_block %}
-        {% include 'menus/menu_blocks.html' %}
       {% endblock content_block %}
-
 
 {% endblock content %}
       {% comment %} </div> {% endcomment %}

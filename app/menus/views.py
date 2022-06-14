@@ -49,7 +49,9 @@ def menus(request, *args, **kwargs):
             'obj': section, 'columns': [
                 {
                     'obj': column, 'modules':[
-                        module for module in column.module_set.published_on_page(current_menu)
+                        {
+                            'obj': module 
+                        } for module in column.module_set.published_on_page(current_menu)
                     ]
                 } for column in section.column_set.published_on_page(current_menu)
             ]

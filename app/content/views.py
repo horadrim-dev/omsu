@@ -3,6 +3,8 @@ from django.http import FileResponse, Http404
 from django.conf import settings
 from django.core.paginator import Paginator
 from .models import Content, Post, Feed, Attachment
+from site_settings.models import Module
+from menus.models import Menu
 import os
 # from menus.models import Menu
 # Create your views here.
@@ -23,21 +25,26 @@ def get_content_if_exists(slug=None):
 
         return False
 
-def get_content(from_menu_id:int=None, from_slug:str=None):
+def get_content(from_menu_id:int=None, from_slug:str=None, module:Module=None):
     ''' Возвращает контент, привязанный к меню'''
     has_content = False
     contents = {}
     contents['posts'] = []
     contents['postfeeds'] = []
+    contents['menus'] = []
 
     if from_menu_id:
         posts = Post.objects.published().filter(menu_id=from_menu_id) # собираем посты
         feeds = Feed.objects.published().filter(menu__id=from_menu_id) # собираем ленты
-
-    if from_slug: # контент на абстрактных страницах
+        menus = None
+    elif from_slug: # контент на абстрактных страницах
         posts =  Post.objects.published().filter(alias=from_slug)
         feeds = None
-
+        menus = None
+    elif module:
+        posts = Post.objects.published().filter(id=module.post_content_id)
+        feeds = Feed.objects.published().filter(id=module.feed_content_id)
+        menus = Menu.objects.published().filter(id=module.menu_content_id)
     # post_ids = posts.values_list('id', flat=True)
     # attachments = Attachment.objects.filter(post__in=post_ids)#[x.attachment_set.all() for x in contents['posts']]
     for post in posts:
@@ -45,14 +52,18 @@ def get_content(from_menu_id:int=None, from_slug:str=None):
             'post' : post,
             'attachments': post.get_attachments()
         })
-    # posts.update()
-    # contents['attachments'] = contents['posts'].attachment
+
     if feeds:
         for feed in feeds:
             contents['postfeeds'].append({
                 'feed': feed,
                 'posts': feed.get_page(page=1),
             })
+    if menus:
+        for menu in menus:
+            contents['menus'].append(
+                menu.get_subitems()
+            )
 
     # собираем информацию
     num_total = 0
@@ -86,8 +97,14 @@ def render_content(request, context, unknown_slugs=None):
     else:
         context['contents'] = get_content(from_menu_id=context['page'].id)
 
+    for section in context['sections']:
+        for column in section['columns']:
+            for module in column['modules']:
+                module['contents'] = get_content(module=module['obj'])
+
     return render(request, 'content/content.html', context)
 
+# def render_module
 
 def download_attachment(request, uuid, *args, **kwargs):
     # media_root = settings.MEDIA_ROOT

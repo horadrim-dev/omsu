@@ -1,11 +1,8 @@
-{% extends 'menus/menus.html' %}
+{% extends 'app/base.html' %}
 
-{% block content %}
-hz
-{% endblock content %}
-<div id="content" class="shadow p-5 fs-5 lh-lg">
+{% block grid %}
+<div id="content" class="container shadow p-5 fs-5 lh-lg">
     <h2 id="content-title" class="border-bottom mb-4 pb-3">Карта сайта</h2>
-
 
     {% if menu_tree|length > 0 %}
     <ul>
@@ -81,3 +78,4 @@ hz
     {% endif%}
 
 </div>
+{% endblock grid %}

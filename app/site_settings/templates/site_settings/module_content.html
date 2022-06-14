@@ -1,0 +1,7 @@
+{% lorem 30 w %}
+
+{% if module.contents.info.count.menus %}
+    {% comment %} {% with module.contents.menus.0.subitems as menus %} {% endcomment %}
+        {% include 'site_settings/module_menu_vertical.html' with menu_tree=module.contents.menus.0 %}
+    {% comment %} {% endwith %} {% endcomment %}
+{% endif %}
