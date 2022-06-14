@@ -150,3 +150,11 @@ header .navbar-nav .nav-item a i {
 .main_overlay_block{
   position: relative;
 }
+
+/* MODULE MENU */
+nav.module-menu .accordion .accordion .accordion-item {
+	background-color: var(--bs-gray-200);
+}
+nav.module-menu .accordion .accordion .accordion .accordion-item {
+	background-color: var(--bs-gray-300);
+}

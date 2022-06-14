@@ -1,10 +1,10 @@
 {% if menu_tree|length > 0 %}
 <nav class="module-menu">
-    <div class="accordion" id="module-{{module.obj.id}}-menu-{{menu_tree.0.item.parent.alias}}">
+    <div class="accordion" id="module-{{module.obj.id}}-accordion-{{menu_tree.0.item.parent.alias}}">
         {% for level_1 in menu_tree %}
         <div class="accordion-item {% if level_1.item.alias == page.alias %}active{% endif %}
-        ">  
-            <div class="accordion-header d-flex">
+        ">
+            <div class="accordion-header d-flex" id="module-{{module.obj.id}}-level-1-header-{{level_1.item.alias}}">
                 <a class="nav-link w-100 p-3" href="{{level_1.url}}">
                     {% if level_1.item.icon %}
                     <i class="bi bi-{{level_1.item.icon}}"></i>
@@ -13,24 +13,24 @@
                 </a>
 
                 {% if level_1.subitems != None %}
-                <button class="accordion-button w-auto"  
-                type="button"
-                data-bs-toggle="collapse" 
-                data-bs-target="#module-{{module.obj.id}}-menu-{{level_1.item.alias}}" 
-                aria-expanded="{% if level_1.item.alias == page.alias %}true{% else %}false{% endif %}"
-                aria-controls="module-{{module.obj.id}}-menu-{{level_1.item.alias}}" 
-                ></button>
-                {% endif %} 
+                <button class="accordion-button border-start bg-transparent w-auto {% if level_1.item.alias != page.alias %}collapsed{% endif %}" 
+                type="button" data-bs-toggle="collapse"
+                    data-bs-target="#module-{{module.obj.id}}-level-1-{{level_1.item.alias}}"
+                    aria-expanded="{% if level_1.item.alias == page.alias %}true{% else %}false{% endif %}"
+                    aria-controls="module-{{module.obj.id}}-level-1-{{level_1.item.alias}}"></button>
+                {% endif %}
             </div>
             {% if level_1.subitems != None %}
-            <div id="module-{{module.obj.id}}-menu-{{level_1.item.alias}}" 
+            <div id="module-{{module.obj.id}}-level-1-{{level_1.item.alias}}"
                 class="accordion-collapse collapse {% if level_1.item.alias == page.alias %}show{% endif %}"
-                data-bs-parent="#module-{{module.obj.id}}-menu-{{menu_tree.0.item.parent.alias}}">
-                
-                {% for level_2 in level_1.subitems %}
+                aria-labelled="module-{{module.obj.id}}-level-1-header-{{level_1.item.alias}}" 
+                data-bs-parent="#module-{{module.obj.id}}-accordion-{{menu_tree.0.item.parent.alias}}">
+                <div class="accordion" id="module-{{module.obj.id}}-accordion-{{level_1.item.alias}}">
+
+                    {% for level_2 in level_1.subitems %}
                     <div class="accordion-item {% if level_2.item.alias == page.alias %}active{% endif %}
                         ">
-                        <div class="accordion-header d-flex">
+                        <div class="accordion-header d-flex" id="module-{{module.obj.id}}-level-2-header-{{level_2.item.alias}}">
                             <a class="nav-link w-100 p-3" href="{{ level_2.url }}">
                                 {% if level_2.item.icon %}
                                 <i class="bi bi-{{level_2.item.icon}}"></i>
@@ -39,41 +39,42 @@
                             </a>
 
                             {% if level_2.subitems != None %}
-                            <button class="accordion-button w-auto" 
-                                type="button"
-                                data-bs-toggle="collapse" 
-                                data-bs-target="#module-{{module.obj.id}}-menu-{{level_2.item.alias}}" 
+                            <button class="accordion-button border-start bg-transparent w-auto {% if level_2.item.alias != page.alias %}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#module-{{module.obj.id}}-menu-{{level_2.item.alias}}"
                                 aria-expanded="{% if level_2.item.alias == page.alias %}true{% else %}false{% endif %}"
-                                aria-controls="module-{{module.obj.id}}-menu-{{level_2.item.alias}}" 
-                                >
+                                aria-controls="module-{{module.obj.id}}-menu-{{level_2.item.alias}}">
                             </button>
                             {% endif %}
                         </div>
                         {% if level_2.subitems != None %}
-                        <div id="module-{{module.obj.id}}-menu-{{level_2.item.alias}}" 
-                            class="accordion-collapse collapse {% if level_2.item.alias == page.alias %}show{% endif %}"
-                            data-bs-parent="#module-{{module.obj.id}}-menu-{{level_1.item.alias}}"
-                            >
+                        <div id="module-{{module.obj.id}}-menu-{{level_2.item.alias}}"
+                            class="accordion accordion-collapse collapse {% if level_2.item.alias == page.alias %}show{% endif %}"
+                            aria-labelled="module-{{module.obj.id}}-level-2-header-{{level_2.item.alias}}"
+                            data-bs-parent="#module-{{module.obj.id}}-accordion-{{level_1.item.alias}}">
 
-                            {% for level_3 in level_2.subitems %}
-                            <div class="nav-item {% if level_3.item.alias == page.alias %}active{% endif %}
+                            <div class="accordion" id="module-{{module.obj.id}}-accordion-{{level_2.item.alias}}">
+
+                                {% for level_3 in level_2.subitems %}
+                                <div class="accordion-item {% if level_3.item.alias == page.alias %}active{% endif %}
                             ">
-                                <div class="accordion-header d-flex">
-                                    <a class="nav-link w-100 p-3" href="{{level_3.url}}">
-                                    {% if level_3.item.icon %}
-                                    <i class="bi bi-{{level_3.item.icon}}"></i>
-                                    {% endif %}
-                                    {{ level_3.item.title }}
-                                    </a>
+                                    <div class="accordion-header d-flex">
+                                        <a class="nav-link w-100 p-3" href="{{level_3.url}}">
+                                            {% if level_3.item.icon %}
+                                            <i class="bi bi-{{level_3.item.icon}}"></i>
+                                            {% endif %}
+                                            {{ level_3.item.title }}
+                                        </a>
+                                    </div>
                                 </div>
+                                {% endfor %}
                             </div>
-                            {% endfor %}
                         </div>
                         {% endif %}
                     </div>
-                
-                {% endfor %}
+
+                    {% endfor %}
                 </div>
+            </div>
             {% endif %}
         </div>
         {% endfor %}
