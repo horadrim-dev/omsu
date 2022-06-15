@@ -42,7 +42,7 @@ def menus(request, *args, **kwargs):
                 break
 
 
-    menus = Menu.objects.filter(parent_id=current_menu.id)
+    menu_tree = current_menu.get_subitems() #Menu.objects.filter(parent_id=current_menu.id)
 
     sections = [
         {
@@ -62,7 +62,7 @@ def menus(request, *args, **kwargs):
         # 'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,
-        'menus': menus,
+        'menu_tree': menu_tree,
         'sections': sections
     }
     # if request.GET.get('data') == 'component':

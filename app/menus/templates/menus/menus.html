@@ -2,10 +2,15 @@
 
 {% block content %}
 
-      {% include 'menus/menu_blocks.html' %}
+  {% comment %} {% block content_block %} {% endcomment %}
 
-      {% block content_block %}
-      {% endblock content_block %}
+    <div class="page-description">
+      {{ page.description|safe }}
+    </div>
+
+    {% include 'menus/menu_blocks.html' %}
+
+  {% comment %} {% endblock content_block %} {% endcomment %}
 
 {% endblock content %}
       {% comment %} </div> {% endcomment %}

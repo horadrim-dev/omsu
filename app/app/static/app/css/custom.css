@@ -34,12 +34,15 @@ header,
 img {
 	border-color: #dfdfdf;
 }
-#content .card:hover{
+#content .card-body:hover, .module .card-body:hover{
 box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }
-#content .card a{
-text-decoration:none;
-color:#000;
+#content .card a, .module .card a{
+	text-decoration:none;
+	color:inherit;
+}
+.card {
+	background: none;
 }
 #content .card-text{
 color: #777;

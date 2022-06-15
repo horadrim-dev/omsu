@@ -1,13 +1,16 @@
 {% comment %} {% lorem 30 w %} {% endcomment %}
+<div class="module">
 
-{% if module.contents.info.count.menus %}
-    {% if module.obj.menu_style == 'vertical_with_submenus'  or module.obj.menu_style == 'vertical_without_submenus' %}
+    {% if module.contents.info.count.menus %}
+        {% if module.obj.menu_style == 'vertical_with_submenus'  or module.obj.menu_style == 'vertical_without_submenus' %}
 
-        {% include 'site_settings/module_menu_vertical.html' with menu_tree=module.contents.menus.0 layout=module.obj.menu_style %}
+            {% include 'menus/menu_vertical.html' with menu_tree=module.contents.menus.0 layout=module.obj.menu_style %}
 
-    {% elif module.obj.menu_style == 'horizontal_blocks' %}
+        {% elif module.obj.menu_style == 'horizontal_blocks' %}
+    
+            {% include 'menus/menu_blocks.html' with menu_tree=module.contents.menus.0  %}
 
-        {% include 'menus/menu_blocks.html' with menus=module.contents.menus.0  %}
-
+        {% endif %}
     {% endif %}
-{% endif %}
+
+</div>

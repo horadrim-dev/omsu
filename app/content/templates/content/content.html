@@ -1,9 +1,9 @@
 {% extends 'menus/menus.html' %}
 
-{% block content_block %}
+{% block content %}
     {% if contents %}
         {% include 'content/page_content.html' %}
     {% else %}
         {{ block.super }}
     {% endif %}
-{% endblock content_block %}
+{% endblock content %}
