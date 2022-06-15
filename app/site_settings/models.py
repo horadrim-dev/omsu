@@ -121,7 +121,13 @@ class Module(Base, OrderedModel):
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     menu_content = models.ForeignKey(
         Menu, on_delete=models.SET_NULL, related_name="menu_content", verbose_name="Меню", blank=True, null=True)
-
+    MENU_STYLE_CHOICES = [
+        ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
+        ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
+        ('vertical_without_submenus', 'Вертикальное меню (без дочерних меню)'),
+    ]
+    menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
+        verbose_name="Макет меню")
     class Meta:
         verbose_name = "Модуль"
         verbose_name_plural = "Модули"

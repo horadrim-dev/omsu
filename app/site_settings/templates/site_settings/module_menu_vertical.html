@@ -2,8 +2,7 @@
 <nav class="module-menu">
     <div class="accordion" id="module-{{module.obj.id}}-accordion-{{menu_tree.0.item.parent.alias}}">
         {% for level_1 in menu_tree %}
-        <div class="accordion-item {% if level_1.item.alias == page.alias %}active{% endif %}
-        ">
+        <div class="accordion-item {% if level_1.item.alias == page.alias %}active{% endif %}">
             <div class="accordion-header d-flex" id="module-{{module.obj.id}}-level-1-header-{{level_1.item.alias}}">
                 <a class="nav-link w-100 p-3" href="{{level_1.url}}">
                     {% if level_1.item.icon %}
@@ -11,18 +10,25 @@
                     {% endif %}
                     {{level_1.item.title }}
                 </a>
-
-                {% if level_1.subitems != None %}
-                <button class="accordion-button border-start bg-transparent w-auto {% if level_1.item.alias != page.alias %}collapsed{% endif %}" 
+                {% if level_1.item.alias == page.alias %}
+                <small class="text-muted p-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Вы здесь">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </small>
+                {% endif %}
+                {% if level_1.subitems != None  and  layout == 'vertical_with_submenus'%}
+                <button class="accordion-button border-start bg-transparent w-auto {% if level_1.item.alias not in page.url %}collapsed{% endif %}" 
                 type="button" data-bs-toggle="collapse"
                     data-bs-target="#module-{{module.obj.id}}-level-1-{{level_1.item.alias}}"
                     aria-expanded="{% if level_1.item.alias == page.alias %}true{% else %}false{% endif %}"
                     aria-controls="module-{{module.obj.id}}-level-1-{{level_1.item.alias}}"></button>
                 {% endif %}
             </div>
-            {% if level_1.subitems != None %}
+
+            {% comment "=========================================УРОВЕНЬ 2==================================================================" %}{% endcomment %}
+
+            {% if level_1.subitems != None   and  layout == 'vertical_with_submenus' %}
             <div id="module-{{module.obj.id}}-level-1-{{level_1.item.alias}}"
-                class="accordion-collapse collapse {% if level_1.item.alias == page.alias %}show{% endif %}"
+                class="accordion-collapse collapse {% if level_1.item.alias in page.url %}show{% endif %}"
                 aria-labelled="module-{{module.obj.id}}-level-1-header-{{level_1.item.alias}}" 
                 data-bs-parent="#module-{{module.obj.id}}-accordion-{{menu_tree.0.item.parent.alias}}">
                 <div class="accordion" id="module-{{module.obj.id}}-accordion-{{level_1.item.alias}}">
@@ -38,24 +44,35 @@
                                 {{ level_2.item.title }}
                             </a>
 
+                            
+                            {% if level_2.item.alias == page.alias %}
+                            <small class="text-muted p-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Вы здесь">
+                                <i class="bi bi-geo-alt-fill"></i>
+                            </small>
+                            {% endif %}
+
+
                             {% if level_2.subitems != None %}
-                            <button class="accordion-button border-start bg-transparent w-auto {% if level_2.item.alias != page.alias %}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
+                            <button class="accordion-button border-start bg-transparent w-auto {% if level_2.item.alias not in page.url%}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#module-{{module.obj.id}}-menu-{{level_2.item.alias}}"
                                 aria-expanded="{% if level_2.item.alias == page.alias %}true{% else %}false{% endif %}"
                                 aria-controls="module-{{module.obj.id}}-menu-{{level_2.item.alias}}">
                             </button>
                             {% endif %}
                         </div>
+
+                        {% comment "=========================================УРОВЕНЬ 3==================================================================" %}{% endcomment %}
+
                         {% if level_2.subitems != None %}
                         <div id="module-{{module.obj.id}}-menu-{{level_2.item.alias}}"
-                            class="accordion accordion-collapse collapse {% if level_2.item.alias == page.alias %}show{% endif %}"
+                            class="accordion accordion-collapse collapse {% if level_2.item.alias in page.url %}show{% endif %}"
                             aria-labelled="module-{{module.obj.id}}-level-2-header-{{level_2.item.alias}}"
                             data-bs-parent="#module-{{module.obj.id}}-accordion-{{level_1.item.alias}}">
 
                             <div class="accordion" id="module-{{module.obj.id}}-accordion-{{level_2.item.alias}}">
 
                                 {% for level_3 in level_2.subitems %}
-                                <div class="accordion-item {% if level_3.item.alias == page.alias %}active{% endif %}
+                                <div class="accordion-item flex-row {% if level_3.item.alias == page.alias %}active{% endif %}
                             ">
                                     <div class="accordion-header d-flex">
                                         <a class="nav-link w-100 p-3" href="{{level_3.url}}">
@@ -64,18 +81,27 @@
                                             {% endif %}
                                             {{ level_3.item.title }}
                                         </a>
+                                        {% if level_3.item.alias == page.alias %}
+                                        <small class="text-muted p-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Вы здесь">
+                                            <i class="bi bi-geo-alt-fill"></i>
+                                        </small>
+                                        {% endif %}
                                     </div>
+                                    
+
                                 </div>
                                 {% endfor %}
                             </div>
                         </div>
                         {% endif %}
+                        {% comment "=========================================/УРОВЕНЬ 3==================================================================" %}{% endcomment %}
                     </div>
 
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
+            {% comment "=========================================/УРОВЕНЬ 2==================================================================" %}{% endcomment %}
         </div>
         {% endfor %}
     </div>

@@ -152,9 +152,22 @@ header .navbar-nav .nav-item a i {
 }
 
 /* MODULE MENU */
+nav.module-menu .accordion {
+	--bs-accordion-border-radius: 0;
+}
+nav.module-menu .accordion-button {
+	border-top-left-radius: 0 !important;
+	border-top-right-radius: 0 !important;
+}
 nav.module-menu .accordion .accordion .accordion-item {
-	background-color: var(--bs-gray-200);
+	background-color: var(--bs-gray-100);
 }
 nav.module-menu .accordion .accordion .accordion .accordion-item {
+	background-color: var(--bs-gray-200);
+}
+/* nav.module-menu .active {
+	background-color: var(--bs-cyan) !important;
+} */
+nav.module-menu .accordion-header:hover {
 	background-color: var(--bs-gray-300);
 }
