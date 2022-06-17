@@ -80,7 +80,7 @@ $(document).ready(function () {
 	};
 
 	// при клике по tab обновляем хеш в URL
-	$('a[role="tab').click(function (e) {
+	$('#content a[role="tab"]').click(function (e) {
 		window.location.hash = this.hash;
 	});
 	// обрабатываем хеш из URL (открываем вкладку)

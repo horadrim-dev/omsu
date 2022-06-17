@@ -61,9 +61,10 @@ def get_content(from_menu_id:int=None, from_slug:str=None, module:Module=None):
             })
     if menus:
         for menu in menus:
-            contents['menus'].append(
-                menu.get_subitems()
-            )
+            contents['menus'].append({
+                'parent': menu,
+                'subitems': menu.get_subitems()
+            })
 
     # собираем информацию
     num_total = 0
@@ -137,5 +138,7 @@ def load_feed_page(request, slug, *args, **kwargs):
     context['posts'] = feed.get_page(
         request.GET.get('page')
     )
+    context['module_id'] = request.GET.get('module_id') # для использования в качестве уникального id в шаблоне
+    context['layout'] = request.GET.get('layout')
 
     return render(request, 'content/post_list.html', context)

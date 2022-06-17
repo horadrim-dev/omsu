@@ -174,3 +174,21 @@ nav.module-menu .accordion .accordion .accordion .accordion-item {
 nav.module-menu .accordion-header:hover {
 	background-color: var(--bs-gray-300);
 }
+/* TABS / PILLS */
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  color: inherit;
+  background: none;
+  border-color: var(--bs-nav-tabs-link-active-border-color);
+}
+.nav-link {
+  color: inherit;
+}
+.nav-link:focus, .nav-link:hover {
+  color: inherit;
+}
+.module .tab-content {
+	border: var(--bs-border-width) solid transparent;
+	border-color: var(--bs-border-color);
+	padding: 1.5rem;
+	margin-bottom: 1rem;
+}

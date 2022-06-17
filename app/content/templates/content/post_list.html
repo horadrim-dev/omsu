@@ -1,52 +1,66 @@
-<div id="{{feed.alias}}-page-{{posts.number}}">
+<div id="module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-page-{{posts.number}}">
     <ul class="list-group list-group-flush">
     {% for post in posts %}
         <li class="list-group-item my-2">
+            <div class="d-flex align-items-end justify-content-between">
+                <div class="mb-0"> 
+                    <div>
+                    <a href="{{post.alias}}" class="w-100">
+                        <h5>{{post.title}}</h5>
+                    </a>
+                    </div>
 
-            <div class="d-flex justify-content-between mb-0"> 
-                <a href="{{post.alias}}">
-                    <h4>{{post.title}}</h5>
-                </a>
-            </div>
-            <div class="d-flex flex-nowrap">
-                <small class="text-muted me-2" 
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    data-bs-custom-class="custom-tooltip"
-                    title="Дата публикации"
-                    >
-                    {{post.published_at}}
-                </small>
-                <small class="text-muted me-2" 
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    data-bs-custom-class="custom-tooltip"
-                    title="Количество просмотров"
-                    >
-                    <i class="bi bi-eye me-0"></i>
-                    {{post.hits}}
-                </small>
-                {% if post.count_attachments %}
-                <small class="text-muted me-2"
-                    data-bs-toggle="tooltip" data-bs-placement="top"
-                    data-bs-custom-class="custom-tooltip"
-                    title="Количество вложений"
-                    >
-                    <i class="bi bi-paperclip me-0"></i>
-                    {{post.count_attachments}}
-                </small>
-                {% endif %}
-            </div>
-            {% comment %} {% if layout != 'compact' %} {% endcomment %}
-            <div class="mt-1">
-                {{post.intro_text|safe}}
-            </div>
-            {% comment %} {% endif %} {% endcomment %}
-            <div class="clearfix"></div>
-            <div class="d-flex justify-content-end">
-                <a href="{{post.alias}}" type="button" class="btn btn-outline-primary">
+                    <div class="d-flex flex-nowrap">
+                        <small class="text-muted me-2" 
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            title="Дата публикации"
+                            >
+                            {{post.published_at}}
+                        </small>
+                        <small class="text-muted me-2" 
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            title="Количество просмотров"
+                            >
+                            <i class="bi bi-eye me-0"></i>
+                            {{post.hits}}
+                        </small>
+                        {% if post.count_attachments %}
+                        <small class="text-muted me-2"
+                            data-bs-toggle="tooltip" data-bs-placement="top"
+                            data-bs-custom-class="custom-tooltip"
+                            title="Количество вложений"
+                            >
+                            <i class="bi bi-paperclip me-0"></i>
+                            {{post.count_attachments}}
+                        </small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if layout == 'compact' %}
+                <div class="flex-shrink-1">
+                <a href="{{post.alias}}" type="button" class="btn btn-outline-primary flex-shrink-1">
                     <i class="bi bi-book me-0"></i>
                     Читать
                 </a>
+                </div>
+                {% endif %}
             </div>
+
+            {% if layout != 'compact' %}
+                <div class="mt-1">
+                    {{post.intro_text|safe}}
+                </div>
+                <div class="clearfix"></div>
+                <div class="d-flex justify-content-end">
+                    <a href="{{post.alias}}" type="button" class="btn btn-outline-primary">
+                        <i class="bi bi-book me-0"></i>
+                        Читать
+                    </a>
+                </div>
+            {% endif %}
         </li>
     {% endfor %}
     </ul>
@@ -54,19 +68,19 @@
 
 {% if posts.has_next %}
 
-    <div id="{{feed.alias}}-loadbox" class="d-grid gap-2">
+    <div id="module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadbox" class="d-grid gap-2">
         <div class="my-2 border-top"></div>
         <button 
-        id="{{feed.alias}}-loadmore"
+        id="module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadmore"
         style="height:75px;"
         class="btn btn-outline-primary" type="button">Загрузить еще</button>
     </div>
 
     <script>
-        $('#{{feed.alias}}-loadmore').on('click', function (e) {
-            var target = "#{{feed.alias}}-loadbox";
+        $('#module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadmore').on('click', function (e) {
+            var target = "#module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadbox";
             $.ajax({
-                url: "{% url 'feed_page' feed.alias %}?page={{posts.next_page_number}}",
+                url: "{% url 'feed_page' feed.alias %}?page={{posts.next_page_number}}&module_id={{module.obj.id}}{{module_id}}{% if layout %}&layout={{layout}}{%endif%}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){
@@ -79,7 +93,7 @@
                     $(target).replaceWith(data); // добавляем полученный html
                     // прокрутка к блоку
                     $("html,body").animate({
-                        scrollTop: $('#{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100
+                        scrollTop: $('#module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100
                     }, 200);
                 },
                 complete: function (){

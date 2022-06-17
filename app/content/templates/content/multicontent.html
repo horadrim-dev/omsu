@@ -1,16 +1,16 @@
-<ul class="nav nav-pills nav-justified border-bottom mb-4 pb-4" id="pills-tab" role="tablist">
+<ul class="nav nav-pills nav-justified border-bottom mb-4 pb-4" id="module-{{module.obj.id}}-pills-tab" role="tablist">
 
     {% for single_post in contents.posts %}
     <li class="nav-item" role="presentation">
         <a href="#{{single_post.post.alias}}"
         {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
             class="nav-link {% if forloop.first %}active{% endif %}" 
-            id="pills-tab-post-{{forloop.counter}}" 
+            id="module-{{module.obj.id}}-pills-tab-post-{{forloop.counter}}" 
             data-bs-toggle="pill"
-            data-bs-target="#pills-post-{{forloop.counter}}" 
+            data-bs-target="#module-{{module.obj.id}}-pills-post-{{forloop.counter}}" 
             type="button" 
             role="tab" 
-            aria-controls="pills-post-{{forloop.counter}}"
+            aria-controls="module-{{module.obj.id}}-pills-post-{{forloop.counter}}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
             >
             {{ single_post.post.title }}
@@ -22,12 +22,12 @@
     <li class="nav-item" role="presentation">
         <a href="#{{postfeed.feed.alias}}"
             class="nav-link " 
-            id="pills-tab-feed-{{forloop.counter}}" 
+            id="module-{{module.obj.id}}-pills-tab-feed-{{forloop.counter}}" 
             data-bs-toggle="pill"
-            data-bs-target="#pills-feed-{{forloop.counter}}" 
+            data-bs-target="#module-{{module.obj.id}}-pills-feed-{{forloop.counter}}" 
             type="button" 
             role="tab" 
-            aria-controls="pills-feed-{{forloop.counter}}"
+            aria-controls="module-{{module.obj.id}}-pills-feed-{{forloop.counter}}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
             >
             <i class="bi bi-newspaper"></i>
@@ -37,13 +37,13 @@
     {% endfor %}
 </ul>
 
-<div class="tab-content" id="pills-tabContent">
+<div class="tab-content" id="module-{{module.obj.id}}-pills-tabContent">
 
     {% for single_post in contents.posts %}
     <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
-        id="pills-post-{{forloop.counter}}" 
+        id="module-{{module.obj.id}}-pills-post-{{forloop.counter}}" 
         role="tabpanel"
-        aria-labelledby="pills-tab-post-{{forloop.counter}}"
+        aria-labelledby="module-{{module.obj.id}}-pills-tab-post-{{forloop.counter}}"
         >
 
         {% include 'content/post.html' %}
@@ -53,9 +53,9 @@
 
     {% for postfeed in contents.postfeeds %}
     <div class="tab-pane fade " 
-        id="pills-feed-{{forloop.counter}}" 
+        id="module-{{module.obj.id}}-pills-feed-{{forloop.counter}}" 
         role="tabpanel"
-        aria-labelledby="pills-tab-feed-{{forloop.counter}}"
+        aria-labelledby="module-{{module.obj.id}}-pills-tab-feed-{{forloop.counter}}"
         >
 
         {% include 'content/postfeed.html' with layout='compact' %}
