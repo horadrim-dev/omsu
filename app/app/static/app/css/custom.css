@@ -10,9 +10,8 @@ a.zoom-wrapper:hover img {
 	-webkit-transform: scale(1.02);
 	transform: scale(1.02);
 }
-/* .container {
-	max-width: 1500px;
-} */
+/* ОБЩИЕ */
+
 body {
 	/* background: #f6f9ff; */
 	background: #fdfdfd;
@@ -47,7 +46,22 @@ box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 #content .card-text{
 color: #777;
 }
-
+.module .btn {
+	color:inherit;
+	border-color: inherit;
+}
+.list-group-item {
+	background-color: inherit;
+	color: inherit;
+}
+.bg-primary a,
+.bg-secondary a,
+.bg-success a,
+.bg-dark a,
+.bg-danger a{
+	color: #fff;
+	text-decoration: none;
+}
 #right-side .card:hover{
 	box-shadow: none;
 }
@@ -188,7 +202,78 @@ nav.module-menu .accordion-header:hover {
 }
 .module .tab-content {
 	border: var(--bs-border-width) solid transparent;
-	border-color: var(--bs-border-color);
+	border-width: 0 1px 1px 1px;
+	border-color:var(--bs-border-color);
 	padding: 1.5rem;
 	margin-bottom: 1rem;
+}
+.nav-fill .nav-item .nav-link, .nav-justified .nav-item .nav-link {
+  height: 100%;
+}
+.nav-tabs {
+	border-bottom:none;
+}
+.nav-tabs .nav-item .nav-link {
+	border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color);
+	/* border-bottom-color: inherit; */
+	display: flex !important;
+	justify-content: center !important;
+	align-items: center !important;
+}
+.nav-tabs .nav-item .nav-link.active{
+	/* border-color:inherit; */
+	border-bottom: var(--bs-nav-tabs-border-width) solid transparent;
+}
+/* SLIDER */
+.carousel-slider .carousel-indicators {
+	position: relative;
+	margin-left: 0.5rem;
+	margin-right: 0;
+	display: block;
+	text-align: left;
+}
+.carousel-slider .carousel-indicators [data-bs-target] {
+	height: auto;
+	background: none;
+	text-indent: 0;
+	border:none;
+}
+.carousel-slider .carousel-indicators button {
+	width: 100%;
+	text-align: left !important;
+} 
+.carousel-slider .carousel-item {
+	overflow: hidden;
+}
+.carousel-slider .carousel-item img {
+	height: 400px;
+	max-height: 400px;
+	max-width:100%;
+	object-fit: cover;
+}
+.carousel-slider .slider-description {
+	background: black;
+	position: absolute;
+	left:0;
+	right:0;
+	bottom:0;
+	top:auto;
+	color: var(--bs-light);
+	height:90px;
+	padding: 1rem;
+	/* --bs-bg-opacity: 0.5; */
+}
+.carousel-slider .slider-description:hover {
+	height:100%;
+	transition: height .3s;
+}
+.carousel-slider .slider-description .readmore{
+	display:none;
+	position: absolute;
+	bottom:0;
+	right:0;
+	margin: 0 1rem 1rem 0;
+}
+.carousel-slider .slider-description:hover .readmore {
+	display: block;
 }

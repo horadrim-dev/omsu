@@ -5,6 +5,8 @@
     <section>
         {% if section.obj.indents %}
         <div class="container">
+        {% else %}
+        <div class="container-fluid">
         {% endif %}
             <div class="row justify-content-center {{section.obj.classes}}">
                 {% for column in section.columns %}
@@ -62,9 +64,9 @@
                 </div>
                 {% endfor %}
             </div>
-        {% if section.obj.indents %}
+        {% comment %} {% if section.obj.indents %} {% endcomment %}
         </div>
-        {% endif %}
+        {% comment %} {% endif %} {% endcomment %}
     </section>
     {% endfor %}
 

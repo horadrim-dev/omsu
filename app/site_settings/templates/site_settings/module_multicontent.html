@@ -1,10 +1,10 @@
-<ul class="nav nav-tabs nav-justified border-bottom mt-4" id="module-{{module.obj.id}}-tabs-tab" role="tablist">
+<ul class="nav nav-tabs nav-justified mt-4 " id="module-{{module.obj.id}}-tabs-tab" role="tablist">
 
     {% for single_post in module.contents.posts %}
     <li class="nav-item" role="presentation">
         <a href="#{{single_post.post.alias}}"
         {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
-            class="nav-link {% if forloop.first %}active{% endif %}" 
+            class="nav-link p-3 {% if forloop.first %}active{% endif %}" 
             id="module-{{module.obj.id}}-tabs-tab-post-{{forloop.counter}}" 
             data-bs-toggle="tab"
             data-bs-target="#module-{{module.obj.id}}-tabs-post-{{forloop.counter}}" 
@@ -21,7 +21,7 @@
     {% for postfeed in module.contents.postfeeds %}
     <li class="nav-item" role="presentation">
         <a href="#{{postfeed.feed.alias}}"
-            class="nav-link " 
+            class="nav-link p-3" 
             id="module-{{module.obj.id}}-tabs-tab-feed-{{forloop.counter}}" 
             data-bs-toggle="tab"
             data-bs-target="#module-{{module.obj.id}}-tabs-feed-{{forloop.counter}}" 
@@ -30,7 +30,7 @@
             aria-controls="module-{{module.obj.id}}-tabs-feed-{{forloop.counter}}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
             >
-            <i class="bi bi-newspaper"></i>
+            <i class="bi bi-newspaper me-2"></i>
             {{ postfeed.feed.title }}
     </a>
     </li>
@@ -39,7 +39,7 @@
     {% for menu in module.contents.menus %}
     <li class="nav-item" role="presentation">
         <a href="#{{menu.obj.url}}"
-            class="nav-link " 
+            class="nav-link p-3" 
             id="module-{{module.obj.id}}-tabs-tab-menu-{{forloop.counter}}" 
             data-bs-toggle="tab"
             data-bs-target="#module-{{module.obj.id}}-tabs-menu-{{forloop.counter}}" 
@@ -48,7 +48,7 @@
             aria-controls="module-{{module.obj.id}}-tabs-menu-{{forloop.counter}}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
             >
-            <i class="bi bi-newspaper"></i>
+            <i class="bi bi-list me-2"></i>
             {{menu.parent.title}}
     </a>
     </li>

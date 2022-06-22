@@ -117,8 +117,16 @@ class Module(Base, OrderedModel):
 
     post_content = models.ForeignKey(
         Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
+
     feed_content = models.ForeignKey(
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
+    FEED_STYLE_CHOICES = [
+        ('compact_feed', 'Лента постов (только заголовки)'),
+        ('slider', 'Слайдер постов'),
+    ]
+    feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
+        verbose_name="Макет ленты постов")
+
     menu_content = models.ForeignKey(
         Menu, on_delete=models.SET_NULL, related_name="menu_content", verbose_name="Меню", blank=True, null=True)
     MENU_STYLE_CHOICES = [
@@ -128,6 +136,8 @@ class Module(Base, OrderedModel):
     ]
     menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
         verbose_name="Макет меню")
+
+
     class Meta:
         verbose_name = "Модуль"
         verbose_name_plural = "Модули"

@@ -1,8 +1,10 @@
-{{ postfeed.feed.description|safe }}
-
-<div class="clearfix"></div>
-
 <div id="module-{{module.obj.id}}-feed-{{postfeed.feed.alias}}">
+
+    {% if layout != 'compact' %}
+        {{ postfeed.feed.description|safe }}
+        <div class="clearfix"></div>
+    {% endif %}
+
     {% with postfeed.feed as feed %}
     {% with postfeed.posts as posts %}
         {% include 'content/post_list.html' %}

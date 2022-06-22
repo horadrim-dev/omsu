@@ -1,0 +1,64 @@
+<div id="module-{{module.obj.id}}-feed-slider-{{postfeed.feed.alias}}">
+
+    <div id="carouselExampleCaptions" class="carousel carousel-dark carousel-slider slide row" data-bs-ride="carousel">
+        <div class="carousel-inner col">
+
+            {% for post in postfeed.posts %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                {% if post.image %}
+                    <img src="{{post.image.url}}" class="img-fluid d-block w-100 h-auto" alt="{{post.title}}">
+                {% else %}
+                    <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="100%" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: First slide" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#f5f5f5"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em">First slide</text></svg>
+                {% endif %}
+                <div class="slider-description bg-dark bg-opacity-50">
+                    <h5 class="mb-5">{{post.title}}</h5>
+                    <p>{{post.intro_text|striptags|truncatechars:600}}</p>
+                    <a href="{{post.alias}}" type="button" class="readmore btn btn-outline-secondary float-end">
+                        <i class="bi bi-book me-0"></i>
+                        Читать
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+
+            {% comment %} <div class="carousel-item">
+                <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: First slide" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#f5f5f5"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em">First slide</text></svg>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>Second slide label</h5>
+                    <p>Some representative placeholder content for the second slide.</p>
+                </div>
+            </div> {% endcomment %}
+        </div>
+        <div class="carousel-indicators col-12 col-xl-4 list-group list-group-flush px-3">
+            {% comment %} <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button> {% endcomment %}
+            {% for post in postfeed.posts %}
+            <div class="list-group-item p-0">
+                <button type="button" 
+                    data-bs-target="#carouselExampleCaptions" 
+                    data-bs-slide-to="{{forloop.counter0}}" 
+                    aria-label="{{post.alias}}"
+                    {% if forloop.first %}
+                    class="active" aria-current="true"
+                    {% endif %}
+                    >
+                    <div class="py-3">
+                        <h5>{{post.title}}</h5>
+                        <small class="text-muted">{{post.published_at}}</small>
+                        {% comment %} <p class="card-text">{{post.intro_text|striptags|truncatechars:50 }}</p> {% endcomment %}
+                    </div>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+        {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Предыдущий</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Следующий</span>
+        </button> {% endcomment %}
+    </div>
+</div>

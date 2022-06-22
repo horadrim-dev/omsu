@@ -17,6 +17,26 @@
 
             {% endif %}
         {% endif %}
+
+        {% if module.contents.info.count.posts %}
+
+            {% include 'content/post.html' with single_post=module.contents.posts.0 %}
+
+        {% endif %}
+
+        {% if module.contents.info.count.postfeeds %}
+
+            {% if module.obj.feed_style == 'compact_feed' %}
+
+                {% include 'content/postfeed.html' with postfeed=module.contents.postfeeds.0 layout='compact'%}
+
+            {% elif module.obj.feed_style == 'slider' %}
+
+                {% include 'content/postfeed_slider.html' with postfeed=module.contents.postfeeds.0 %}
+
+            {% endif %}
+        {% endif %}
+
     {% endif %}
 
 </div>

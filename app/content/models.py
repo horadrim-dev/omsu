@@ -95,6 +95,8 @@ class Post(Content):
     feed = models.ForeignKey(
         Feed, on_delete=models.CASCADE, verbose_name="Лента постов", blank=True, null=True)
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
+    image = models.ImageField(upload_to="uploads/%Y/%m/%d/", verbose_name="Изображение поста",
+        blank=True, null=True)
     intro_text = RichTextField(blank=True)
     text = RichTextUploadingField()
 
