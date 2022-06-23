@@ -130,7 +130,7 @@ class Menu(models.Model):
     def update_list_order(self, parent_id=None, start_order=1):
             '''обновляет порядок всех элементов при выводе списком'''
             # получаем соседние объекты
-            menus = list(Menu.objects.filter(parent_id=parent_id))
+            menus = list(Menu.objects.filter(parent_id=parent_id).order_by('order'))
             if len(menus) == 0:
                 return start_order
 

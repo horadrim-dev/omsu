@@ -18,7 +18,7 @@ class MenuAdmin(admin.ModelAdmin):
     #     "alias" : ("title",)
     # 
     form = MenuForm
-    list_display = ('leveled_title', 'id', 'alias', 'url', 'short_description', 'order', 'level', )
+    list_display = ('leveled_title', 'id', 'alias', 'url', 'short_description','list_order', 'order', 'level', )
 
     # def get_form(self, request, obj=None, **kwargs):
     #     if request.user.is_superuser:
