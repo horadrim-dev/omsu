@@ -22,6 +22,14 @@ body {
 #mainmenu-bar {
 	z-index:1000;
 }
+tbody, td, tfoot, th, thead, tr {
+  /* border-color: inherit; */
+  /* border-style: solid; */
+  border-width: 1px;
+}
+.container-fluid {
+	--bs-gutter-x: 0;
+}
 /* #content,
 header,
 .right {
@@ -47,8 +55,15 @@ box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 color: #777;
 }
 .module .btn {
-	color:inherit;
+	/* color:inherit; */
 	border-color: inherit;
+}
+.bg-primary .module .btn
+.bg-secondary .module .btn,
+.bg-success .module .btn,
+.bg-dark .module .btn,
+.bg-danger .module .btn{
+	color:inherit;
 }
 .list-group-item {
 	background-color: inherit;

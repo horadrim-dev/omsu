@@ -6,7 +6,7 @@
             data-bs-custom-class="custom-tooltip"
             title="Дата публикации"
             >
-            {{single_post.post.published_at}}
+            {{post.published_at}}
         </small>
         <small class="text-muted" 
             data-bs-toggle="tooltip" data-bs-placement="top"
@@ -14,15 +14,15 @@
             title="Количество просмотров"
             >
             <i class="bi bi-eye me-1"></i>
-            {{single_post.post.hits}}
+            {{post.hits}}
         </small>
     </div>
     <div class="text">
-        {{ single_post.post.text|safe }}
+        {{post.text|safe }}
     </div>
     <div class="clearfix"></div>
 
-    {% if single_post.attachments %}
+    {% if attachments %}
     <div class="attachments mt-5">
         <div class="d-flex justify-content-between">
             <h4 class="mb-3"><i class="bi bi-paperclip me-1"></i>Вложения:</h4>
@@ -34,7 +34,7 @@
             </a> {% endcomment %}
         </div>
         <ul class="list-group list-group-flush">
-            {% for attachment in single_post.attachments %}
+            {% for attachment in attachments %}
             <a class="fs-6 text-decoration-none" 
                 {% if attachment.extension == 'pdf' %}
                 target="_blank"

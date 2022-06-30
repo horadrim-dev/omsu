@@ -27,12 +27,13 @@ def get_content_if_exists(slug=None):
 
 def get_content(from_menu_id:int=None, from_slug:str=None, module:Module=None):
     ''' Возвращает контент, привязанный к меню'''
+    if module:
+        return module.modulecontent_set.all()
     has_content = False
     contents = {}
     contents['posts'] = []
     contents['postfeeds'] = []
     contents['menus'] = []
-
     if from_menu_id:
         posts = Post.objects.published().filter(menu_id=from_menu_id) # собираем посты
         feeds = Feed.objects.published().filter(menu__id=from_menu_id) # собираем ленты
@@ -41,10 +42,15 @@ def get_content(from_menu_id:int=None, from_slug:str=None, module:Module=None):
         posts =  Post.objects.published().filter(alias=from_slug)
         feeds = None
         menus = None
-    elif module:
-        posts = Post.objects.published().filter(id=module.post_content_id)
-        feeds = Feed.objects.published().filter(id=module.feed_content_id)
-        menus = Menu.objects.published().filter(id=module.menu_content_id)
+    # elif module:
+        # posts = Post.objects.published().filter(id=module.post_content_id)
+        # feeds = Feed.objects.published().filter(id=module.feed_content_id)
+        # # menus = Menu.objects.published().filter(id=module.menu_content_id)
+        # posts = []
+        # feeds = None
+        # menus = []
+        # assert False, (module, Menu.objects.published)
+        # assert False, (module, module.modulecontent_set.all())
     # post_ids = posts.values_list('id', flat=True)
     # attachments = Attachment.objects.filter(post__in=post_ids)#[x.attachment_set.all() for x in contents['posts']]
     for post in posts:
@@ -53,17 +59,18 @@ def get_content(from_menu_id:int=None, from_slug:str=None, module:Module=None):
             'attachments': post.get_attachments()
         })
 
-    if feeds:
-        for feed in feeds:
-            contents['postfeeds'].append({
-                'feed': feed,
-                'posts': feed.get_page(page=1),
-            })
     if menus:
         for menu in menus:
             contents['menus'].append({
                 'parent': menu,
                 'subitems': menu.get_subitems()
+            })
+
+    if feeds:
+        for feed in feeds:
+            contents['postfeeds'].append({
+                'feed': feed,
+                'posts': feed.get_page(page=1),
             })
 
     # собираем информацию

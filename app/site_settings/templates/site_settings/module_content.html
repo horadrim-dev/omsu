@@ -1,42 +1,52 @@
 {% comment %} {% lorem 30 w %} {% endcomment %}
 <div class="module">
 
-    {% if module.contents.info.count.total > 1 %}
+    {{module.obj.pre_html|safe}}
 
-        {% include 'site_settings/module_multicontent.html' %}
+    <div class="clearfix"></div>
+
+    {% if module.contents|length > 1 %}
+
+        {% include 'site_settings/module_multicontent.html' with contents=module.contents %}
 
     {% else %}
-        {% if module.contents.info.count.menus %}
-            {% if module.obj.menu_style == 'vertical_with_submenus'  or module.obj.menu_style == 'vertical_without_submenus' %}
 
-                {% include 'menus/menu_vertical.html' with menu_tree=module.contents.menus.0.subitems layout=module.obj.menu_style %}
+        {% with module.contents.0 as content %}
 
-            {% elif module.obj.menu_style == 'horizontal_blocks' %}
-        
-                {% include 'menus/menu_blocks.html' with menu_tree=module.contents.menus.0.subitems  %}
+            {% if content.content_type == 'menu' %}
+                {% if content.menu_style == 'vertical_with_submenus'  or content.menu_style == 'vertical_without_submenus' %}
+
+                    {% include 'menus/menu_vertical.html' with menu_tree=content.menu.get_subitems layout=content.menu_style %}
+
+                {% elif content.menu_style == 'horizontal_blocks' %}
+            
+                    {% include 'menus/menu_blocks.html' with menu_tree=content.menu.get_subitems  %}
+
+                {% endif %}
+            {% endif %}
+
+            {% if content.content_type == 'post' %}
+
+                {% include 'content/post.html' with post=content.post attachments=content.post.get_attachments %}
 
             {% endif %}
-        {% endif %}
 
-        {% if module.contents.info.count.posts %}
+            {% if content.content_type == 'feed' %}
 
-            {% include 'content/post.html' with single_post=module.contents.posts.0 %}
+                {% if content.feed_style == 'compact_feed' %}
 
-        {% endif %}
+                    {% include 'content/postfeed.html' with feed=content.feed posts=content.feed.get_page layout='compact'%}
 
-        {% if module.contents.info.count.postfeeds %}
+                {% elif content.feed_style == 'slider' %}
 
-            {% if module.obj.feed_style == 'compact_feed' %}
+                    {% include 'content/postfeed_slider.html' with feed=content.feed posts=content.feed.get_page %}
 
-                {% include 'content/postfeed.html' with postfeed=module.contents.postfeeds.0 layout='compact'%}
-
-            {% elif module.obj.feed_style == 'slider' %}
-
-                {% include 'content/postfeed_slider.html' with postfeed=module.contents.postfeeds.0 %}
-
+                {% endif %}
             {% endif %}
-        {% endif %}
-
+        {% endwith %}
     {% endif %}
 
+    {{module.obj.post_html|safe}}
+
+    <div class="clearfix"></div>
 </div>

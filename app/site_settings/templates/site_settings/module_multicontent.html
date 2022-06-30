@@ -1,102 +1,58 @@
 <ul class="nav nav-tabs nav-justified mt-4 " id="module-{{module.obj.id}}-tabs-tab" role="tablist">
 
-    {% for single_post in module.contents.posts %}
+    {% for content in contents %}
     <li class="nav-item" role="presentation">
-        <a href="#{{single_post.post.alias}}"
+        <a href="#"
         {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
             class="nav-link p-3 {% if forloop.first %}active{% endif %}" 
-            id="module-{{module.obj.id}}-tabs-tab-post-{{forloop.counter}}" 
+            id="module-{{module.obj.id}}-tabs-tab-content-{{forloop.counter}}" 
             data-bs-toggle="tab"
-            data-bs-target="#module-{{module.obj.id}}-tabs-post-{{forloop.counter}}" 
+            data-bs-target="#module-{{module.obj.id}}-tabs-content-{{forloop.counter}}" 
             type="button" 
             role="tab" 
-            aria-controls="module-{{module.obj.id}}-tabs-post-{{forloop.counter}}"
+            aria-controls="module-{{module.obj.id}}-tabs-content-{{forloop.counter}}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
             >
-            {{ single_post.post.title }}
-    </a>
+            {% if content.content_type == 'menu' %}
+                <i class="bi bi-list me-2"></i>
+                {{content.menu.title}}
+            {% elif content.content_type == 'post' %}
+                {{content.post.title}}
+            {% elif content.content_type == 'feed' %}
+                <i class="bi bi-newspaper me-2"></i>
+                {{content.feed.title}}
+            {% endif %}
+        </a>
     </li>
     {% endfor %}
 
-    {% for postfeed in module.contents.postfeeds %}
-    <li class="nav-item" role="presentation">
-        <a href="#{{postfeed.feed.alias}}"
-            class="nav-link p-3" 
-            id="module-{{module.obj.id}}-tabs-tab-feed-{{forloop.counter}}" 
-            data-bs-toggle="tab"
-            data-bs-target="#module-{{module.obj.id}}-tabs-feed-{{forloop.counter}}" 
-            type="button" 
-            role="tab" 
-            aria-controls="module-{{module.obj.id}}-tabs-feed-{{forloop.counter}}"
-            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-            >
-            <i class="bi bi-newspaper me-2"></i>
-            {{ postfeed.feed.title }}
-    </a>
-    </li>
-    {% endfor %}
-
-    {% for menu in module.contents.menus %}
-    <li class="nav-item" role="presentation">
-        <a href="#{{menu.obj.url}}"
-            class="nav-link p-3" 
-            id="module-{{module.obj.id}}-tabs-tab-menu-{{forloop.counter}}" 
-            data-bs-toggle="tab"
-            data-bs-target="#module-{{module.obj.id}}-tabs-menu-{{forloop.counter}}" 
-            type="button" 
-            role="tab" 
-            aria-controls="module-{{module.obj.id}}-tabs-menu-{{forloop.counter}}"
-            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
-            >
-            <i class="bi bi-list me-2"></i>
-            {{menu.parent.title}}
-    </a>
-    </li>
-    {% endfor %}
 </ul>
 
 <div class="tab-content p-3" id="module-{{module.obj.id}}-tabs-tabContent">
 
-    {% for single_post in module.contents.posts %}
+    {% for content in contents %}
     <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
-        id="module-{{module.obj.id}}-tabs-post-{{forloop.counter}}" 
+        id="module-{{module.obj.id}}-tabs-content-{{forloop.counter}}" 
         role="tabpanel"
-        aria-labelledby="module-{{module.obj.id}}-tabs-tab-post-{{forloop.counter}}"
+        aria-labelledby="module-{{module.obj.id}}-tabs-tab-content-{{forloop.counter}}"
         >
 
-        {% include 'content/post.html' %}
+        {% if content.content_type == 'menu' %}
+            {% if content.menu_style == 'vertical_with_submenus'  or content.menu_style == 'vertical_without_submenus' %}
+
+                {% include 'menus/menu_vertical.html' with menu_tree=content.menu.get_subitems layout=content.menu_style %}
+
+            {% elif content.menu_style == 'horizontal_blocks' %}
         
-    </div>
-    {% endfor %}
+                {% include 'menus/menu_blocks.html' with menu_tree=content.menu.get_subitems  %}
 
-    {% for postfeed in module.contents.postfeeds %}
-    <div class="tab-pane fade " 
-        id="module-{{module.obj.id}}-tabs-feed-{{forloop.counter}}" 
-        role="tabpanel"
-        aria-labelledby="module-{{module.obj.id}}-tabs-tab-feed-{{forloop.counter}}"
-        >
-
-        {% include 'content/postfeed.html' with layout='compact' %}
-
-    </div>
-    {% endfor %}
-
-    {% for menu in module.contents.menus %}
-    <div class="tab-pane fade " 
-        id="module-{{module.obj.id}}-tabs-menu-{{forloop.counter}}" 
-        role="tabpanel"
-        aria-labelledby="module-{{module.obj.id}}-tabs-tab-menu-{{forloop.counter}}"
-        >
-
-        {% if module.obj.menu_style == 'vertical_with_submenus'  or module.obj.menu_style == 'vertical_without_submenus' %}
-
-            {% include 'menus/menu_vertical.html' with menu_tree=menu.subitems layout=module.obj.menu_style %}
-
-        {% elif module.obj.menu_style == 'horizontal_blocks' %}
-    
-            {% include 'menus/menu_blocks.html' with menu_tree=menu.subitems  %}
-
+            {% endif %}
+        {% elif content.content_type == 'post' %}
+            {% include 'content/post.html' with post=content.post attachments=content.post.get_attachments %}
+        {% elif content.content_type == 'feed' %}
+            {% include 'content/postfeed.html' with feed=content.feed posts=content.feed.get_page layout='compact' %}
         {% endif %}
+
         {% comment %} {% include 'site_settings/postfeed.html' with layout='compact' %} {% endcomment %}
 
     </div>

@@ -2,6 +2,7 @@ from django.db import models, transaction
 # from django.forms import ValidationError
 from content.models import Post, Feed
 from app.models import OrderedModel
+from ckeditor_uploader.fields import RichTextUploadingField
 from menus.models import Menu
 import datetime
 # Create your models here.
@@ -115,28 +116,8 @@ class Module(Base, OrderedModel):
     published_at = models.DateField(default=datetime.date.today, 
                                     verbose_name="Дата публикации")
 
-    post_content = models.ForeignKey(
-        Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
-
-    feed_content = models.ForeignKey(
-        Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
-    FEED_STYLE_CHOICES = [
-        ('compact_feed', 'Лента постов (только заголовки)'),
-        ('slider', 'Слайдер постов'),
-    ]
-    feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
-        verbose_name="Макет ленты постов")
-
-    menu_content = models.ForeignKey(
-        Menu, on_delete=models.SET_NULL, related_name="menu_content", verbose_name="Меню", blank=True, null=True)
-    MENU_STYLE_CHOICES = [
-        ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
-        ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
-        ('vertical_without_submenus', 'Вертикальное меню (без дочерних меню)'),
-    ]
-    menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
-        verbose_name="Макет меню")
-
+    pre_html = RichTextUploadingField(default="", verbose_name="Текст в начале модуля", blank=True, null=True)
+    post_html = RichTextUploadingField(default="", verbose_name="Текст в конце модуля", blank=True, null=True)
 
     class Meta:
         verbose_name = "Модуль"
@@ -153,8 +134,53 @@ class Module(Base, OrderedModel):
                 list_of_objects = list(Module.objects.filter(column=self.column).exclude(id=self.id))
             )
 
+class ModuleContent(OrderedModel):
 
+    module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Модуль")
 
+    CONTENT_TYPE_CHOICES = [
+        ('menu', 'Меню'),
+        ('post', 'Пост'),
+        ('feed', 'Лента постов'),
+    ]
+    content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
+        verbose_name="Тип контента")
+
+    post = models.ForeignKey(
+        Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
+
+    feed = models.ForeignKey(
+        Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
+    FEED_STYLE_CHOICES = [
+        ('compact_feed', 'Лента постов (только заголовки)'),
+        ('slider', 'Слайдер постов'),
+    ]
+    feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
+        verbose_name="Макет ленты постов")
+
+    menu = models.ForeignKey(
+        Menu, on_delete=models.SET_NULL, related_name="menu_content", verbose_name="Меню", blank=True, null=True)
+    MENU_STYLE_CHOICES = [
+        ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
+        ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
+        ('vertical_without_submenus', 'Вертикальное меню (без дочерних меню)'),
+    ]
+    menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
+        verbose_name="Макет меню")
+
+    class Meta:
+        verbose_name = "Контент"
+        verbose_name_plural = "Контент"
+        ordering = ['order']
+
+    def save(self, lock_recursion=False, *args, **kwargs):
+
+        super(ModuleContent, self).save(*args, **kwargs)
+
+        if not lock_recursion:
+            self.update_order(
+                list_of_objects = list(ModuleContent.objects.filter(module=self.module).exclude(id=self.id))
+            )
 
 
     # def check_width(self):

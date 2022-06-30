@@ -1,13 +1,11 @@
-<div id="module-{{module.obj.id}}-feed-{{postfeed.feed.alias}}">
+<div id="module-{{module.obj.id}}-feed-{{feed.alias}}">
 
     {% if layout != 'compact' %}
-        {{ postfeed.feed.description|safe }}
+        {{feed.description|safe }}
         <div class="clearfix"></div>
     {% endif %}
 
-    {% with postfeed.feed as feed %}
-    {% with postfeed.posts as posts %}
+    {% comment %} {% with postfeed.posts as posts %} {% endcomment %}
         {% include 'content/post_list.html' %}
-    {% endwith %}
-    {% endwith %}
+    {% comment %} {% endwith %} {% endcomment %}
 </div>

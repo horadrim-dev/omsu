@@ -1,11 +1,15 @@
 from django.contrib import admin, messages
-from .models import Section, Column, Module
+from .models import Section, Column, Module, ModuleContent
 from django import forms
 import uuid
 # Register your models here.
 
 class ColumnInline(admin.TabularInline):
     model = Column
+    exclude = []
+
+class ModuleContentInline(admin.TabularInline):
+    model = ModuleContent
     exclude = []
     # readonly_fields = ('hits',)
 class SectionAdmin(admin.ModelAdmin):
@@ -24,6 +28,9 @@ class ModuleAdmin(admin.ModelAdmin):
     list_filter = ('published', 'menu', 'column',)
     search_fields = ('title', )
     readonly_fields = ('id', )
+
+    inlines = (ModuleContentInline, )
+
     actions = ('publish', 'unpublish', 'duplicate')
 
     def publish(self, request, queryset):

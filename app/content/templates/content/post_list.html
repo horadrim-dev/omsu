@@ -2,7 +2,7 @@
     <ul class="list-group list-group-flush">
     {% for post in posts %}
         <li class="list-group-item my-2">
-            <div class="d-flex align-items-end justify-content-between">
+            <div class="d-flex align-items-center justify-content-between">
                 <div class="mb-0"> 
                     <div>
                     <a href="{{post.alias}}" class="w-100">
@@ -40,7 +40,7 @@
                 </div>
 
                 {% if layout == 'compact' %}
-                <div class="flex-shrink-1">
+                <div class="" style="min-width:6rem;">
                 <a href="{{post.alias}}" type="button" class="btn btn-outline-primary flex-shrink-1">
                     <i class="bi bi-book me-0"></i>
                     Читать

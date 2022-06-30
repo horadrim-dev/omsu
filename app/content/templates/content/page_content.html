@@ -7,15 +7,11 @@
 {% else %}
 
     {% if contents.info.count.posts %}
-        {% with contents.posts.0 as single_post %}
-            {% include 'content/post.html' %}
-        {% endwith %}
+        {% include 'content/post.html' with post=contents.posts.0.post attachments=contents.posts.0.attachments %}
     {% endif %}
 
     {% if contents.info.count.postfeeds %}
-        {% with contents.postfeeds.0 as postfeed %}
-            {% include 'content/postfeed.html' %}
-        {% endwith %}
+        {% include 'content/postfeed.html' with feed=contents.postfeeds.0.feed posts=contents.postfeeds.0.posts %}
     {% endif %}
 
 {% endif %}
