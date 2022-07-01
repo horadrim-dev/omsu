@@ -1,0 +1,66 @@
+<ul class="nav nav-tabs nav-justified mt-4 " id="module-{{module.obj.id}}-tabs-tab" role="tablist">
+
+    {% for content in contents %}
+    <li class="nav-item" role="presentation">
+        <a href="#"
+        {% comment %} <a href="#{{forloop.counter}}" {% endcomment %}
+            class="nav-link p-3 {% if forloop.first %}active{% endif %}" 
+            id="module-{{module.obj.id}}-tabs-tab-content-{{forloop.counter}}" 
+            data-bs-toggle="tab"
+            data-bs-target="#module-{{module.obj.id}}-tabs-content-{{forloop.counter}}" 
+            type="button" 
+            role="tab" 
+            aria-controls="module-{{module.obj.id}}-tabs-content-{{forloop.counter}}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            >
+            {% if content.content_type == 'menu' %}
+                <i class="bi bi-list me-2"></i>
+                {{content.menu.title}}
+            {% elif content.content_type == 'post' %}
+                {{content.post.title}}
+            {% elif content.content_type == 'feed' %}
+                <i class="bi bi-newspaper me-2"></i>
+                {{content.feed.title}}
+            {% endif %}
+        </a>
+    </li>
+    {% endfor %}
+
+</ul>
+
+<div class="tab-content p-3" id="module-{{module.obj.id}}-tabs-tabContent">
+
+    {% for content in contents %}
+    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" 
+        id="module-{{module.obj.id}}-tabs-content-{{forloop.counter}}" 
+        role="tabpanel"
+        aria-labelledby="module-{{module.obj.id}}-tabs-tab-content-{{forloop.counter}}"
+        >
+
+        {% if content.content_type == 'menu' %}
+
+            {% if content.menu_style == 'vertical_with_submenus'  or content.menu_style == 'vertical_without_submenus' %}
+                {% include 'menus/menu_vertical.html' with menu_tree=content.menu.get_subitems layout=content.menu_style %}
+            {% elif content.menu_style == 'horizontal_blocks' %}
+                {% include 'menus/menu_blocks.html' with menu_tree=content.menu.get_subitems  %}
+            {% endif %}
+        {% elif content.content_type == 'post' %}
+
+            {% include 'content/post.html' with post=content.post attachments=content.post.get_attachments %}
+
+        {% elif content.content_type == 'feed' %}
+
+            {% if content.feed_style == 'compact_feed' %}
+                {% include 'content/postfeed.html' with feed=content.feed posts=content.feed.get_page layout='compact' %}
+            {% elif content.feed_style == 'slider' %}
+                {% include 'content/postfeed_slider.html' with feed=content.feed posts=content.feed.get_page %}
+            {% endif %}
+
+        {% endif %}
+
+        {% comment %} {% include 'grid/postfeed.html' with layout='compact' %} {% endcomment %}
+
+    </div>
+    {% endfor %}
+
+</div>

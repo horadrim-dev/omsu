@@ -3,7 +3,7 @@
 from django.shortcuts import render
 from django.http import Http404 # JsonResponse
 from . models import Menu
-from site_settings.models import Section
+from grid.models import Section
 from content import views as content_views
 
 def get_menu_if_exists(slug=None):

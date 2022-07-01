@@ -209,9 +209,6 @@ nav.module-menu .accordion-header:hover {
   background: none;
   border-color: var(--bs-nav-tabs-link-active-border-color);
 }
-.nav-link {
-  color: inherit;
-}
 .nav-link:focus, .nav-link:hover {
   color: inherit;
 }

@@ -1,0 +1,79 @@
+{% extends 'app/base.html' %}
+
+{% block grid %}
+    {% for section in sections %}
+    <section>
+        {% if section.obj.indents %}
+        <div class="container">
+        {% else %}
+        <div class="container-fluid">
+        {% endif %}
+            <div class="row justify-content-center {{section.obj.classes}}">
+                {% for column in section.columns %}
+                <div class="
+                            {% if column.obj.width %}col-{{column.obj.width}}{% else %}col{% endif %}
+                            {{column.obj.classes}}" 
+                        >
+                    {% for module in column.modules %}
+
+                        {% if module.obj.name == "CONTENT" %}
+
+                            <div id="content" class="shadow p-5 m-3">
+
+                                {% if page.alias != 'home' %}
+                                <button id="back" type="button" class="btn float-start">
+                                    <i class="bi bi-arrow-left"></i>
+                                </button>
+                                {% endif %}
+
+                                <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
+
+                                {% block content %}
+                                {% endblock content %}
+                            </div>
+
+                        {% elif module.obj.standart_design %}
+
+                            <div class="card border-0 shadow m-3
+                                    {% if module.obj.centrize %}text-center{% endif %}
+                                    {{module.obj.classes}}"
+                                    >
+                                {% comment %} <div class="card-header">
+                                    {{module.name}}
+                                </div> {% endcomment %}
+                                <div class="card-body ">
+                                    {% if module.obj.show_title %}
+                                    <h5 class="card-title">{{module.obj.name}}</h5>
+                                    {% endif %}
+                                    <div class="card-text">
+                                        {% include 'grid/module_content.html' %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        {% else %}
+
+                            <div class="{% if module.obj.centrize %}text-center{% endif %}
+                                    {{module.obj.classes}}"
+                                    >
+                                {% if module.obj.show_title %}
+                                <h5>
+                                    {{module.obj.name}}
+                                </h5>
+                                {% endif %}
+                                
+                                {% include 'grid/module_content.html' %}
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        {% comment %} {% if section.obj.indents %} {% endcomment %}
+        </div>
+        {% comment %} {% endif %} {% endcomment %}
+    </section>
+    {% endfor %}
+
+{% endblock grid %}

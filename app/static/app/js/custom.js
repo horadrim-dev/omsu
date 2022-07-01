@@ -63,13 +63,13 @@ $(document).ready(function () {
 
 	// заставляем dropdown выпадать по hover (на больших экранах)
 	if ($(window).width() > '1000') {
-		$('.dropdown').hover(function () {
+		$('header .dropdown').hover(function () {
 			$(this).find('.dropdown-menu').first().addClass('show');
 		}, function () {
 			$(this).find('.dropdown-menu').first().removeClass('show');
 		});
 
-		$('.dropdown-menu .dropend, .dropdown-menu .dropstart').hover(function () {
+		$('header .dropdown-menu .dropend, header .dropdown-menu .dropstart').hover(function () {
 			$(this).find('.dropdown-menu').first().addClass('show');
 			$(this).find('.dropdown-menu').first().attr('data-bs-popper', 'none')
 		}, function () {
@@ -80,7 +80,7 @@ $(document).ready(function () {
 	};
 
 	// при клике по tab обновляем хеш в URL
-	$('a[role="tab').click(function (e) {
+	$('#content a[role="tab"]').click(function (e) {
 		window.location.hash = this.hash;
 	});
 	// обрабатываем хеш из URL (открываем вкладку)

@@ -3,7 +3,7 @@ from django.http import FileResponse, Http404
 from django.conf import settings
 from django.core.paginator import Paginator
 from .models import Content, Post, Feed, Attachment
-from site_settings.models import Module
+from grid.models import Module
 from menus.models import Menu
 import os
 # from menus.models import Menu

@@ -46,7 +46,7 @@
         aria-labelledby="module-{{module.obj.id}}-pills-tab-post-{{forloop.counter}}"
         >
 
-        {% include 'content/post.html' %}
+        {% include 'content/post.html' with post=single_post.post attachments=single_post.attachments %}
         
     </div>
     {% endfor %}
@@ -58,7 +58,7 @@
         aria-labelledby="module-{{module.obj.id}}-pills-tab-feed-{{forloop.counter}}"
         >
 
-        {% include 'content/postfeed.html' with layout='compact' %}
+        {% include 'content/postfeed.html' with feed=postfeed.feed posts=postfeed.posts layout='compact' %}
 
     </div>
     {% endfor %}
