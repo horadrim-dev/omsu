@@ -1,5 +1,5 @@
 {% load static %}
-{% load render_menubar %}
+{% comment %} {% load render_menubar %} {% endcomment %}
 <header>
     <div id="topmenu-bar">
         <div class="text-end py-2 me-4">
@@ -36,7 +36,8 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbar-content">
 
-                    {% render_menubar maxlevel=3 %}
+                    {% comment %} {% render_menubar maxlevel=3 %} {% endcomment %}
+                    {% include 'menus/menubar.html' with menu_tree=main_menu_tree %}
 
                     <form class="d-flex ms-auto">
                         <div class="input-group">

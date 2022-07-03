@@ -42,6 +42,7 @@ def menus(request, *args, **kwargs):
                 break
 
 
+    main_menu_tree = Menu.get_subitems(parent=None, maxlevel=3) #Menu.objects.filter(parent_id=current_menu.id)
     menu_tree = current_menu.get_subitems() #Menu.objects.filter(parent_id=current_menu.id)
 
     sections = [
@@ -62,6 +63,7 @@ def menus(request, *args, **kwargs):
         # 'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,
+        'main_menu_tree': main_menu_tree,
         'menu_tree': menu_tree,
         'sections': sections
     }
