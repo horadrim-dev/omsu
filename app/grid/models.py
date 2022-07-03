@@ -135,7 +135,6 @@ class Module(Base, OrderedModel):
             )
 
 class ModuleContent(OrderedModel):
-
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Модуль")
 
     CONTENT_TYPE_CHOICES = [
@@ -146,6 +145,8 @@ class ModuleContent(OrderedModel):
     ]
     content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
         verbose_name="Тип контента")
+
+    # называть поля с контентом нужно с содержанием названия CONTENT_TYPE (для работы JS) (пример: post,post_style,hzpost)
 
     post = models.ForeignKey(
         Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
@@ -182,6 +183,15 @@ class ModuleContent(OrderedModel):
             self.update_order(
                 list_of_objects = list(ModuleContent.objects.filter(module=self.module).exclude(id=self.id))
             )
+
+    def __str__(self):
+        if self.content_type == 'menu':
+            return 'Меню: ({})'.format(self.menu.title) if self.menu else 'Не выбран'
+        elif self.content_type == 'feed':
+            return 'Лента постов: ({})'.format(self.feed.title) if self.feed else 'Не выбран'
+        elif self.content_type == 'post':
+            return 'Пост: ({})'.format(self.post.title) if self.post else 'Не выбран'
+
 
 
     # def check_width(self):
