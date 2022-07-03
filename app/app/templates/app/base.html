@@ -31,6 +31,7 @@
 
   <div id="breadcrumbs">
     {% comment %} {% block breadcrumbs %}{% endcomment %}
+      {{bc_items}}
       {% if bc_items %}
           {% comment %} {% render_breadcrumbs bc_items %} {% endcomment %}
         {% include 'app/breadcrumbs.html' with breadcrumbs_items=bc_items %}

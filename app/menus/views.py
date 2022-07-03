@@ -26,20 +26,19 @@ def menus(request, *args, **kwargs):
     unknown_slugs = []
     # bc_items = [(current_menu.title, current_menu.alias)]
 
-    bc_items = [('Главная', '')]
+    bc_items = [('Главная', '/')]
     # перебираем кварги пока не наткнемся на несуществующий в меню
     # все кварги-меню заносим в breadcrumbs
     # все неизвестные кварги передаем дальше в контент
     if len(slugs) > 0:
         # urlpath = list(kwargs.values())
-        # bc_items.append()
 
         for i, slug in enumerate(slugs):
             obj = get_menu_if_exists(slug)
             if obj:
                 current_menu = obj
                 if current_menu.alias != 'home':
-                    bc_items.append((current_menu.title, slug))
+                    bc_items.append((current_menu.title, current_menu.url))
             else:
                 unknown_slugs += slugs[i:]
                 break
