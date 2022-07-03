@@ -5,6 +5,9 @@
         {% if level_1.subitems != None %}
             dropdown
         {% endif %}
+        {% if level_1.item.megamenu and level_1.subitems != None %}
+            dropdown-mega position-static
+        {% endif %}
     ">  
         {% if level_1.subitems != None %}
         <a class="nav-link dropdown-toggle" data-bs-auto-close="outside" aria-expanded="false" href="{{level_1.url}}">
@@ -17,148 +20,81 @@
             {{level_1.item.title }} 
         </a>
 
-        {% if level_1.subitems != None %}
-        <ul class="dropdown-menu shadow">
-            {% for level_2 in level_1.subitems %}
-                {% if level_2.subitems != None %}
-                <li class="dropend">
-                    <a href="{{level_2.url}}" class="dropdown-item dropdown-toggle">
-                {% else %}
-                <li>
-                    <a class="dropdown-item" href="{{ level_2.url }}">
-                {% endif %}
-                        {% if level_2.item.icon %}
-                        <i class="bi bi-{{level_2.item.icon}}"></i>
-                        {% endif %}
-                        {{ level_2.item.title }}
-                    </a>
+        {% if not level_1.item.megamenu and level_1.subitems != None %}
 
+            <ul class="dropdown-menu shadow">
+                {% for level_2 in level_1.subitems %}
                     {% if level_2.subitems != None %}
-                    <ul class="dropdown-menu shadow">
-                        {% for level_3 in level_2.subitems %}
-                        <li><a class="dropdown-item" href="{{level_3.url}}">
-                            {% if level_3.item.icon %}
-                            <i class="bi bi-{{level_3.item.icon}}"></i>
-                            {% endif %}
-                            {{ level_3.item.title }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
+                    <li class="dropend">
+                        <a href="{{level_2.url}}" class="dropdown-item dropdown-toggle">
+                    {% else %}
+                    <li>
+                        <a class="dropdown-item" href="{{ level_2.url }}">
                     {% endif %}
-                </li>
-            
-            {% endfor %}
-        </ul>
+                            {% if level_2.item.icon %}
+                            <i class="bi bi-{{level_2.item.icon}}"></i>
+                            {% endif %}
+                            {{ level_2.item.title }}
+                        </a>
+
+                        {% if level_2.subitems != None %}
+                        <ul class="dropdown-menu shadow">
+                            {% for level_3 in level_2.subitems %}
+                            <li><a class="dropdown-item" href="{{level_3.url}}">
+                                {% if level_3.item.icon %}
+                                <i class="bi bi-{{level_3.item.icon}}"></i>
+                                {% endif %}
+                                {{ level_3.item.title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
+                
+                {% endfor %}
+            </ul>
+
+        {% elif level_1.item.megamenu and level_1.subitems != None %}
+
+            <div class="dropdown-menu shadow">
+                <div class="mega-content px-4">
+                    <div class="container-fluid">
+                        <div class="row row-cols-1 row-cols-md-4 g-4">
+
+                            {% for level_2 in level_1.subitems %}
+                                <div class="col">
+                                    <div class="card h-100 border-0">
+                                        <div class="card-body">
+                                            <a class="dropdown-item" href="{{ level_2.url }}">
+                                                <h5>{{level_2.item.title}}</h5>
+                                            </a>
+                                            {% if level_2.subitems != None %}
+                                            <ul class="list-group list-group-flush">
+
+                                                {% for level_3 in level_2.subitems %}
+                                                <li class="list-group-item py-0">
+                                                    <a class="text-decoration-none" href="{{level_3.url}}">
+                                                        {{level_3.item.title}}
+                                                    </a>
+                                                </li>
+                                                {% endfor %}
+
+                                            </ul>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         {% endif %}
     </li>
     {% endfor %}
 </ul>
 {% endif%}
 
-{% comment %} <ul class="navbar-nav d-flex flex-wrap mr-auto mb-2 mb-lg-0 ms-auto">
-    {% for item in items %}
-    <li class="nav-item">
-        <a class="nav-link active" aria-current="page" href="#">
-            {% if item.icon %}
-            <i class="bi bi-{{item.icon}}"></i>
-            {% endif %}
-             {{item.title}}
-        </a>
-    </li>
-    {% endfor %}
-
-
-    <li class="nav-item">
-        <a class="nav-link" href="#"><i class="bi bi-building"></i> Город</a>
-    </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside">Деятельность</a>
-        <ul class="dropdown-menu shadow">
-            <li><a class="dropdown-item" href="#">Gallery</a></li>
-            <li><a class="dropdown-item" href="blog.html">Blog</a></li>
-            <li class="dropstart">
-                <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown">Submenu
-                    Left</a>
-                <ul class="dropdown-menu shadow">
-                    <li><a class="dropdown-item" href=""> Third level 1</a></li>
-                    <li><a class="dropdown-item" href=""> Third level 2</a></li>
-                    <li><a class="dropdown-item" href=""> Third level 3</a></li>
-                    <li><a class="dropdown-item" href=""> Third level 4</a></li>
-                    <li><a class="dropdown-item" href=""> Third level 5</a></li>
-                </ul>
-            </li>
-            <li class="dropend">
-                <a href="#" class="dropdown-item dropdown-toggle" data-bs-toggle="dropdown"
-                    data-bs-auto-close="outside">Submenu Right</a>
-                <ul class="dropdown-menu shadow">
-                    <li><a class="dropdown-item" href=""> Second level 1</a></li>
-                    <li><a class="dropdown-item" href=""> Second level 2</a></li>
-                    <li><a class="dropdown-item" href=""> Second level 3</a></li>
-                    <li class="dropend">
-                        <a href="#" class="dropdown-item dropdown-toggle"
-                            data-bs-toggle="dropdown">Let's go
-                            deeper!</a>
-                        <ul class="dropdown-menu dropdown-submenu shadow">
-                            <li><a class="dropdown-item" href=""> Third level 1</a></li>
-                            <li><a class="dropdown-item" href=""> Third level 2</a></li>
-                            <li><a class="dropdown-item" href=""> Third level 3</a></li>
-                            <li><a class="dropdown-item" href=""> Third level 4</a></li>
-                            <li><a class="dropdown-item" href=""> Third level 5</a></li>
-                        </ul>
-                    </li>
-                    <li><a class="dropdown-item" href=""> Third level 5</a></li>
-                </ul>
-            </li>
-            <li>
-                <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-        </ul>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#"><i class="bi bi-stack"></i> Документы</a>
-    </li>
-    <li class="nav-item dropdown dropdown-mega position-static">
-        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"
-            data-bs-auto-close="outside"><i class="bi bi-send"></i> Пресс-центр</a>
-        <div class="dropdown-menu shadow">
-            <div class="mega-content px-4">
-                <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 col-sm-4 col-md-3 py-4">
-                            <h5>Title</h5>
-                            <div class="list-group">
-                                <a class="list-group-item" href="#">Mega Menu Link</a>
-                                <a class="list-group-item" href="#">Mega Menu Link</a>
-                                <a class="list-group-item" href="#">Mega Menu Link</a>
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-4 col-md-3 py-4">
-                            <h5>Card Title</h5>
-                            <div class="card">
-                                <img src="img/banner-image.jpg" class="img-fluid" alt="image">
-                                <div class="card-body">
-                                    <p class="card-text">Description goes here...</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12 col-sm-4 col-md-3 py-4">
-                            <h5>Title</h5>
-                            <p>Description goes here...</p>
-                        </div>
-                        <div class="col-12 col-sm-12 col-md-3 py-4">
-                            <h5>Title</h5>
-                            <div class="list-group">
-                                <a class="list-group-item" href="#">Menu Link</a>
-                                <a class="list-group-item" href="#">Menu Link</a>
-                                <a class="list-group-item" href="#">Menu Link</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </li>
-</ul> {% endcomment %}

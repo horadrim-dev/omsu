@@ -1,4 +1,5 @@
 from django.db import models, transaction
+from django.db.models import Q
 # from django.forms import ValidationError
 from content.models import Post, Feed
 from app.models import OrderedModel
@@ -13,23 +14,31 @@ class GridManager(models.Manager):
         self.filter()
         if self.model is Section:
             return self.filter(
-                models.Q(column__module__menu=menu) | models.Q(column__module__show_on_every_page=True),
+                # Q(column__module__menu=menu) | Q(column__module__show_on_every_page=True),
+                (Q(column__module__invert=True) & ~Q(column__module__menu=menu)) 
+                    | (Q(column__module__invert=False) & Q(column__module__menu=menu)) 
+                    | Q(column__module__show_on_every_page=True),
                 column__module__published=True, 
                 column__module__published_at__lte=datetime.date.today()
                 ).distinct()
         elif self.model is Column:
             return self.filter(
-                models.Q(module__menu=menu) | models.Q(module__show_on_every_page=True),
+                # Q(module__menu=menu) | Q(module__show_on_every_page=True),
+                (Q(module__invert=True) & ~Q(module__menu=menu)) 
+                | (Q(module__invert=False) & Q(module__menu=menu)) 
+                | Q(module__show_on_every_page=True),
                 module__published=True, 
                 module__published_at__lte=datetime.date.today()
                 ).distinct()
         elif self.model is Module:
             return self.filter(
-                models.Q(menu=menu) | models.Q(show_on_every_page=True),
+                (Q(invert=True) & ~Q(menu=menu)) 
+                | (Q(invert=False) & Q(menu=menu)) 
+                | Q(show_on_every_page=True),
+                # Q(menu=menu) | Q(show_on_every_page=True),
                 published=True, 
                 published_at__lte=datetime.date.today()
                 )
-
 
 class Base(models.Model):
     name = models.CharField(default="", max_length=100, verbose_name="Название")
@@ -106,6 +115,8 @@ class Column(Base, OrderedModel):
 
 class Module(Base, OrderedModel):
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
+    invert = models.BooleanField(default=False, verbose_name="Инвертировать выбор меню",
+        help_text="Модуль будет привязан ко всем меню, кроме отмеченных.")
     show_on_every_page = models.BooleanField(default=False, verbose_name="Отображать на всех страницах сайта",
         help_text="Если выбрано - значения из поля \"меню\" будут проигнорированы.")
     column = models.ForeignKey('Column', verbose_name="Позиция", on_delete=models.CASCADE)

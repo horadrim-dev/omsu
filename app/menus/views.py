@@ -25,7 +25,6 @@ def menus(request, *args, **kwargs):
     #     raise Http404('Раздел не найден')
     unknown_slugs = []
     # bc_items = [(current_menu.title, current_menu.alias)]
-
     bc_items = [('Главная', '/')]
     # перебираем кварги пока не наткнемся на несуществующий в меню
     # все кварги-меню заносим в breadcrumbs

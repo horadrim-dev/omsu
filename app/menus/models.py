@@ -26,8 +26,8 @@ class Menu(models.Model):
     url = models.CharField(max_length=1000, default='', blank=True, null=True)
 
     published = models.BooleanField(default=True, verbose_name="Опубликовано")
-    is_fixed = models.BooleanField(default=False, verbose_name="Зафиксировать дочерние пункты меню?",
-                                   help_text="Если отмечено - дочерние пункты меню не будут раскрываться, если не отмечено -  будут.")
+    megamenu = models.BooleanField(default=False, verbose_name="Мегаменю",
+                                   help_text="Если отмечено, меню будет выпадать шириной во весь экран")
     icon = models.CharField(max_length=32, default="", blank=True, verbose_name="Иконка", help_text="Необязательно. Названия брать <a href='https://icons.getbootstrap.com/' target='_blank'>отсюда.</a>")
     short_description = models.CharField(max_length=100, blank=True,
         verbose_name="Краткое описание", help_text="Краткое описание содержимого меню")

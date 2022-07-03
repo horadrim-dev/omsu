@@ -91,7 +91,11 @@ header .navbar-nav .dropdown-menu {
 header .dropdown-menu {
 	border-top: 0;
 }
-
+header .nav-item.dropdown.dropdown-mega .dropdown-menu {
+  width: 100%;
+  top: auto;
+  left: 0;
+}
 header .navbar-nav .nav-item a {
 	white-space: nowrap;
 }
