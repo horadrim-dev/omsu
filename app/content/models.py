@@ -88,6 +88,10 @@ class Feed(Content):
         )
         return paginator.get_page(page)
 
+    class Meta:
+        verbose_name = "Лента постов"
+        verbose_name_plural = "Ленты постов"
+
 class Post(Content):
 
     menu = models.ForeignKey(
@@ -127,6 +131,9 @@ class Post(Content):
         
         return len(attachments)
 
+    class Meta:
+        verbose_name = "Пост"
+        verbose_name_plural = "Посты"
 
 
 class Attachment(models.Model):

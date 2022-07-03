@@ -1,4 +1,6 @@
 from django.contrib import admin, messages
+from django.core.exceptions import ValidationError
+from django.forms.models import BaseInlineFormSet
 from .models import Section, Column, Module, ModuleContent
 from django import forms
 import uuid
@@ -8,10 +10,36 @@ class ColumnInline(admin.TabularInline):
     model = Column
     exclude = []
 
-class ModuleContentInline(admin.TabularInline):
+class ModuleContentInlineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super(ModuleContentInlineFormSet, self).clean()
+
+        for form in self.forms:
+            if not form.is_valid():
+                return #other errors exist, so don't bother
+            if form.cleaned_data:
+                if form.cleaned_data.get('content_type') == 'menu' and not form.cleaned_data.get('menu'):
+                    raise ValidationError('Поле "Меню" обязательно для заполнения!');
+                if form.cleaned_data.get('content_type') == 'feed' and not form.cleaned_data.get('feed'):
+                    raise ValidationError('Поле "Лента постов" обязательно для заполнения!');
+                if form.cleaned_data.get('content_type') == 'post' and not form.cleaned_data.get('post'):
+                    raise ValidationError('Поле "Пост" обязательно для заполнения!');
+            #     total += form.cleaned_data['cost']
+            # assert False, form.cleaned_data
+        #compare only if Item inline forms were clean as well
+        # if self.instance.__total__ is not None and self.instance.__total__ != total:
+        #     raise ValidationError('Oops!')
+
+class ModuleContentInline(admin.StackedInline):
     model = ModuleContent
     exclude = []
-    # readonly_fields = ('hits',)
+    extra = 0
+    formset = ModuleContentInlineFormSet
+    class Media:
+        js = ('grid/js/modulecontent.js',)
+
+    
+
 class SectionAdmin(admin.ModelAdmin):
     list_display = ['name', 'order']
     inlines = (ColumnInline, )
@@ -22,8 +50,6 @@ class ModuleForm(forms.ModelForm):
         # fields = []
         exclude = []
 
-    class Media:
-        js = ('grid/js/test.js',)
 
 class ModuleAdmin(admin.ModelAdmin):
     form = ModuleForm
