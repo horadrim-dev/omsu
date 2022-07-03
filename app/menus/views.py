@@ -19,24 +19,27 @@ def get_menu_if_exists(slug=None):
 def menus(request, *args, **kwargs):
 
     slugs = list(kwargs.values())
-    try:
-        current_menu = Menu.objects.filter(alias=slugs.pop(0)).get()
-    except Exception:
-        raise Http404('Раздел не найден')
+    # try:
+    #     current_menu = Menu.objects.filter(alias=slugs.pop(0)).get()
+    # except Exception:
+    #     raise Http404('Раздел не найден')
     unknown_slugs = []
-    bc_items = [(current_menu.title, current_menu.alias)]
+    # bc_items = [(current_menu.title, current_menu.alias)]
 
+    bc_items = [('Главная', '')]
     # перебираем кварги пока не наткнемся на несуществующий в меню
     # все кварги-меню заносим в breadcrumbs
     # все неизвестные кварги передаем дальше в контент
     if len(slugs) > 0:
         # urlpath = list(kwargs.values())
+        # bc_items.append()
 
         for i, slug in enumerate(slugs):
             obj = get_menu_if_exists(slug)
             if obj:
                 current_menu = obj
-                bc_items.append((current_menu.title, slug))
+                if current_menu.alias != 'home':
+                    bc_items.append((current_menu.title, slug))
             else:
                 unknown_slugs += slugs[i:]
                 break

@@ -37,7 +37,9 @@
                 <div class="collapse navbar-collapse" id="navbar-content">
 
                     {% comment %} {% render_menubar maxlevel=3 %} {% endcomment %}
-                    {% include 'menus/menubar.html' with menu_tree=main_menu_tree %}
+                    {% if main_menu_tree %}
+                        {% include 'menus/menubar.html' with menu_tree=main_menu_tree %}
+                    {% endif %}
 
                     <form class="d-flex ms-auto">
                         <div class="input-group">

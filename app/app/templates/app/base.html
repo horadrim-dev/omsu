@@ -1,6 +1,6 @@
 {% load static %}
-{% load render_menu %}
-{% load render_breadcrumbs %}
+{% comment %} {% load render_menu %} {% endcomment %}
+{% comment %} {% load render_breadcrumbs %} {% endcomment %}
 {% comment %} {% load render_grid %} {% endcomment %}
 
 <!doctype html>
@@ -30,11 +30,12 @@
   {% include 'app/header.html' %}
 
   <div id="breadcrumbs">
-    {% block breadcrumbs %}
+    {% comment %} {% block breadcrumbs %}{% endcomment %}
       {% if bc_items %}
-          {% render_breadcrumbs bc_items %}
+          {% comment %} {% render_breadcrumbs bc_items %} {% endcomment %}
+        {% include 'app/breadcrumbs.html' with breadcrumbs_items=bc_items %}
       {% endif %}
-    {% endblock %}
+    {% comment %} {% endblock %} {% endcomment %}
   </div>
 
   
