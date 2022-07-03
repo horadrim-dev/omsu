@@ -19,11 +19,14 @@ class ModuleContentInlineFormSet(BaseInlineFormSet):
                 return #other errors exist, so don't bother
             if form.cleaned_data:
                 if form.cleaned_data.get('content_type') == 'menu' and not form.cleaned_data.get('menu'):
-                    raise ValidationError('Поле "Меню" обязательно для заполнения!');
+                    # raise ValidationError('Поле "Меню" обязательно для заполнения!');
+                    form.add_error('menu', 'Поле "Меню" обязательно для заполнения!')
                 if form.cleaned_data.get('content_type') == 'feed' and not form.cleaned_data.get('feed'):
-                    raise ValidationError('Поле "Лента постов" обязательно для заполнения!');
+                    # raise ValidationError('Поле "Лента постов" обязательно для заполнения!');
+                    form.add_error('feed', 'Поле "Лента постов" обязательно для заполнения!')
                 if form.cleaned_data.get('content_type') == 'post' and not form.cleaned_data.get('post'):
-                    raise ValidationError('Поле "Пост" обязательно для заполнения!');
+                    # raise ValidationError('Поле "Пост" обязательно для заполнения!');
+                    form.add_error('post', 'Поле "Пост" обязательно для заполнения!')
             #     total += form.cleaned_data['cost']
             # assert False, form.cleaned_data
         #compare only if Item inline forms were clean as well
@@ -50,6 +53,14 @@ class ModuleForm(forms.ModelForm):
         # fields = []
         exclude = []
 
+    def clean(self):
+        cleaned_data = super(ModuleForm, self).clean()
+
+        if cleaned_data:
+            if cleaned_data.get('invert') and  cleaned_data.get('show_on_every_page'):
+                msg = 'Одновременное инвертирование и показ на всех страницах не будут работать. Уберите одну из опций.'
+                self.add_error('invert', msg)
+                self.add_error('show_on_every_page', msg)
 
 class ModuleAdmin(admin.ModelAdmin):
     form = ModuleForm
