@@ -135,6 +135,15 @@ class Post(Content):
         verbose_name = "Пост"
         verbose_name_plural = "Посты"
 
+@receiver(models.signals.post_delete, sender=Post)
+def auto_delete_image_on_delete(sender, instance, **kwargs):
+    """
+    Удаляет фото при удалении поста
+    """
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)
+
 
 class Attachment(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

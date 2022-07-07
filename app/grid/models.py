@@ -165,7 +165,8 @@ class ModuleContent(OrderedModel):
     feed = models.ForeignKey(
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     FEED_STYLE_CHOICES = [
-        ('compact_feed', 'Лента постов (только заголовки)'),
+        ('compact_feed', 'Список постов (только заголовки)'),
+        ('blocks', 'Посты в виде блоков'),
         ('slider', 'Слайдер постов'),
     ]
     feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],

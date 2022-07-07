@@ -18,14 +18,14 @@
                             >
                             {{post.published_at}}
                         </small>
-                        <small class="text-muted me-2" 
+                        {% comment %} <small class="text-muted me-2" 
                             data-bs-toggle="tooltip" data-bs-placement="top"
                             data-bs-custom-class="custom-tooltip"
                             title="Количество просмотров"
                             >
                             <i class="bi bi-eye me-0"></i>
                             {{post.hits}}
-                        </small>
+                        </small> {% endcomment %}
                         {% if post.count_attachments %}
                         <small class="text-muted me-2"
                             data-bs-toggle="tooltip" data-bs-placement="top"

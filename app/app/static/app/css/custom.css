@@ -27,9 +27,9 @@ tbody, td, tfoot, th, thead, tr {
   /* border-style: solid; */
   border-width: 1px;
 }
-.container-fluid {
+/* .container-fluid {
 	--bs-gutter-x: 0;
-}
+} */
 /* #content,
 header,
 .right {
@@ -109,9 +109,9 @@ header .navbar-nav .nav-item a i {
 	margin-right: 4px;
 }
 
-.row {
+/* .row {
   --bs-gutter-x: 0;
-}
+} */
 
 .logo {
 	height: 80px;
@@ -292,4 +292,23 @@ nav.module-menu .accordion-header:hover {
 }
 .carousel-slider .slider-description:hover .readmore {
 	display: block;
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: orange green;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: green;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: blue;
+  border-radius: 20px;
+  border: 3px solid green;
 }

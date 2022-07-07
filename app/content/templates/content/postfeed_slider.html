@@ -1,6 +1,6 @@
 <div id="module-{{module.obj.id}}-feed-slider-{{feed.alias}}">
 
-    <div id="carouselExampleCaptions" class="carousel carousel-dark carousel-slider slide row" data-bs-ride="carousel">
+    <div id="module-{{module.obj.id}}-carouselExampleCaptions" class="carousel carousel-dark carousel-slider slide row" data-bs-ride="carousel">
         <div class="carousel-inner col">
 
             {% for post in posts %}
@@ -35,12 +35,12 @@
         </div>
         <div class="carousel-indicators col-12 col-xl-4 list-group list-group-flush px-3">
             {% comment %} <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button> {% endcomment %}
+            <button type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button> {% endcomment %}
             {% for post in posts %}
             <div class="list-group-item p-0">
                 <button type="button" 
-                    data-bs-target="#carouselExampleCaptions" 
+                    data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" 
                     data-bs-slide-to="{{forloop.counter0}}" 
                     aria-label="{{post.alias}}"
                     {% if forloop.first %}
@@ -56,11 +56,11 @@
             </div>
             {% endfor %}
         </div>
-        {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+        {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Предыдущий</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Следующий</span>
         </button> {% endcomment %}

@@ -11,6 +11,7 @@ $(document).ready(function(){
 
                 function show_fields_by_value(target, value) {
                     target.find('.form-row').hide();
+                    target.find('.order').show();
                     target.find('.'+trigger_field_name).show();
                     if(value){
                         target.find('div[class*=form-row][class*='+ value+']').show();

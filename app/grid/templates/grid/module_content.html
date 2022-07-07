@@ -34,8 +34,10 @@
             {% if content.content_type == 'feed' %}
 
                 {% if content.feed_style == 'compact_feed' %}
-
                     {% include 'content/postfeed.html' with feed=content.feed posts=content.feed.get_page layout='compact'%}
+
+                {% elif content.feed_style == 'blocks' %}
+                    {% include 'content/postfeed_blocks.html' with feed=content.feed posts=content.feed.get_page %}
 
                 {% elif content.feed_style == 'slider' %}
 
