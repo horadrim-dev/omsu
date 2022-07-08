@@ -4,17 +4,15 @@
         {% for level_1 in menu_tree %}
         <div class="accordion-item {% if level_1.item.alias == page.alias %}active{% endif %}">
             <div class="accordion-header d-flex" id="module-{{module.obj.id}}-level-1-header-{{level_1.item.alias}}">
-                <a class="nav-link w-100 p-3" href="{{level_1.url}}">
+                <a class="nav-link w-100 p-3 text-break
+                    {% if level_1.item.alias == page.alias %}active{% endif %}
+                    " 
+                    href="{{level_1.url}}">
                     {% if level_1.item.icon %}
                     <i class="bi bi-{{level_1.item.icon}}"></i>
                     {% endif %}
                     {{level_1.item.title }}
                 </a>
-                {% if level_1.item.alias == page.alias %}
-                <small class="text-muted p-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Вы здесь">
-                    <i class="bi bi-geo-alt-fill"></i>
-                </small>
-                {% endif %}
                 {% if level_1.subitems != None  and  layout == 'vertical_with_submenus'%}
                 <button class="accordion-button border-start bg-transparent w-auto {% if level_1.item.alias not in page.url %}collapsed{% endif %}" 
                 type="button" data-bs-toggle="collapse"
@@ -36,21 +34,16 @@
                     {% for level_2 in level_1.subitems %}
                     <div class="accordion-item {% if level_2.item.alias == page.alias %}active{% endif %}
                         ">
-                        <div class="accordion-header d-flex" id="module-{{module.obj.id}}-level-2-header-{{level_2.item.alias}}">
-                            <a class="nav-link w-100 p-3" href="{{ level_2.url }}">
+                        <div class="accordion-header d-flex position-relative" id="module-{{module.obj.id}}-level-2-header-{{level_2.item.alias}}">
+                            <a class="nav-link w-100 p-3 text-break 
+                            {% if level_2.item.alias == page.alias %}active{% endif %}
+                            " href="{{ level_2.url }}">
+                                <i class="bi bi-arrow-bar-right me-3 text-muted"></i>
                                 {% if level_2.item.icon %}
                                 <i class="bi bi-{{level_2.item.icon}}"></i>
                                 {% endif %}
                                 {{ level_2.item.title }}
                             </a>
-
-                            
-                            {% if level_2.item.alias == page.alias %}
-                            <small class="text-muted p-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Вы здесь">
-                                <i class="bi bi-geo-alt-fill"></i>
-                            </small>
-                            {% endif %}
-
 
                             {% if level_2.subitems != None %}
                             <button class="accordion-button border-start bg-transparent w-auto {% if level_2.item.alias not in page.url%}collapsed{% endif %}" type="button" data-bs-toggle="collapse"
@@ -58,7 +51,8 @@
                                 aria-expanded="{% if level_2.item.alias == page.alias %}true{% else %}false{% endif %}"
                                 aria-controls="module-{{module.obj.id}}-menu-{{level_2.item.alias}}">
                             </button>
-                            {% endif %}
+                            {% endif %} 
+
                         </div>
 
                         {% comment "=========================================УРОВЕНЬ 3==================================================================" %}{% endcomment %}
@@ -75,17 +69,15 @@
                                 <div class="accordion-item flex-row {% if level_3.item.alias == page.alias %}active{% endif %}
                             ">
                                     <div class="accordion-header d-flex">
-                                        <a class="nav-link w-100 p-3" href="{{level_3.url}}">
+                                        <a class="nav-link w-100 p-3 text-break
+                                        {% if level_3.item.alias == page.alias %}active{% endif %}
+                                        " href="{{level_3.url}}">
+                                            {% comment %} <i class="bi bi-arrow-return-right me-3 text-muted"></i> {% endcomment %}
                                             {% if level_3.item.icon %}
                                             <i class="bi bi-{{level_3.item.icon}}"></i>
                                             {% endif %}
                                             {{ level_3.item.title }}
                                         </a>
-                                        {% if level_3.item.alias == page.alias %}
-                                        <small class="text-muted p-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip" title="Вы здесь">
-                                            <i class="bi bi-geo-alt-fill"></i>
-                                        </small>
-                                        {% endif %}
                                     </div>
                                     
 

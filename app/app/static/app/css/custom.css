@@ -204,8 +204,11 @@ nav.module-menu .accordion .accordion .accordion .accordion-item {
 /* nav.module-menu .active {
 	background-color: var(--bs-cyan) !important;
 } */
-nav.module-menu .accordion-header:hover {
-	background-color: var(--bs-gray-300);
+nav.module-menu .accordion-header a.nav-link:hover {
+	box-shadow: 2px 2px 5px rgba(174, 174, 174, 0.5), 1px 1px 5px rgb(255, 255, 255);
+}
+nav.module-menu .accordion-header a.nav-link.active {
+	box-shadow: inset 2px 2px 5px rgba(100, 100, 100, 0.5), 1px 1px 5px rgb(255, 255, 255);
 }
 /* TABS / PILLS */
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
@@ -295,20 +298,19 @@ nav.module-menu .accordion-header:hover {
 }
 * {
   scrollbar-width: thin;
-  scrollbar-color: orange green;
+  /* scrollbar-color: var(--bs-success) var(--bs-white); */
 }
 
 /* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 12px;
 }
-
-*::-webkit-scrollbar-track {
-  background: green;
-}
+/* *::-webkit-scrollbar-track {
+  background: var(--bs-white); 
+} */
 
 *::-webkit-scrollbar-thumb {
-  background-color: blue;
+  /* background-color: blue; */
   border-radius: 20px;
   border: 3px solid green;
 }
