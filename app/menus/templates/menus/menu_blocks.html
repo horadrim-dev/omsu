@@ -1,14 +1,16 @@
-<div class="row row-cols-1 row-cols-md-3">
-    {% for level_1 in menu_tree %}
-    {% comment %} <div class="col"> {% endcomment %}
-      <div class="card border-0 p-3">
-          <div class="card-body border rounded hover-shadow p-0">
-            <a class="d-block h-100 p-3" href="{{ level_1.item.url}}">
-              <h5 class="card-title">{{ level_1.item.title }}</h5>
-              <p class="card-text">{{ level_1.item.short_description}}</p>
-            </a>
-          </div>
-      </div>
-    {% comment %} </div> {% endcomment %}
-    {% endfor %}
+<div class="menu-blocks">
+  <div class="row row-cols-1 row-cols-md-3">
+      {% for level_1 in menu_tree %}
+      {% comment %} <div class="col"> {% endcomment %}
+        <div class="card border-0 p-3">
+            <div class="card-body border rounded p-0">
+              <a class="d-block h-100 p-3" href="{{ level_1.item.url}}">
+                <h5 class="card-title">{{ level_1.item.title }}</h5>
+                <p class="card-text">{{ level_1.item.short_description}}</p>
+              </a>
+            </div>
+        </div>
+      {% comment %} </div> {% endcomment %}
+      {% endfor %}
+  </div>
 </div>

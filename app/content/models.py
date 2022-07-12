@@ -82,11 +82,27 @@ class Feed(Content):
     menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
     description = RichTextUploadingField()
 
-    def get_page(self, page=None):
+    def get_page(self, page=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
         paginator = Paginator(
-            self.post_set.published().all(), content_settings.NUM_POSTS_ON_FEED_PAGE
+            self.post_set.published().all(), posts_per_page
         )
         return paginator.get_page(page)
+
+    # def get_page_by_columns
+    # def get_posts_by_columns(self):
+    #     posts = self.get_page()
+
+    # @property
+    # def divider_1_2(self):
+    #     return content_settings.NUM_POSTS_ON_FEED_PAGE // 2
+
+    # @property
+    # def divider_1_2(self):
+    #     return content_settings.NUM_POSTS_ON_FEED_PAGE // 2
+
+    # @property
+    # def divider_1_3(self):
+    #     return content_settings.NUM_POSTS_ON_FEED_PAGE // 3
 
     class Meta:
         verbose_name = "Лента постов"
@@ -134,6 +150,7 @@ class Post(Content):
     class Meta:
         verbose_name = "Пост"
         verbose_name_plural = "Посты"
+        ordering = ['-published_at']
 
 @receiver(models.signals.post_delete, sender=Post)
 def auto_delete_image_on_delete(sender, instance, **kwargs):

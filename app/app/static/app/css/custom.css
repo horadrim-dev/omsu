@@ -41,9 +41,13 @@ header,
 img {
 	border-color: #dfdfdf;
 }
-#content .card-body:hover, .module .card-body:hover{
-box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+/* MENU-BLOCKS */
+.menu-blocks .card .card-body:hover {
+   box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }
+/* #content .card-body:hover, .module .card-body:hover{
+box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+} */
 #content .card a, .module .card a{
 	text-decoration:none;
 	color:inherit;
@@ -92,9 +96,10 @@ header .dropdown-menu {
 	border-top: 0;
 }
 header .nav-item.dropdown.dropdown-mega .dropdown-menu {
-  width: 100%;
-  top: auto;
-  left: 0;
+	width: 100%;
+	top: auto;
+	left: 0;
+	border-radius: 0;
 }
 header .navbar-nav .nav-item a {
 	white-space: nowrap;
@@ -186,7 +191,6 @@ header .navbar-nav .nav-item a i {
 .main_overlay_block{
   position: relative;
 }
-
 /* MODULE MENU */
 nav.module-menu .accordion {
 	--bs-accordion-border-radius: 0;
@@ -313,4 +317,8 @@ nav.module-menu .accordion-header a.nav-link.active {
   /* background-color: blue; */
   border-radius: 20px;
   border: 3px solid green;
+}
+/* FEED-BLOCKS */
+.feed-blocks img{
+	object-fit: cover;
 }

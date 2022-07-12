@@ -2,7 +2,7 @@ from django.conf import settings
 from django.urls import reverse_lazy
 
 NUM_POSTS_ON_FEED_PAGE = getattr(
-    settings, 'NUM_POSTS_ON_FEED_PAGE ', 3
+    settings, 'NUM_POSTS_ON_FEED_PAGE ', 10
 )
 # NEWSFEED_EMAIL_BATCH_WAIT = getattr(
 #     settings, 'NEWSFEED_EMAIL_BATCH_WAIT', 0

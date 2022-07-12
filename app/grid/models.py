@@ -133,7 +133,7 @@ class Module(Base, OrderedModel):
     class Meta:
         verbose_name = "Модуль"
         verbose_name_plural = "Модули"
-        ordering = ['column']
+        ordering = ['column', 'order']
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # self.check_width()
@@ -157,7 +157,7 @@ class ModuleContent(OrderedModel):
     content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
         verbose_name="Тип контента")
 
-    # называть поля с контентом нужно с содержанием названия CONTENT_TYPE (для работы JS) (пример: post,post_style,hzpost)
+    # называть поля с контентом нужно с содержанием названия из CONTENT_TYPE_CHOICES (для работы JS) (пример: post,post_style,hzpost)
 
     post = models.ForeignKey(
         Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
@@ -171,6 +171,15 @@ class ModuleContent(OrderedModel):
     ]
     feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
         verbose_name="Макет ленты постов")
+    FEED_COLUMN_CHOICES = [
+        (1, '1 колонка'),
+        (2, '2 колонки'),
+        (3, '3 колонки'),
+        (4, '4 колонки'),
+    ]
+    feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
+        verbose_name="Количество колонок")
+
 
     menu = models.ForeignKey(
         Menu, on_delete=models.SET_NULL, verbose_name="Меню", blank=True, null=True)
