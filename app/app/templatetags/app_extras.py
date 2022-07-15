@@ -21,7 +21,14 @@ def _range(_min, args=None):
     # args = filter(None, (_min, _max, _step))
     args = filter(lambda x: isinstance(x, int) and x >= 0, (_min, _max, _step))
     return range(*args)
-
 # your solution does not work on for value in 0|range:"10,2". 
 # You have to change your code as follow: 
-# args = filter(lambda x: isinstance(x, int) and x >= 0, (_min, _max, _step))
+# args = filter(lambda x: isinstance(x, int) and x >= 0, (_min, _max, _step)
+
+@register.filter
+def multiply(a, b):
+    '''Перемножает два числа
+    Usage:
+    {{ a|multiply:b }}
+    '''
+    return a*b

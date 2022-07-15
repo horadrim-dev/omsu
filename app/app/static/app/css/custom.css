@@ -113,7 +113,10 @@ header .nav-item:hover {
 header .navbar-nav .nav-item a i {
 	margin-right: 4px;
 }
-
+header .dropdown-menu.show {
+  -webkit-animation: fadeIn 0s alternate;
+  animation: fadeIn 0s alternate;
+}
 /* .row {
   --bs-gutter-x: 0;
 } */
@@ -195,6 +198,9 @@ header .navbar-nav .nav-item a i {
 nav.module-menu .accordion {
 	--bs-accordion-border-radius: 0;
 }
+nav.module-menu .accordion .accordion-item {
+	background: inherit;
+}
 nav.module-menu .accordion-button {
 	border-top-left-radius: 0 !important;
 	border-top-right-radius: 0 !important;
@@ -252,6 +258,7 @@ nav.module-menu .accordion-header a.nav-link.active {
 	position: relative;
 	margin-left: 0.5rem;
 	margin-right: 0;
+	margin-bottom:0;
 	display: block;
 	text-align: left;
 }
@@ -267,10 +274,11 @@ nav.module-menu .accordion-header a.nav-link.active {
 } 
 .carousel-slider .carousel-item {
 	overflow: hidden;
+	height: 100%;
 }
 .carousel-slider .carousel-item img {
-	height: 400px;
-	max-height: 400px;
+	/* height: 100%; */
+	/* max-height: 400px; */
 	max-width:100%;
 	object-fit: cover;
 }
@@ -299,6 +307,12 @@ nav.module-menu .accordion-header a.nav-link.active {
 }
 .carousel-slider .slider-description:hover .readmore {
 	display: block;
+}
+.carousel-indicators .active {
+  opacity: .5;
+}
+.carousel-indicators .active h6 {
+  font-weight: 600;
 }
 * {
   scrollbar-width: thin;

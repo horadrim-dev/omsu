@@ -1,8 +1,9 @@
 {% comment %} {% lorem 30 w %} {% endcomment %}
+{% load content_extras %}
+
 <div class="module">
 
     {{module.obj.pre_html|safe}}
-
     <div class="clearfix"></div>
 
     {% if module.contents|length > 1 %}
@@ -33,23 +34,27 @@
 
             {% if content.content_type == 'feed' %}
 
-                {% if content.feed_style == 'compact_feed' %}
-                    {% include 'content/postfeed.html' with feed=content.feed posts=content.feed.get_page layout='compact' %}
+                {% with feed=content.feed posts=content.get_feed_page columns=content.feed_num_columns sort_direction=content.feed_sort_direction readmore=content.feed_readmore %}
 
-                {% elif content.feed_style == 'blocks' %}
+                    {% split_posts_by_columns posts columns sort_direction as posts_by_columns %}
+                    {% calc_max_posts_in_col posts columns as max_posts %}
 
-                    {% include 'content/postfeed_blocks.html' with feed=content.feed posts=content.feed.get_page columns=content.feed_num_columns %}
+                    {% if content.feed_style == 'compact_feed' %}
+                        {% include 'content/postfeed.html' with layout='compact' %}
+                    {% elif content.feed_style == 'blocks' %}
+                        {% include 'content/postfeed_blocks.html' %}
+                    {% elif content.feed_style == 'slider' %}
+                        {% posts_by_columns_flatten posts_by_columns as posts %}
+                        {% include 'content/postfeed_slider.html' %}
+                    {% endif %}
 
-                {% elif content.feed_style == 'slider' %}
+                {% endwith %}
 
-                    {% include 'content/postfeed_slider.html' with feed=content.feed posts=content.feed.get_page %}
-
-                {% endif %}
             {% endif %}
+
         {% endwith %}
     {% endif %}
 
     {{module.obj.post_html|safe}}
-
     <div class="clearfix"></div>
 </div>

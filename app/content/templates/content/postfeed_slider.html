@@ -1,18 +1,19 @@
+{% load app_extras %}
+
 <div id="module-{{module.obj.id}}-feed-slider-{{feed.alias}}">
 
-    <div id="module-{{module.obj.id}}-carouselExampleCaptions" class="carousel carousel-dark carousel-slider slide row" data-bs-ride="carousel">
+    <div id="module-{{module.obj.id}}-carouselExampleCaptions" class="carousel carousel-slider slide row" data-bs-ride="carousel">
         <div class="carousel-inner col">
 
+            {% comment %} {% for posts in posts_by_columns %} {% endcomment %}
             {% for post in posts %}
             <div class="carousel-item {% if forloop.first %}active{% endif %}">
                 {% if post.image %}
-                    <img src="{{post.image.url}}" class="img-fluid d-block w-100 h-auto" alt="{{post.title}}">
+                    <img src="{{post.image.url}}" class="img-fluid d-block w-100 h-100" alt="{{post.title}}">
                 {% else %}
-                    <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="100%" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Фото отсутствует" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <title>Placeholder</title>
-                        <rect width="100%" height="100%" fill="#f5f5f5"></rect>
-                        <text x="45%" y="50%" fill="#aaa" dy=".3em">Фото отсутствует</text>
-                    </svg>
+                    <div class="w-100 h-100 bg-secondary text-light d-flex justify-content-center align-items-center">
+                        <i class="bi bi-card-image fs-1"></i>
+                    </div>
                 {% endif %}
                 <div class="slider-description bg-dark bg-opacity-50">
                     <h5 class="mb-5">{{post.title}}</h5>
@@ -24,38 +25,8 @@
                 </div>
             </div>
             {% endfor %}
+            {% comment %} {% endfor %} {% endcomment %}
 
-            {% comment %} <div class="carousel-item">
-                <svg class="bd-placeholder-img bd-placeholder-img-lg d-block w-100" width="800" height="400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: First slide" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#f5f5f5"></rect><text x="50%" y="50%" fill="#aaa" dy=".3em">First slide</text></svg>
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>Second slide label</h5>
-                    <p>Some representative placeholder content for the second slide.</p>
-                </div>
-            </div> {% endcomment %}
-        </div>
-        <div class="carousel-indicators col-12 col-xl-4 list-group list-group-flush px-3">
-            {% comment %} <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button> {% endcomment %}
-            {% for post in posts %}
-            <div class="list-group-item p-0">
-                <button type="button" 
-                    data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" 
-                    data-bs-slide-to="{{forloop.counter0}}" 
-                    aria-label="{{post.alias}}"
-                    {% if forloop.first %}
-                    class="active" aria-current="true"
-                    {% endif %}
-                    >
-                    <div class="py-3">
-                        <h6>{{post.title}}</h6>
-                        <small class="text-muted">{{post.published_at}}</small>
-                        {% comment %} <p class="card-text">{{post.intro_text|striptags|truncatechars:50 }}</p> {% endcomment %}
-                    </div>
-                </button>
-            </div>
-            {% endfor %}
-        </div>
         {% comment %} <button class="carousel-control-prev" type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Предыдущий</span>
@@ -64,5 +35,42 @@
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Следующий</span>
         </button> {% endcomment %}
+        </div>
+        <div class="carousel-indicators col-12 col-xl-6 px-3">
+            {% comment %} <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button> {% endcomment %}
+            <div class="row">
+                {% for posts in posts_by_columns %}
+                    <div class="col ">
+                        <div class="list-group list-group-flush">
+                            {% for post in posts %}
+                            <div class="list-group-item p-0 ">
+                                <button type="button" 
+                                    data-bs-target="#module-{{module.obj.id}}-carouselExampleCaptions" 
+                                    {% comment "номер слайдов по порядку" %}{% endcomment %}
+                                    data-bs-slide-to="{{max_posts|multiply:forloop.parentloop.counter0|add:forloop.counter0}}" 
+
+                                    aria-label="{{post.alias}}"
+                                    {% if forloop.parentloop.first and forloop.first %}
+                                    class="active" aria-current="true"
+                                    {% endif %}
+                                    >
+                                    <div class="py-3">
+                                        <h6>{{post.title}}</h6>
+                                        <small class="text-muted">{{post.published_at}}</small>
+                                        {% comment %} <p class="card-text">{{post.intro_text|striptags|truncatechars:50 }}</p> {% endcomment %}
+                                    </div>
+                                </button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% if readmore %}
+                {% include 'content/postfeed_readmore.html' %}
+            {% endif %}
+        </div>
     </div>
 </div>

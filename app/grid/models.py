@@ -179,7 +179,14 @@ class ModuleContent(OrderedModel):
     ]
     feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
         verbose_name="Количество колонок")
-
+    feed_count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
+    feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
+    FEED_SORT_DIRECTION_CHOICES = [
+        ('horizontal', 'Построчно'),
+        ('vertical', 'По колонкам'),
+    ]
+    feed_sort_direction = models.CharField(max_length=16, choices=FEED_SORT_DIRECTION_CHOICES, default=FEED_SORT_DIRECTION_CHOICES[0][0],
+        verbose_name="Направление сортировки")
 
     menu = models.ForeignKey(
         Menu, on_delete=models.SET_NULL, verbose_name="Меню", blank=True, null=True)
@@ -204,6 +211,9 @@ class ModuleContent(OrderedModel):
             self.update_order(
                 list_of_objects = list(ModuleContent.objects.filter(module=self.module).exclude(id=self.id))
             )
+
+    def get_feed_page(self):
+        return self.feed.get_page(posts_per_page=self.feed_count_objects)
 
     def __str__(self):
         if self.content_type == 'menu':
