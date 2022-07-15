@@ -3,10 +3,37 @@
         {% comment %} <a href="#" class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3">
             Читать ленту
         </a> {% endcomment %}
-        <a href="#modal-1" target="_modal" 
+        <a href="#modal-1" feed="{{feed.alias}}" target="_modal" 
             class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3" 
             >
             Читать ленту
         </a>
     </div>
 </div>
+
+<script>
+    $('a[href="#modal-1"][feed="{{feed.alias}}"]').on('click', function (e) {
+        var target = '#modal-1 .modal-body';
+        $.ajax({
+            url: "{% url 'feed_page' feed.alias %}?&uid={{module.obj.id}}",
+            method: 'get',
+            dataType: 'html',
+            beforeSend: function(xhr){
+                // старт анимации загрузки
+                $(target).wrap( '<div class="main_overlay_block"></div>' );
+                $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
+                $(target).addClass('loading_process');
+            },
+            success: function (data) {
+                //{% comment %} $(target).replaceWith(data); // добавляем полученный html {% endcomment %}
+                $(target).html(data); // добавляем полученный html
+            },
+            complete: function (){
+                // снимаем анимацию загрузки
+                $(target).unwrap();
+                $('.overlay_block').remove();
+                $(target).removeClass('loading_process');
+            }
+        });
+    });
+</script>

@@ -135,6 +135,9 @@ def download_attachment(request, uuid, *args, **kwargs):
         )
 
 def load_feed_page(request, slug, *args, **kwargs):
+    # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    #     raise Http404()
+
     context = {}
     try:
         feed = Feed.objects.published().get(alias=slug)
@@ -145,7 +148,7 @@ def load_feed_page(request, slug, *args, **kwargs):
     context['posts'] = feed.get_page(
         request.GET.get('page')
     )
-    context['module_id'] = request.GET.get('module_id') # для использования в качестве уникального id в шаблоне
+    context['uid'] = request.GET.get('uid') # для использования в качестве уникального id в шаблоне
     context['layout'] = request.GET.get('layout')
 
     return render(request, 'content/post_list.html', context)

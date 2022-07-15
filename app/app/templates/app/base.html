@@ -30,8 +30,7 @@
   <div id="breadcrumbs">
     {% comment %} {% block breadcrumbs %}{% endcomment %}
     {% if bc_items %}
-    {% comment %} {% render_breadcrumbs bc_items %} {% endcomment %}
-    {% include 'app/breadcrumbs.html' with breadcrumbs_items=bc_items %}
+      {% include 'app/breadcrumbs.html' with breadcrumbs_items=bc_items %}
     {% endif %}
     {% comment %} {% endblock %} {% endcomment %}
   </div>
@@ -54,92 +53,35 @@
     </div>
   </div> {% endcomment %}
 
-    {% comment %} <a href="#myModal" role="button" class="btn btn-secondary" data-bs-toggle="modal">Launch demo
-      modal</a>
-
-    <div id="topModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title" id="myModalLabel">Top-Level</h3>
-            <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true"
-              aria-label="Закрыть">×</button>
-          </div>
-          <div class="modal-body">
-            <p>This modal should appear above the other modal.</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn" data-bs-dismiss="modal" aria-hidden="true">Close</button>
-          </div>
-        </div>
+  <section>
+    <div id="modal-1" style="display:none" class="modally-init" modally-max-width="1000">
+      {% comment %} <h1 class="modal-title">Hey there!</h1> {% endcomment %}
+      <div class="modal-body" style="min-height:800px;">
+      </div>
+      <div class="button-wrap">
+        <a target="_modal:close" class="button small">Close me!</a>
+        <a href="#modal-2" target="_modal" class="button gradient small">Open 2nd one!</a>
       </div>
     </div>
 
-    <div id="myModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title" id="myModalLabel">Modal header</h3>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"
-              aria-label="Закрыть">×</button>
-          </div>
-          <div class="modal-body">
-            <p>Click "Open Modal" to open another modal with this modal staying open.</p>
-            <p>Default behavior of Bootstrap is for the other modal to render beneath this one because it is above it
-              within the html document.</p>
-          </div>
-          <div class="modal-footer">
-            <button class="btn" data-bs-dismiss="modal" aria-hidden="true">Close</button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#topModal">Open Modal</button>
-          </div>
-        </div>
+    <div id="modal-2" style="display:none">
+      {% comment %} <h1 class="modal-title">You still here?!</h1> {% endcomment %}
+      <div class="modal-body">
       </div>
-    </div> {% endcomment %}
-    <section>
-  </div>
-  <div id="modal-1" style="display:none" class="modally-init" modally-max-width="1000">
-    <h1 class="modal-title">Hey there!</h1>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-      standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
-      type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-      remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-      Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions
-      of Lorem Ipsum. Yes I am this lazy.</p>
-      {% lorem 30 p%}
-    <div class="button-wrap">
-      <a target="_modal:close" class="button small">Close me!</a><a href="#ipsum" target="_modal"
-        class="button gradient small">Open 2nd one!</a>
-    </div>
-  </div>
-  <div id="ipsum" style="display:none">
-    <h1 class="modal-title">You still here?!</h1>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-      standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
-      type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-      remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-      Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions
-      of Lorem Ipsum. Yes I am this lazy.</p>
-      {% lorem 30 p%}
 
-    <div class="button-wrap">
-      <a class="button small modally-close">Close me!</a><a href="#dolor" target="_modal:open"
-        class="button gradient small">Open 3rd one!</a>
+      <div class="button-wrap">
+        <a class="button small modally-close">Close me!</a>
+        <a href="#modal-3" target="_modal:open" class="button gradient small">Open 3rd one!</a>
+      </div>
     </div>
-  </div>
 
-  <div id="dolor" style="display:none" modally-max-width="500">
-    <h1 class="modal-title">I'm the last one.</h1>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-      standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a
-      type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting,
-      remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing
-      Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions
-      of Lorem Ipsum. Yes I am this lazy.</p>
-
-    <div class="button-wrap">
-      <a href="#dolor" target="_modal:close" class="button gradient small">Close me!</a>
+    <div id="modal-3" style="display:none" modally-max-width="500">
+      <div class="modal-body">
+      </div>
+      <div class="button-wrap">
+        <a href="#modal-3" target="_modal:close" class="button gradient small">Close me!</a>
+      </div>
     </div>
-  </div>
   <section>
 
 

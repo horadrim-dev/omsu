@@ -357,6 +357,8 @@
                 callback();
             }
         });
+        //////////////////////////////////////////// Моя правка - очищает дочерний элемент body при закрытии окна
+        self.$element.find('.modal-body').html("")
 
         $('html, .modally-wrap').enableScroll();
 

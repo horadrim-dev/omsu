@@ -1,4 +1,4 @@
-<div id="module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-page-{{posts.number}}">
+<div id="module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-page-{{posts.number}}">
     <ul class="list-group list-group-flush">
     {% for post in posts %}
         <li class="list-group-item my-2">
@@ -68,19 +68,19 @@
 
 {% if posts.has_next %}
 
-    <div id="module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadbox" class="d-grid gap-2">
+    <div id="module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadbox" class="d-grid gap-2">
         <div class="my-2 border-top"></div>
         <button 
-        id="module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadmore"
+        id="module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadmore"
         style="height:75px;"
         class="btn btn-outline-primary" type="button">Загрузить еще</button>
     </div>
 
     <script>
-        $('#module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadmore').on('click', function (e) {
-            var target = "#module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-loadbox";
+        $('#module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadmore').on('click', function (e) {
+            var target = "#module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadbox";
             $.ajax({
-                url: "{% url 'feed_page' feed.alias %}?page={{posts.next_page_number}}&module_id={{module.obj.id}}{{module_id}}{% if layout %}&layout={{layout}}{%endif%}",
+                url: "{% url 'feed_page' feed.alias %}?page={{posts.next_page_number}}&uid={{module.obj.id}}{{uid}}{% if layout %}&layout={{layout}}{%endif%}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){
@@ -93,7 +93,7 @@
                     $(target).replaceWith(data); // добавляем полученный html
                     // прокрутка к блоку
                     $("html,body").animate({
-                        scrollTop: $('#module-{{module.obj.id}}{{module_id}}-feed-{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100
+                        scrollTop: $('#module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100
                     }, 200);
                 },
                 complete: function (){

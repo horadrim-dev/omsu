@@ -90,113 +90,16 @@ $(document).ready(function () {
 	};
 
 
-	// BOOSTRAP MODAL NESTED MODALS
-	// (function ($, window) {
-	// 	'use strict';
+	// MODALLY PLUGIN (NESTED MODALS)
+	$('#modal-1').modally('modal-1', {
+		max_width: 800,
+		in_duration: 0
+	});
+	$('#modal-2').modally();
+	$('#modal-3').modally();
+	
 
-	// 	var MultiModal = function (element) {
-	// 		this.$element = $(element);
-	// 		this.modalCount = 0;
-	// 	};
 
-	// 	MultiModal.BASE_ZINDEX = 1040;
-
-	// 	MultiModal.prototype.show = function (target) {
-	// 		var that = this;
-	// 		var $target = $(target);
-	// 		var modalIndex = that.modalCount++;
-
-	// 		$target.css('z-index', MultiModal.BASE_ZINDEX + (modalIndex * 20) + 10);
-
-	// 		// Bootstrap triggers the show event at the beginning of the show function and before
-	// 		// the modal backdrop element has been created. The timeout here allows the modal
-	// 		// show function to complete, after which the modal backdrop will have been created
-	// 		// and appended to the DOM.
-	// 		window.setTimeout(function () {
-	// 			// we only want one backdrop; hide any extras
-	// 			if (modalIndex > 0)
-	// 				$('.modal-backdrop').not(':first').addClass('hidden');
-
-	// 			that.adjustBackdrop();
-	// 		});
-	// 	};
-
-	// 	MultiModal.prototype.hidden = function (target) {
-	// 		this.modalCount--;
-
-	// 		if (this.modalCount) {
-	// 			this.adjustBackdrop();
-
-	// 			// bootstrap removes the modal-open class when a modal is closed; add it back
-	// 			$('body').addClass('modal-open');
-	// 		}
-	// 	};
-
-	// 	MultiModal.prototype.adjustBackdrop = function () {
-	// 		var modalIndex = this.modalCount - 1;
-	// 		$('.modal-backdrop:first').css('z-index', MultiModal.BASE_ZINDEX + (modalIndex * 20));
-	// 	};
-
-	// 	function Plugin(method, target) {
-	// 		return this.each(function () {
-	// 			var $this = $(this);
-	// 			var data = $this.data('multi-modal-plugin');
-
-	// 			if (!data)
-	// 				$this.data('multi-modal-plugin', (data = new MultiModal(this)));
-
-	// 			if (method)
-	// 				data[method](target);
-	// 		});
-	// 	}
-
-	// 	$.fn.multiModal = Plugin;
-	// 	$.fn.multiModal.Constructor = MultiModal;
-
-	// 	$(document).on('show.bs.modal', function (e) {
-	// 		$(document).multiModal('show', e.target);
-	// 	});
-
-	// 	$(document).on('hidden.bs.modal', function (e) {
-	// 		$(document).multiModal('hidden', e.target);
-	// 	});
-	// }(jQuery, window));
-
-	// $('.modal').on('hidden.bs.modal', function (event) {
-	// 	$(this).removeClass('fv-modal-stack');
-	// 	$('body').data('fv_open_modals', $('body').data('fv_open_modals') - 1);
-	// });
-
-	// $('.modal').on('shown.bs.modal', function (event) {
-	// 	// keep track of the number of open modals
-	// 	if (typeof ($('body').data('fv_open_modals')) == 'undefined') {
-	// 		$('body').data('fv_open_modals', 0);
-	// 	}
-
-	// 	// if the z-index of this modal has been set, ignore.
-	// 	if ($(this).hasClass('fv-modal-stack')) {
-	// 		return;
-	// 	}
-
-	// 	$(this).addClass('fv-modal-stack');
-	// 	$('body').data('fv_open_modals', $('body').data('fv_open_modals') + 1);
-	// 	$(this).css('z-index', 1040 + (10 * $('body').data('fv_open_modals')));
-	// 	$('.modal-backdrop').not('.fv-modal-stack').css('z-index', 1039 + (10 * $('body').data('fv_open_modals')));
-	// 	$('.modal-backdrop').not('fv-modal-stack').addClass('fv-modal-stack');
-
-	// });
-	// $(document).on('hidden.bs.modal', function () {
-	// 	if ($('.modal.show').length) {
-	// 		$('body').addClass('modal-open');
-	// 	}
-	// });
-jQuery(document).ready(function () {
-    $('#ipsum').modally('ipsum', {
-        max_width: 800
-    });
-    $('#lorem').modally();
-    $('#dolor').modally();
-});
 	// ajax
 	// $( document ).ajaxStart(function() {
 	// // $( "#loading" ).show();
