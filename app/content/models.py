@@ -79,7 +79,7 @@ class Content(models.Model):
 
 class Feed(Content):
 
-    menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
+    menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
     description = RichTextUploadingField()
 
     def get_page(self, page=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
@@ -111,9 +111,9 @@ class Feed(Content):
 class Post(Content):
 
     menu = models.ForeignKey(
-        Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню", blank=True, null=True)
+        Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", blank=True, null=True)
     feed = models.ForeignKey(
-        Feed, on_delete=models.CASCADE, verbose_name="Лента постов", blank=True, null=True)
+        Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
     image = models.ImageField(upload_to="uploads/%Y/%m/%d/", verbose_name="Изображение поста",
         blank=True, null=True)

@@ -56,22 +56,22 @@
   <section>
     <div id="modal-1" style="display:none" class="modally-init" modally-max-width="1000">
       {% comment %} <h1 class="modal-title">Hey there!</h1> {% endcomment %}
-      <div class="modal-body" style="min-height:800px;">
+      <div class="modal-body p-3" style="min-height:800px;">
       </div>
       <div class="button-wrap">
-        <a target="_modal:close" class="button small">Close me!</a>
-        <a href="#modal-2" target="_modal" class="button gradient small">Open 2nd one!</a>
+        {% comment %} <a target="_modal:close" class="button small">Close me!</a> {% endcomment %}
+        {% comment %} <a href="#modal-2" target="_modal" class="button gradient small">Open 2nd one!</a> {% endcomment %}
       </div>
     </div>
 
-    <div id="modal-2" style="display:none">
+    <div id="modal-2" style="display:none" modally-max-width="1000">
       {% comment %} <h1 class="modal-title">You still here?!</h1> {% endcomment %}
-      <div class="modal-body">
+      <div class="modal-body p-3" style="min-height:800px;">
       </div>
 
       <div class="button-wrap">
-        <a class="button small modally-close">Close me!</a>
-        <a href="#modal-3" target="_modal:open" class="button gradient small">Open 3rd one!</a>
+        {% comment %} <a class="button small modally-close">Close me!</a>
+        <a href="#modal-3" target="_modal:open" class="button gradient small">Open 3rd one!</a> {% endcomment %}
       </div>
     </div>
 

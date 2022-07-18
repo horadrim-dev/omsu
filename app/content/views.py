@@ -134,7 +134,7 @@ def download_attachment(request, uuid, *args, **kwargs):
             'Файл "{}" в хранилище не найден.'.format(attachment.attached_file.path)
         )
 
-def load_feed_page(request, slug, *args, **kwargs):
+def ajax_feed_page(request, slug, *args, **kwargs):
     # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
     #     raise Http404()
 
@@ -152,3 +152,20 @@ def load_feed_page(request, slug, *args, **kwargs):
     context['layout'] = request.GET.get('layout')
 
     return render(request, 'content/post_list.html', context)
+
+def ajax_post(request, *args, **kwargs):
+    # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+    #     raise Http404()
+    if not request.GET.get('post'):
+        return Http404()
+
+    context = {}
+    try:
+        post = Post.objects.published().get(alias=request.GET.get('post'))
+    except Exception:
+        raise Http404('Пост не найден')
+    
+    context['post'] = post
+    context['attachments'] = post.get_attachments()
+
+    return render(request, 'content/post.html', context)

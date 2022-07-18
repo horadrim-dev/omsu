@@ -1,17 +1,5 @@
-<div class="row ">
-    <div class="col">
-        {% comment %} <a href="#" class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3">
-            Читать ленту
-        </a> {% endcomment %}
-        <a href="#modal-1" feed="{{feed.alias}}" target="_modal" 
-            class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3" 
-            >
-            Читать ленту
-        </a>
-    </div>
-</div>
 
-<script>
+{% comment %} <script>
     $('a[href="#modal-1"][feed="{{feed.alias}}"]').on('click', function (e) {
         var target = '#modal-1 .modal-body';
         $.ajax({
@@ -25,7 +13,6 @@
                 $(target).addClass('loading_process');
             },
             success: function (data) {
-                //{% comment %} $(target).replaceWith(data); // добавляем полученный html {% endcomment %}
                 $(target).html(data); // добавляем полученный html
             },
             complete: function (){
@@ -36,4 +23,4 @@
             }
         });
     });
-</script>
+</script> {% endcomment %}

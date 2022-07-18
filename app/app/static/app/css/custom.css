@@ -336,3 +336,9 @@ nav.module-menu .accordion-header a.nav-link.active {
 .feed-blocks img{
 	object-fit: cover;
 }
+
+/* MODAL */
+.modal-body {
+	-webkit-transition: .2s ease-in-out;
+	transition: .2s ease-in-out;
+}

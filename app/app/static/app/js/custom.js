@@ -91,11 +91,17 @@ $(document).ready(function () {
 
 
 	// MODALLY PLUGIN (NESTED MODALS)
+	// https://www.jqueryscript.net/lightbox/nested-modal-modally.html
 	$('#modal-1').modally('modal-1', {
 		max_width: 800,
-		in_duration: 0
+		in_duration: 0,
+		in_easing: 0,
+		out_duration: 0,
+		out_easing: 0
 	});
-	$('#modal-2').modally();
+	$('#modal-2').modally('modal-2', {
+		max_width: 600,
+	});
 	$('#modal-3').modally();
 	
 
