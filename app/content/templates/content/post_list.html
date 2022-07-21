@@ -1,4 +1,4 @@
-<div id="module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-page-{{posts.number}}">
+<div id="{{uid}}-page-{{posts.number}}">
     <ul class="list-group list-group-flush">
     {% for post in posts %}
         <li class="list-group-item my-2">
@@ -71,42 +71,72 @@
 
 {% if posts.has_next %}
 
-    <div id="module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadbox" class="d-grid gap-2">
+    <div id="{{uid}}-loadbox" class="d-grid gap-2">
         <div class="my-2 border-top"></div>
         <button 
-        id="module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadmore"
-        style="height:75px;"
-        class="btn btn-outline-primary" type="button">Загрузить еще</button>
+            id="{{uid}}-loadmore"
+            style="height:75px;"
+            class="btn btn-outline-primary" type="button">
+            Загрузить еще
+        </button>
     </div>
 
     <script>
-        $('#module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadmore').on('click', function (e) {
-            var target = "#module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-loadbox";
+        $('#{{uid}}-loadmore').on('click', function (e) {
+            var parent = "#{{uid}}",
+                target = parent + " #{{uid}}-loadbox";
             $.ajax({
-                url: "{% url 'ajax_feed_page' feed.alias %}?page={{posts.next_page_number}}&uid={{module.obj.id}}{{uid}}{% if layout %}&layout={{layout}}{%endif%}",
+                url: "{% url 'ajax_feed_page' feed.alias %}?page={{posts.next_page_number}}{% if count_items %}&items_per_page={{count_items}}{% endif %}&uid={{uid}}{% if layout %}&layout={{layout}}{%endif%}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){
                     // старт анимации загрузки
                     $(target).wrap( '<div class="main_overlay_block"></div>' );
-                    $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
+                    $(parent + ' .main_overlay_block').prepend('<div class="overlay_block"></div>');
                     $(target).addClass('loading_process');
                 },
                 success: function (data) {
-                    $(target).replaceWith(data); // добавляем полученный html
+                    $(target).html(data); // добавляем полученный html
                     // прокрутка к блоку
                     $("html,body").animate({
-                        scrollTop: $('#module-{{module.obj.id}}{{uid}}-feed-{{feed.alias}}-page-{{posts.next_page_number}}').offset().top - 100
+                        scrollTop: $('#{{uid}}-page-{{posts.next_page_number}}').offset().top - 100
                     }, 200);
                 },
                 complete: function (){
                     // снимаем анимацию загрузки
-                    $(target).unwrap();
-                    $('.overlay_block').remove();
                     $(target).removeClass('loading_process');
+                    $(parent + ' .overlay_block').remove();
+                    $(target + ' > div').unwrap().unwrap();
                 }
             });
         });
     </script>
 {% endif %}
 
+
+<script>
+    $('#{{uid}}-page-{{posts.number}} a[href="#modal-2"][post]').on('click', function (e) {
+        var target = '#modal-2 .modal-body';
+        $.ajax({
+            url: "{% url 'ajax_post' %}?post=" + $(this).attr('post'),
+            method: 'get',
+            dataType: 'html',
+            beforeSend: function(xhr){
+                // старт анимации загрузки
+                $(target).wrap( '<div class="main_overlay_block"></div>' );
+                $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
+                $(target).addClass('loading_process');
+            },
+            success: function (data) {
+                //{% comment %} $(target).replaceWith(data); // добавляем полученный html {% endcomment %}
+                $(target).html(data); // добавляем полученный html
+            },
+            complete: function (){
+                // снимаем анимацию загрузки
+                $(target).unwrap();
+                $('.overlay_block').remove();
+                $(target).removeClass('loading_process');
+            }
+        });
+    });
+</script>

@@ -1,0 +1,39 @@
+{% load content_extras %}
+
+{% if content.content_type == 'menu' %}
+    {% if content.menu_style == 'vertical_with_submenus'  or content.menu_style == 'vertical_without_submenus' %}
+
+        {% include 'menus/menu_vertical.html' with menu_tree=content.content_menu.get_subitems layout=content.menu_style %}
+
+    {% elif content.menu_style == 'horizontal_blocks' %}
+
+        {% include 'menus/menu_blocks.html' with menu_tree=content.content_menu.get_subitems  %}
+
+    {% endif %}
+{% endif %}
+
+{% if content.content_type == 'post' %}
+
+    {% include 'content/post.html' with post=content.content_post attachments=content.content_post.get_attachments %}
+
+{% endif %}
+
+{% if content.content_type == 'feed' %}
+
+    {% with feed=content.content_feed posts=content.get_feed_page columns=content.feed_num_columns count_items=content.feed_count_objects sort_direction=content.feed_sort_direction readmore=content.feed_readmore %}
+
+        {% split_posts_by_columns posts columns sort_direction as posts_by_columns %}
+        {% calc_max_posts_in_col posts columns as max_posts %}
+
+        {% if content.feed_style == 'compact_feed' %}
+            {% include 'content/postfeed.html' with layout='compact' %}
+        {% elif content.feed_style == 'blocks' %}
+            {% include 'content/postfeed_blocks.html' %}
+        {% elif content.feed_style == 'slider' %}
+            {% posts_by_columns_flatten posts_by_columns as posts %}
+            {% include 'content/postfeed_slider.html' %}
+        {% endif %}
+
+    {% endwith %}
+
+{% endif %}

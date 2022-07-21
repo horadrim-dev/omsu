@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
-from .models import Section, Column, Module, ModuleContent
+from .models import Section, Column, Module, ModuleContent, Widget
 from django import forms
 import uuid
 # Register your models here.
@@ -18,15 +18,15 @@ class ModuleContentInlineFormSet(BaseInlineFormSet):
             if not form.is_valid():
                 return #other errors exist, so don't bother
             if form.cleaned_data:
-                if form.cleaned_data.get('content_type') == 'menu' and not form.cleaned_data.get('menu'):
+                if form.cleaned_data.get('content_type') == 'menu' and not form.cleaned_data.get('content_menu'):
                     # raise ValidationError('Поле "Меню" обязательно для заполнения!');
-                    form.add_error('menu', 'Поле "Меню" обязательно для заполнения!')
-                if form.cleaned_data.get('content_type') == 'feed' and not form.cleaned_data.get('feed'):
+                    form.add_error('content_menu', 'Поле "Меню" обязательно для заполнения!')
+                if form.cleaned_data.get('content_type') == 'feed' and not form.cleaned_data.get('content_feed'):
                     # raise ValidationError('Поле "Лента постов" обязательно для заполнения!');
-                    form.add_error('feed', 'Поле "Лента постов" обязательно для заполнения!')
-                if form.cleaned_data.get('content_type') == 'post' and not form.cleaned_data.get('post'):
+                    form.add_error('content_feed', 'Поле "Лента постов" обязательно для заполнения!')
+                if form.cleaned_data.get('content_type') == 'post' and not form.cleaned_data.get('content_post'):
                     # raise ValidationError('Поле "Пост" обязательно для заполнения!');
-                    form.add_error('post', 'Поле "Пост" обязательно для заполнения!')
+                    form.add_error('content_post', 'Поле "Пост" обязательно для заполнения!')
             #     total += form.cleaned_data['cost']
             # assert False, form.cleaned_data
         #compare only if Item inline forms were clean as well
@@ -38,6 +38,7 @@ class ModuleContentInline(admin.StackedInline):
     exclude = []
     extra = 0
     formset = ModuleContentInlineFormSet
+    raw_id_fields = ("content_post", )
     class Media:
         js = ('grid/js/modulecontent.js',)
 
@@ -96,5 +97,12 @@ class ModuleAdmin(admin.ModelAdmin):
     duplicate.short_description = 'Дублировать'
 
 
+# class WidgetAdmin(admin.ModelAdmin):
+#     # form = ModuleForm
+#     list_display = ['name', 'published', 'column', 'order', 'id']
+#     list_filter = ('published', 'menu', 'column',)
+#     search_fields = ('title', )
+#     readonly_fields = ('id', )
 admin.site.register(Section, SectionAdmin)
 admin.site.register(Module, ModuleAdmin)
+admin.site.register(Widget)

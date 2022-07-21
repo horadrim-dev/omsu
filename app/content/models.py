@@ -225,3 +225,72 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
             
 # @receiver(models.signals.post_save, sender=Post)
 # def relocate_attachments(sender, instance, **kwargs):
+
+class ContentLayout(models.Model):
+
+    CONTENT_TYPE_CHOICES = [
+        ('', '---'),
+        ('menu', 'Меню'),
+        ('post', 'Пост'),
+        ('feed', 'Лента постов'),
+    ]
+    content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
+        verbose_name="Тип контента")
+
+    # называть поля с контентом нужно с содержанием названия из CONTENT_TYPE_CHOICES (для работы JS) (пример: post,post_style,hzpost)
+
+    content_post = models.ForeignKey(
+        Post, on_delete=models.SET_NULL, verbose_name="Пост", blank=True, null=True)
+
+    content_feed = models.ForeignKey(
+        Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
+    FEED_STYLE_CHOICES = [
+        ('compact_feed', 'Список постов (только заголовки)'),
+        ('blocks', 'Посты в виде блоков'),
+        ('slider', 'Слайдер постов'),
+    ]
+    feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
+        verbose_name="Макет ленты постов")
+    FEED_COLUMN_CHOICES = [
+        (1, '1 колонка'),
+        (2, '2 колонки'),
+        (3, '3 колонки'),
+        (4, '4 колонки'),
+    ]
+    feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
+        verbose_name="Количество колонок")
+    feed_count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
+    feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
+    FEED_SORT_DIRECTION_CHOICES = [
+        ('horizontal', 'Построчно'),
+        ('vertical', 'По колонкам'),
+    ]
+    feed_sort_direction = models.CharField(max_length=16, choices=FEED_SORT_DIRECTION_CHOICES, default=FEED_SORT_DIRECTION_CHOICES[0][0],
+        verbose_name="Направление сортировки")
+
+    content_menu = models.ForeignKey(
+        Menu, on_delete=models.SET_NULL, related_name="+", verbose_name="Меню", blank=True, null=True)
+    MENU_STYLE_CHOICES = [
+        ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
+        ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
+        ('vertical_without_submenus', 'Вертикальное меню (без дочерних меню)'),
+    ]
+    menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
+        verbose_name="Макет меню")
+
+    class Meta:
+        abstract = True
+        # verbose_name = "Контент"
+        # verbose_name_plural = "Контент"
+        # ordering = ['order']
+
+    def get_feed_page(self):
+        return self.content_feed.get_page(posts_per_page=self.feed_count_objects)
+
+    def __str__(self):
+        if self.content_type == 'menu':
+            return 'Меню: ({})'.format(self.content_menu.title) if self.content_menu else 'Не выбран'
+        elif self.content_type == 'feed':
+            return 'Лента постов: ({})'.format(self.content_feed.title) if self.content_feed else 'Не выбран'
+        elif self.content_type == 'post':
+            return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'

@@ -145,9 +145,20 @@ def ajax_feed_page(request, slug, *args, **kwargs):
         raise Http404('Лента не найдена')
     
     context['feed'] = feed
-    context['posts'] = feed.get_page(
-        request.GET.get('page')
-    )
+
+    if request.GET.get('items_per_page'):
+        context['count_items'] = int(request.GET.get('items_per_page'))
+
+    if request.GET.get('page'):
+        if request.GET.get('items_per_page') :
+            context['posts'] = feed.get_page(
+                page=request.GET.get('page'), posts_per_page=context['count_items']
+            )
+        else:
+            context['posts'] = feed.get_page(page=request.GET.get('page'))
+    else:
+        context['posts'] = feed.get_page()
+
     context['uid'] = request.GET.get('uid') # для использования в качестве уникального id в шаблоне
     context['layout'] = request.GET.get('layout')
 

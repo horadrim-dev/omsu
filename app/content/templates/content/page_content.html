@@ -7,11 +7,11 @@
 {% else %}
 
     {% if contents.info.count.posts %}
-        {% include 'content/post.html' with post=contents.posts.0.post attachments=contents.posts.0.attachments %}
+        {% include 'content/post.html' with post=contents.posts.0.post attachments=contents.posts.0.attachments uid=contents.posts.0.post.alias %}
     {% endif %}
 
     {% if contents.info.count.postfeeds %}
-        {% include 'content/postfeed.html' with feed=contents.postfeeds.0.feed posts=contents.postfeeds.0.posts %}
+        {% include 'content/postfeed.html' with feed=contents.postfeeds.0.feed posts=contents.postfeeds.0.posts uid=contents.postfeeds.0.feed.alias %}
     {% endif %}
 
 {% endif %}

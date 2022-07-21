@@ -15,12 +15,12 @@
             >
             {% if content.content_type == 'menu' %}
                 <i class="bi bi-list me-2"></i>
-                {{content.menu.title}}
+                {{content.content_menu.title}}
             {% elif content.content_type == 'post' %}
-                {{content.post.title}}
+                {{content.content_post.title}}
             {% elif content.content_type == 'feed' %}
                 <i class="bi bi-newspaper me-2"></i>
-                {{content.feed.title}}
+                {{content.content_feed.title}}
             {% endif %}
         </a>
     </li>
@@ -37,26 +37,29 @@
         aria-labelledby="module-{{module.obj.id}}-tabs-tab-content-{{forloop.counter}}"
         >
 
-        {% if content.content_type == 'menu' %}
+
+
+        {% include 'content/content_layout.html' with content=content uid=module.contents.0.uid %}
+        {% comment %} {% if content.content_type == 'menu' %}
 
             {% if content.menu_style == 'vertical_with_submenus'  or content.menu_style == 'vertical_without_submenus' %}
-                {% include 'menus/menu_vertical.html' with menu_tree=content.menu.get_subitems layout=content.menu_style %}
+                {% include 'menus/menu_vertical.html' with menu_tree=content.content_menu.get_subitems layout=content.menu_style %}
             {% elif content.menu_style == 'horizontal_blocks' %}
-                {% include 'menus/menu_blocks.html' with menu_tree=content.menu.get_subitems  %}
+                {% include 'menus/menu_blocks.html' with menu_tree=content.content_menu.get_subitems  %}
             {% endif %}
         {% elif content.content_type == 'post' %}
 
-            {% include 'content/post.html' with post=content.post attachments=content.post.get_attachments %}
+            {% include 'content/post.html' with post=content.content_post attachments=content.content_post.get_attachments %}
 
         {% elif content.content_type == 'feed' %}
 
             {% if content.feed_style == 'compact_feed' %}
-                {% include 'content/postfeed.html' with feed=content.feed posts=content.feed.get_page layout='compact' %}
+                {% include 'content/postfeed.html' with feed=content.content_feed posts=content.content_feed.get_page layout='compact' %}
             {% elif content.feed_style == 'slider' %}
-                {% include 'content/postfeed_slider.html' with feed=content.feed posts=content.feed.get_page %}
+                {% include 'content/postfeed_slider.html' with feed=content.content_feed posts=content.content_feed.get_page %}
             {% endif %}
 
-        {% endif %}
+        {% endif %} {% endcomment %}
 
         {% comment %} {% include 'grid/postfeed.html' with layout='compact' %} {% endcomment %}
 

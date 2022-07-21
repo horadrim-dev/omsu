@@ -1,7 +1,7 @@
-<div id="module-{{module.obj.id}}-feed-{{feed.alias}}">
+<div id="{{uid}}">
 
-    {% comment %} <h2>{{feed.title}}</h2>
-    {{feed.description|safe}} {% endcomment %}
+    <h2>{{feed.title}}</h2>
+
     {% if layout != 'compact' %}
         {{feed.description|safe }}
         <div class="clearfix"></div>
@@ -11,31 +11,5 @@
         {% include 'content/post_list.html' %}
     {% comment %} {% endwith %} {% endcomment %}
 
-    <script>
-        $('#module-{{module.obj.id}}-feed-{{feed.alias}} a[href="#modal-2"][post]').on('click', function (e) {
-            var target = '#modal-2 .modal-body';
-            $.ajax({
-                url: "{% url 'ajax_post' %}?post=" + $(this).attr('post'),
-                method: 'get',
-                dataType: 'html',
-                beforeSend: function(xhr){
-                    // старт анимации загрузки
-                    $(target).wrap( '<div class="main_overlay_block"></div>' );
-                    $('.main_overlay_block').prepend('<div class="overlay_block"></div>');
-                    $(target).addClass('loading_process');
-                },
-                success: function (data) {
-                    //{% comment %} $(target).replaceWith(data); // добавляем полученный html {% endcomment %}
-                    $(target).html(data); // добавляем полученный html
-                },
-                complete: function (){
-                    // снимаем анимацию загрузки
-                    $(target).unwrap();
-                    $('.overlay_block').remove();
-                    $(target).removeClass('loading_process');
-                }
-            });
-        });
-    </script>
 
 </div>

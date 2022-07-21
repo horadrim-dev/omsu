@@ -60,13 +60,21 @@ def menus(request, *args, **kwargs):
         } for section in Section.objects.published_on_page(current_menu)
     ]
 
+    widgets = {}
+    for widget in current_menu.widget_set.all():
+        if widget.position not in widgets:
+            widgets[widget.position] = [widget]
+        else:
+            widgets[widget.position].append(widget)
+
     context = {
         # 'data': 'normal',
         'bc_items': bc_items,
         'page': current_menu,
         'main_menu_tree': main_menu_tree,
         'menu_tree': menu_tree,
-        'sections': sections
+        'sections': sections,
+        'widgets': widgets
     }
     # if request.GET.get('data') == 'component':
     #     context['data'] = 'component'

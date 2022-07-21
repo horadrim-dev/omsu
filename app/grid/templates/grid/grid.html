@@ -28,8 +28,53 @@
 
                                 <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
 
-                                {% block content %}
-                                {% endblock content %}
+                                {% if widgets.top %}
+                                <div class="widgets-top border-bottom mb-4 pb-3">
+                                {% for widget in widgets.top %}
+                                    <div class="">
+                                        {% include 'content/content_layout.html' with content=widget uid=widget.uid %}
+                                    </div>
+                                {% endfor %}
+                                </div>
+                                {% endif %}
+                                
+                                <div class="row">
+
+                                    {% if widgets.left %}
+                                    <div class="col-12 col-xl-3 widgets-left">
+                                        {% for widget in widgets.left %}
+                                            <div class="my-3">
+                                                {% include 'content/content_layout.html' with content=widget uid=widget.uid %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <div class="col">
+                                    {% block content %}
+                                    {% endblock content %}
+                                    </div>
+
+                                    {% if widgets.right %}
+                                    <div class="col-12 col-xl-3 widgets-right">
+                                        {% for widget in widgets.right %}
+                                            <div class="my-3">
+                                                {% include 'content/content_layout.html' with content=widget uid=widget.uid %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                {% if widgets.stacked %}
+                                    <div class="widgets-stacked">
+                                    {% for widget in widgets.stacked %}
+                                        <div class="my-5">
+                                            {% include 'content/content_layout.html' with content=widget uid=widget.uid %}
+                                        </div>
+                                    {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
 
                         {% elif module.obj.standart_design %}
