@@ -22,27 +22,12 @@ class Migration(migrations.Migration):
             old_name='post',
             new_name='post_content',
         ),
-        migrations.RenameField(
-            model_name='widget',
-            old_name='feed',
-            new_name='feed_content',
-        ),
-        migrations.RenameField(
-            model_name='widget',
-            old_name='post',
-            new_name='post_content',
-        ),
         migrations.RemoveField(
             model_name='modulecontent',
             name='menu',
         ),
         migrations.AddField(
             model_name='modulecontent',
-            name='menu_content',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='menus.menu', verbose_name='Меню'),
-        ),
-        migrations.AddField(
-            model_name='widget',
             name='menu_content',
             field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to='menus.menu', verbose_name='Меню'),
         ),

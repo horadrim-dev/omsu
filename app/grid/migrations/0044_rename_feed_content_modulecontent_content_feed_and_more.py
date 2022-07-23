@@ -25,19 +25,4 @@ class Migration(migrations.Migration):
             old_name='post_content',
             new_name='content_post',
         ),
-        migrations.RenameField(
-            model_name='widget',
-            old_name='feed_content',
-            new_name='content_feed',
-        ),
-        migrations.RenameField(
-            model_name='widget',
-            old_name='menu_content',
-            new_name='content_menu',
-        ),
-        migrations.RenameField(
-            model_name='widget',
-            old_name='post_content',
-            new_name='content_post',
-        ),
     ]

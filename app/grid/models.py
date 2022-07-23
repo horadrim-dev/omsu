@@ -150,8 +150,6 @@ class Module(Base, OrderedModel):
 
 class ModuleContent(OrderedModel, ContentLayout):
 
-    uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Модуль")
 
     class Meta:
@@ -169,36 +167,6 @@ class ModuleContent(OrderedModel, ContentLayout):
             )
 
 
-class Widget(OrderedModel, ContentLayout):
-
-    uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню")
-
-    POSITION_CHOICES = [
-        ('right', 'Справа'),
-        ('left', 'Слева'),
-        ('bottom', 'Внизу'),
-        ('top', 'Сверху'),
-        ('stacked', 'Под постом (В виде ленты)'),
-        ('tab', 'Вкладка'),
-    ]
-    position = models.CharField(max_length=64, choices=POSITION_CHOICES, default=POSITION_CHOICES[0][0],
-        verbose_name="Расположение")
-
-    class Meta:
-        verbose_name = "Виджет"
-        verbose_name_plural = "Виджеты"
-        ordering = ['order']
-
-    def save(self, lock_recursion=False, *args, **kwargs):
-
-        super(Widget, self).save(*args, **kwargs)
-
-        if not lock_recursion:
-            self.update_order(
-                list_of_objects = list(Widget.objects.filter(menu=self.menu, position=self.position).exclude(id=self.id))
-            )
     # def check_width(self):
     #     sum_width = self.width
     #     blocks = Block.objects.filter(section=self.section).only('width').exclude(id=self.id)

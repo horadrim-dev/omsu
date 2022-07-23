@@ -1,19 +1,58 @@
 <div id="content-body">
 
-{% if contents.info.count.total > 1 %}
+    
+    <div class="row">
 
-    {% include 'content/multicontent.html' %}
+        {% if contents.left %}
+        <div class="col-12 col-xl-3 content-left">
+            {% for content in contents.left %}
+                <div class="my-3">
+                    {% include 'content/content_layout.html' with content=content uid=content.uid %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <div class="col">
+            {% if contents.top %}
+            <div class="content-top border-bottom mb-4 pb-3">
+            {% for content in contents.top %}
+                <div class="">
+                    {% include 'content/content_layout.html' with content=content uid=content.uid %}
+                </div>
+            {% endfor %}
+            </div>
+            {% endif %}
 
-{% else %}
+            {% if contents.content %}
+                {% if contents.content|length > 1 %}
+                    {% include 'content/multicontent.html' with contents=contents.content %}
+                {% else %}
+                    {% include 'content/content_layout.html' with content=contents.content.0 uid=contents.content.0.uid %}
+                {% endif %}
+            {% endif %}
 
-    {% if contents.info.count.posts %}
-        {% include 'content/post.html' with post=contents.posts.0.post attachments=contents.posts.0.attachments uid=contents.posts.0.post.alias %}
-    {% endif %}
+            {% if contents.stacked %}
+                <div class="content-stacked">
+                {% for content in contents.stacked %}
+                    <div class="my-5">
+                        {% include 'content/content_layout.html' with content=content uid=content.uid %}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
 
-    {% if contents.info.count.postfeeds %}
-        {% include 'content/postfeed.html' with feed=contents.postfeeds.0.feed posts=contents.postfeeds.0.posts uid=contents.postfeeds.0.feed.alias %}
-    {% endif %}
+        {% if contents.right %}
+        <div class="col-12 col-xl-3 content-right">
+            {% for content in contents.right %}
+                <div class="my-3">
+                    {% include 'content/content_layout.html' with content=content uid=content.uid %}
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
 
-{% endif %}
 
 </div>

@@ -1,5 +1,6 @@
 from django.contrib import admin,  messages
-from .models import Post, Feed, Attachment
+from .models import Post, Feed, Attachment, Content
+from .forms import ContentForm
 import uuid
 from django import forms
 # Register your models here.
@@ -21,9 +22,9 @@ class PostAdmin(admin.ModelAdmin):
     form = PostForm
     list_display = (
         'title', 'published', 'published_at', 
-        'menu', 'feed', 'id',
+        'feed', 'id',
     )
-    list_filter = ('published', 'menu', 'feed',)
+    list_filter = ('published', 'feed',)
     search_fields = ('title', )
     readonly_fields = ('id', 'hits')
     # sortable_by = ('issue_number', 'publish_date',)
@@ -85,5 +86,9 @@ class PostAdmin(admin.ModelAdmin):
 
     # publish_issues.short_description = 'Publish issues now'
 
+class ContentAdmin(admin.ModelAdmin):
+    form = ContentForm
+
 admin.site.register(Post, PostAdmin)
 admin.site.register(Feed)
+admin.site.register(Content, ContentAdmin)

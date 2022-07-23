@@ -1,8 +1,8 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from django.forms.models import BaseInlineFormSet
-from .models import Section, Column, Module, ModuleContent, Widget
-from django import forms
+from .models import Section, Column, Module, ModuleContent
+from .forms import ModuleForm
 import uuid
 # Register your models here.
 
@@ -11,6 +11,7 @@ class ColumnInline(admin.TabularInline):
     exclude = []
 
 class ModuleContentInlineFormSet(BaseInlineFormSet):
+
     def clean(self):
         super(ModuleContentInlineFormSet, self).clean()
 
@@ -40,28 +41,12 @@ class ModuleContentInline(admin.StackedInline):
     formset = ModuleContentInlineFormSet
     raw_id_fields = ("content_post", )
     class Media:
-        js = ('grid/js/modulecontent.js',)
-
+        js = ('grid/js/modulecontent_inline.js',)
     
 
 class SectionAdmin(admin.ModelAdmin):
     list_display = ['name', 'order']
     inlines = (ColumnInline, )
-
-class ModuleForm(forms.ModelForm):
-    class Meta:
-        model = Module
-        # fields = []
-        exclude = []
-
-    def clean(self):
-        cleaned_data = super(ModuleForm, self).clean()
-
-        if cleaned_data:
-            if cleaned_data.get('invert') and  cleaned_data.get('show_on_every_page'):
-                msg = 'Одновременное инвертирование и показ на всех страницах не будут работать. Уберите одну из опций.'
-                self.add_error('invert', msg)
-                self.add_error('show_on_every_page', msg)
 
 class ModuleAdmin(admin.ModelAdmin):
     form = ModuleForm
@@ -97,12 +82,6 @@ class ModuleAdmin(admin.ModelAdmin):
     duplicate.short_description = 'Дублировать'
 
 
-# class WidgetAdmin(admin.ModelAdmin):
-#     # form = ModuleForm
-#     list_display = ['name', 'published', 'column', 'order', 'id']
-#     list_filter = ('published', 'menu', 'column',)
-#     search_fields = ('title', )
-#     readonly_fields = ('id', )
+
 admin.site.register(Section, SectionAdmin)
 admin.site.register(Module, ModuleAdmin)
-admin.site.register(Widget)

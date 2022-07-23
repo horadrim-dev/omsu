@@ -10,7 +10,9 @@ from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
 from app.utils import slugify_rus, remove_empty_dirs
+from app.models import OrderedModel
 from django.core.paginator import Paginator
+from django.apps import apps
 from . import app_settings as content_settings
 import datetime
 import os
@@ -44,7 +46,7 @@ class ContentManager(models.Manager):
     def published(self):
         return self.filter(published=True, published_at__lte=datetime.date.today())
 
-class Content(models.Model):
+class ContentBase(models.Model):
 
     title = models.CharField(
         default="", max_length=1000, verbose_name="Заголовок")
@@ -67,7 +69,7 @@ class Content(models.Model):
             # заполняем алиас
             self.alias = slugify_rus(self.title)
 
-        super(Content, self).save(*args, **kwargs)
+        super(ContentBase, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
@@ -77,9 +79,18 @@ class Content(models.Model):
         ordering = ['-published_at']
 
 
-class Feed(Content):
+class Feed(ContentBase):
 
-    menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
+    # menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
+    COLUMN_CHOICES = [
+        (1, '1 колонка'),
+        (2, '2 колонки'),
+        (3, '3 колонки'),
+        (4, '4 колонки'),
+    ]
+    num_columns = models.PositiveSmallIntegerField(choices=COLUMN_CHOICES, default=COLUMN_CHOICES[0][0],
+        verbose_name="Количество колонок")
+    count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
     description = RichTextUploadingField()
 
     def get_page(self, page=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
@@ -108,10 +119,10 @@ class Feed(Content):
         verbose_name = "Лента постов"
         verbose_name_plural = "Ленты постов"
 
-class Post(Content):
+class Post(ContentBase):
 
-    menu = models.ForeignKey(
-        Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", blank=True, null=True)
+    # menu = models.ForeignKey(
+    #     Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", blank=True, null=True)
     feed = models.ForeignKey(
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
@@ -228,6 +239,8 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 
 class ContentLayout(models.Model):
 
+    uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
     CONTENT_TYPE_CHOICES = [
         ('', '---'),
         ('menu', 'Меню'),
@@ -259,7 +272,7 @@ class ContentLayout(models.Model):
     ]
     feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
         verbose_name="Количество колонок")
-    feed_count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
+    feed_count_items = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
     feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
     FEED_SORT_DIRECTION_CHOICES = [
         ('horizontal', 'Построчно'),
@@ -285,7 +298,29 @@ class ContentLayout(models.Model):
         # ordering = ['order']
 
     def get_feed_page(self):
-        return self.content_feed.get_page(posts_per_page=self.feed_count_objects)
+        return self.content_feed.get_page(posts_per_page=self.feed_count_items)
+
+    def get_alias(self):
+        # # РАБОТАЕТ ТОЛЬКО ДЛЯ МОДЕЛЕЙ ОПРЕДЕЛЕННЫХ В content ПРИЛОЖЕНИИ (а меню в другом приложении)
+        # for content_type in self.CONTENT_TYPE_CHOICES[1:]:
+        #     # assert False, (self.content_type, content_type[0])
+        #     if self.content_type == content_type[0]:
+        #         assert False, apps.get_model(app_label="content", model_name=self.content_type).alias
+        #         return 
+        if self.content_type == 'menu':
+            return self.content_menu.alias
+        if self.content_type == 'post':
+            return self.content_post.alias
+        if self.content_type == 'feed':
+            return self.content_feed.alias
+
+    def get_title(self):
+        if self.content_type == 'menu':
+            return self.content_menu.title
+        if self.content_type == 'post':
+            return self.content_post.title
+        if self.content_type == 'feed':
+            return self.content_feed.title
 
     def __str__(self):
         if self.content_type == 'menu':
@@ -294,3 +329,34 @@ class ContentLayout(models.Model):
             return 'Лента постов: ({})'.format(self.content_feed.title) if self.content_feed else 'Не выбран'
         elif self.content_type == 'post':
             return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'
+
+
+class Content(OrderedModel, ContentLayout):
+
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню")
+
+    POSITION_CHOICES = [
+        ('content', 'Контент'),
+        ('right', 'Справа'),
+        ('left', 'Слева'),
+        ('bottom', 'Внизу'),
+        ('top', 'Сверху'),
+        ('stacked', 'Под постом (В виде ленты)'),
+    ]
+    position = models.CharField(max_length=64, choices=POSITION_CHOICES, default=POSITION_CHOICES[0][0],
+        verbose_name="Расположение")
+
+    class Meta:
+        verbose_name = "Контент"
+        verbose_name_plural = "Контент"
+        ordering = ['order']
+
+    def save(self, lock_recursion=False, *args, **kwargs):
+
+        super(Content, self).save(*args, **kwargs)
+
+        if not lock_recursion:
+            self.update_order(
+                list_of_objects = list(Content.objects.filter(menu=self.menu, position=self.position).exclude(id=self.id))
+            )
+
