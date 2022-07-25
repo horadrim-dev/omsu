@@ -39,7 +39,7 @@
 
 
 
-        {% include 'content/content_layout.html' with content=content uid=module.contents.0.uid %}
+        {% include 'content/content_layout.html' with content=content layout=layout uid=module.contents.0.uid %}
         {% comment %} {% if content.content_type == 'menu' %}
 
             {% if content.menu_style == 'vertical_with_submenus'  or content.menu_style == 'vertical_without_submenus' %}

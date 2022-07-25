@@ -259,7 +259,9 @@ class ContentLayout(models.Model):
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     FEED_STYLE_CHOICES = [
         ('compact_feed', 'Список постов (только заголовки)'),
-        ('blocks', 'Посты в виде блоков'),
+        ('blocks', 'Посты в виде блоков (без изображений)'),
+        ('blocks_with_images_left', 'Посты в виде блоков (изображения слева)'),
+        ('blocks_with_images_top', 'Посты в виде блоков (изображения сверху)'),
         ('slider', 'Слайдер постов'),
     ]
     feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],

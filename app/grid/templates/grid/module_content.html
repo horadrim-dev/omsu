@@ -6,13 +6,13 @@
 
     {% if module.contents|length > 1 %}
 
-        {% include 'grid/module_multicontent.html' with contents=module.contents %}
+        {% include 'grid/module_multicontent.html' with contents=module.contents layout='compact' %}
 
     {% else %}
 
         {% comment %} {% with module.contents.0 as content %} {% endcomment %}
 
-            {% include 'content/content_layout.html' with content=module.contents.0 uid=module.contents.0.uid %}
+            {% include 'content/content_layout.html' with content=module.contents.0 layout='compact' uid=module.contents.0.uid %}
 
         {% comment %} {% endwith %} {% endcomment %}
     {% endif %}
