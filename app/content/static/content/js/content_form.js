@@ -14,6 +14,7 @@ $(document).ready(function(){
                     target.find('.order').show();
                     target.find('.menu').show();
                     target.find('.position').show();
+                    target.find('.show_title').show();
                     target.find('.'+trigger_field_name).show();
                     if(value){
                         target.find('div[class*=form-row][class*='+ value+']').show();

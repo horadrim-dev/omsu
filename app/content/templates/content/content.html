@@ -1,9 +1,70 @@
 {% extends 'menus/menus.html' %}
 
 {% block content %}
+
     {% if contents %}
-        {% include 'content/page_content.html' %}
+    
+        <div id="content-body">
+
+            <div class="row">
+
+                {% if contents.left %}
+                <div class="col-12 col-xl-3 content-left">
+                    {% for content in contents.left %}
+                        <div class="my-3">
+                            {% include 'content/content_layout.html' with content=content layout='compact' uid=content.uid %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <div class="col">
+                    {% if contents.top %}
+                    <div class="content-top border-bottom mb-4 pb-3">
+                    {% for content in contents.top %}
+                        <div class="">
+                            {% include 'content/content_layout.html' with content=content layout='normal' uid=content.uid %}
+                        </div>
+                    {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if contents.content %}
+                        {% if contents.content|length > 1 %}
+                            {% include 'content/layout_multicontent.html' with contents=contents.content layout='normal' %}
+                        {% else %}
+                            {% include 'content/content_layout.html' with content=contents.content.0 layout='normal' uid=contents.content.0.uid %}
+                        {% endif %}
+                    {% endif %}
+
+                    {% if contents.stacked %}
+                        <div class="content-stacked">
+                        {% for content in contents.stacked %}
+                            <div class="my-5">
+                                {% include 'content/content_layout.html' with content=content layout='normal' uid=content.uid %}
+                            </div>
+                        {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if contents.right %}
+                <div class="col-12 col-xl-3 content-right">
+                    {% for content in contents.right %}
+                        <div class="mb-4">
+                            {% include 'content/content_layout.html' with content=content layout='compact' uid=content.uid %}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+
     {% else %}
+    
         {{ block.super }}
+    
     {% endif %}
+
 {% endblock content %}

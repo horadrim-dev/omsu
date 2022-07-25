@@ -335,6 +335,8 @@ class Content(OrderedModel, ContentLayout):
 
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню")
 
+    show_title = models.BooleanField(default=False, verbose_name="Отображать заголовок")
+
     POSITION_CHOICES = [
         ('content', 'Контент'),
         ('right', 'Справа'),

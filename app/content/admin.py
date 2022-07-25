@@ -1,3 +1,4 @@
+from turtle import position
 from django.contrib import admin,  messages
 from .models import Post, Feed, Attachment, Content
 from .forms import ContentForm
@@ -88,6 +89,13 @@ class PostAdmin(admin.ModelAdmin):
 
 class ContentAdmin(admin.ModelAdmin):
     form = ContentForm
+    list_display = (
+        'menu', 'position', 'content_type', 'id'
+    )
+    list_filter = ('menu', 'content_type', 'position',)
+    # search_fields = ('title', )
+    # readonly_fields = ('id', 'hits')
+
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Feed)

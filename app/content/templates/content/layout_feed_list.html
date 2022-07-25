@@ -1,14 +1,12 @@
 <div id="{{uid}}">
 
-    <h2>{{feed.title}}</h2>
-
     {% if layout != 'compact' %}
         {{feed.description|safe }}
         <div class="clearfix"></div>
     {% endif %}
 
     {% comment %} {% with postfeed.posts as posts %} {% endcomment %}
-        {% include 'content/post_list.html' %}
+        {% include 'content/layout_feed_list_page.html' %}
     {% comment %} {% endwith %} {% endcomment %}
 
 

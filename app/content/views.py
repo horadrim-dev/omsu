@@ -177,7 +177,7 @@ def ajax_feed_page(request, slug, *args, **kwargs):
     context['uid'] = request.GET.get('uid') # для использования в качестве уникального id в шаблоне
     context['layout'] = request.GET.get('layout')
 
-    return render(request, 'content/post_list.html', context)
+    return render(request, 'content/layout_feed_list.html', context)
 
 def ajax_post(request, *args, **kwargs):
     # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -194,4 +194,4 @@ def ajax_post(request, *args, **kwargs):
     context['post'] = post
     context['attachments'] = post.get_attachments()
 
-    return render(request, 'content/post.html', context)
+    return render(request, 'content/layout_post.html', context)

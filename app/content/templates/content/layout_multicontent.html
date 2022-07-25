@@ -35,7 +35,7 @@
         aria-labelledby="module-{{module.obj.id}}-pills-tab-post-{{forloop.counter}}"
         >
 
-        {% include 'content/content_layout.html' with content=content uid=content.uid %}
+        {% include 'content/content_layout.html' with content=content layout=layout uid=content.uid %}
         
     </div>
     {% endfor %}
