@@ -36,7 +36,9 @@
         {% calc_max_posts_in_col posts columns as max_posts %}
         {% posts_by_columns_flatten posts_by_columns as posts %}
 
-        {% if content.feed_style == 'compact_feed' %}
+        {% if content.feed_style == 'feed' %}
+            {% include 'content/layout_feed_list.html' with show_introtext=True %}
+        {% elif content.feed_style == 'compact_feed' %}
             {% include 'content/layout_feed_list.html' %}
         {% elif content.feed_style == 'blocks' %}
             {% include 'content/layout_feed_blocks.html' %}

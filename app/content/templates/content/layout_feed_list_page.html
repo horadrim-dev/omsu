@@ -1,11 +1,12 @@
 <div id="{{uid}}-page-{{posts.number}}">
-    <div class="row">
-    {% for posts in posts_by_columns %}
-        <div class="col">
-            <ul class="list-group list-group-flush">
-            {% for post in posts %}
-                <li class="list-group-item my-2">
-                    <div class="d-flex align-items-center justify-content-between">
+    {% comment %} <div class="row"> {% endcomment %}
+    <div class="row row-cols-1 row-cols-md-{{columns}} gx-4 mb-3">
+        {% for post in posts %}
+        <div class="col border-bottom">
+            {% comment %} <ul class="list-group list-group-flush">
+                <li class="list-group-item my-2"> {% endcomment %}
+                <div class="">
+                    <div class="d-flex align-items-center justify-content-between my-2 ">
                         <div class="mb-0"> 
                             <div>
                             <a href="{{post.alias}}" class="w-100">
@@ -55,7 +56,7 @@
                         {% endif %}
                     </div>
 
-                    {% if layout == 'normal' %}
+                    {% if show_introtext %}
                         <div class="mt-1">
                             {{post.intro_text|safe}}
                         </div>
@@ -67,9 +68,9 @@
                             </a>
                         </div>
                     {% endif %}
-                </li>
-            {% endfor %}
-            </ul>
+                </div>
+                {% comment %} </li>
+            </ul> {% endcomment %}
         </div>
     {% endfor %}
     </div>

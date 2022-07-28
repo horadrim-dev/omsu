@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import FileResponse, Http404
 from django.conf import settings
 from django.core.paginator import Paginator
+from toml import TomlDecodeError
 from .models import ContentBase, Post, Feed, Attachment
 from grid.models import Module
 from menus.models import Menu
@@ -27,12 +28,13 @@ def get_content_if_exists(slug=None):
 
 def get_content(menu:Menu=None, slug:str=None, module:Module=None):
     ''' Возвращает контент, привязанный к меню'''
+    # todo: Переделать в get_extracontent 
     if module:
         return module.modulecontent_set.all()
 
     if menu:
         contents = {}
-        for content in menu.content_set.all():
+        for content in menu.extracontent_set.all():
             if content.position not in contents:
                 contents[content.position] = [content]
             else:

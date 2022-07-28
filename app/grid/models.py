@@ -2,7 +2,7 @@ from turtle import position
 from django.db import models, transaction
 from django.db.models import Q
 # from django.forms import ValidationError
-from content.models import ContentLayout
+from content.models import ContentMenuLayout
 from app.models import OrderedModel
 from ckeditor_uploader.fields import RichTextUploadingField
 from menus.models import Menu
@@ -148,7 +148,7 @@ class Module(Base, OrderedModel):
             )
 
 
-class ModuleContent(OrderedModel, ContentLayout):
+class ModuleContent(OrderedModel, ContentMenuLayout):
 
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Модуль")
 

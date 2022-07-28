@@ -36,8 +36,8 @@ document.addEventListener('click', function (e) {
 })
 
 $(document).ready(function () {
-	// вешаем lightbox на все картинки в #content
-	$('#content img').wrap(function () {
+	// вешаем lightbox на все картинки 
+	$('img').wrap(function () {
 			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 		})
 		.parent()

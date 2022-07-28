@@ -243,7 +243,6 @@ class ContentLayout(models.Model):
 
     CONTENT_TYPE_CHOICES = [
         ('', '---'),
-        ('menu', 'Меню'),
         ('post', 'Пост'),
         ('feed', 'Лента постов'),
     ]
@@ -258,6 +257,7 @@ class ContentLayout(models.Model):
     content_feed = models.ForeignKey(
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     FEED_STYLE_CHOICES = [
+        ('feed', 'Список постов'),
         ('compact_feed', 'Список постов (только заголовки)'),
         ('blocks', 'Посты в виде блоков (без изображений)'),
         ('blocks_with_images_left', 'Посты в виде блоков (изображения слева)'),
@@ -283,6 +283,39 @@ class ContentLayout(models.Model):
     feed_sort_direction = models.CharField(max_length=16, choices=FEED_SORT_DIRECTION_CHOICES, default=FEED_SORT_DIRECTION_CHOICES[0][0],
         verbose_name="Направление сортировки")
 
+    class Meta:
+        abstract = True
+        # verbose_name = "Контент"
+        # verbose_name_plural = "Контент"
+        # ordering = ['order']
+
+    def get_feed_page(self):
+        return self.content_feed.get_page(posts_per_page=self.feed_count_items)
+
+    def get_alias(self):
+        if self.content_type == 'post':
+            return self.content_post.alias
+        if self.content_type == 'feed':
+            return self.content_feed.alias
+
+    def get_title(self):
+        if self.content_type == 'post':
+            return self.content_post.title
+        if self.content_type == 'feed':
+            return self.content_feed.title
+
+    def __str__(self):
+        if self.content_type == 'feed':
+            return 'Лента постов: ({})'.format(self.content_feed.title) if self.content_feed else 'Не выбран'
+        if self.content_type == 'post':
+            return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'
+
+class ContentMenuLayout(ContentLayout):
+
+    CONTENT_TYPE_CHOICES =  ContentLayout.CONTENT_TYPE_CHOICES + [('menu', 'Меню')]
+    content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
+        verbose_name="Тип контента")
+
     content_menu = models.ForeignKey(
         Menu, on_delete=models.SET_NULL, related_name="+", verbose_name="Меню", blank=True, null=True)
     MENU_STYLE_CHOICES = [
@@ -299,48 +332,30 @@ class ContentLayout(models.Model):
         # verbose_name_plural = "Контент"
         # ordering = ['order']
 
-    def get_feed_page(self):
-        return self.content_feed.get_page(posts_per_page=self.feed_count_items)
-
     def get_alias(self):
-        # # РАБОТАЕТ ТОЛЬКО ДЛЯ МОДЕЛЕЙ ОПРЕДЕЛЕННЫХ В content ПРИЛОЖЕНИИ (а меню в другом приложении)
-        # for content_type in self.CONTENT_TYPE_CHOICES[1:]:
-        #     # assert False, (self.content_type, content_type[0])
-        #     if self.content_type == content_type[0]:
-        #         assert False, apps.get_model(app_label="content", model_name=self.content_type).alias
-        #         return 
+        super().get_alias()
         if self.content_type == 'menu':
             return self.content_menu.alias
-        if self.content_type == 'post':
-            return self.content_post.alias
-        if self.content_type == 'feed':
-            return self.content_feed.alias
 
     def get_title(self):
+        super().get_title()
         if self.content_type == 'menu':
             return self.content_menu.title
-        if self.content_type == 'post':
-            return self.content_post.title
-        if self.content_type == 'feed':
-            return self.content_feed.title
 
     def __str__(self):
+        super().__str__()
         if self.content_type == 'menu':
             return 'Меню: ({})'.format(self.content_menu.title) if self.content_menu else 'Не выбран'
-        elif self.content_type == 'feed':
-            return 'Лента постов: ({})'.format(self.content_feed.title) if self.content_feed else 'Не выбран'
-        elif self.content_type == 'post':
-            return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'
 
 
-class Content(OrderedModel, ContentLayout):
+class ExtraContent(OrderedModel, ContentMenuLayout):
 
     menu = models.ForeignKey(Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню")
 
     show_title = models.BooleanField(default=False, verbose_name="Отображать заголовок")
 
     POSITION_CHOICES = [
-        ('content', 'Контент'),
+        # ('content', 'Контент'),
         ('right', 'Справа'),
         ('left', 'Слева'),
         ('bottom', 'Внизу'),
@@ -357,10 +372,10 @@ class Content(OrderedModel, ContentLayout):
 
     def save(self, lock_recursion=False, *args, **kwargs):
 
-        super(Content, self).save(*args, **kwargs)
+        super(ExtraContent, self).save(*args, **kwargs)
 
         if not lock_recursion:
             self.update_order(
-                list_of_objects = list(Content.objects.filter(menu=self.menu, position=self.position).exclude(id=self.id))
+                list_of_objects = list(ExtraContent.objects.filter(menu=self.menu, position=self.position).exclude(id=self.id))
             )
 

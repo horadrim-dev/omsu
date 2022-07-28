@@ -1,10 +1,14 @@
 # from asyncore import loop
-from tkinter import CASCADE
-from unittest.util import _MAX_LENGTH
+# from tkinter import CASCADE
+# from unittest.util import _MAX_LENGTH
 from django.db import models, transaction
 from ckeditor_uploader.fields import RichTextUploadingField
-from ckeditor.fields import RichTextField
+# from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
+from app.models import OrderedModel
+# import content
+# from content.models import ContentLayouts as Content
+# import content.models as c_models
 # from django.db.models import F
 
 # Create your models here.
@@ -14,13 +18,13 @@ class MenuManager(models.Manager):
     def published(self):
         return self.filter(published=True)
 
-class Menu(models.Model):
+class Menu(OrderedModel):
     title = models.CharField(max_length=100, verbose_name="Название")
     alias = models.SlugField(blank=True, unique=True,
                              max_length=100, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     parent = models.ForeignKey(
         'Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
-    order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
+    # order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     list_order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     level = models.PositiveSmallIntegerField(default=1, blank=True, null=True)
     url = models.CharField(max_length=1000, default='', blank=True, null=True)
@@ -55,7 +59,9 @@ class Menu(models.Model):
 
         # обновляем порядок
         if not lock_recursion:
-            self.update_order()
+            self.update_order(
+                list_of_objects = list(Menu.objects.filter(menu=self.parent).exclude(id=self.id))
+            )
             self.update_list_order()
             # обновляем URL в дочерних объектах
             self.update_urls()
@@ -97,35 +103,35 @@ class Menu(models.Model):
             return '/'+ path + '/'
 
 
-    def update_order(self):
-            '''обновляет порядок элементов с общим родителем'''
-            # получаем соседние объекты
-            menus = list(Menu.objects.filter(parent_id=self.parent_id).exclude(id=self.id))
-            menus_count = len(menus)
-            # формируем список новых ордеров
-            orders = [i for i in range(1, menus_count + 1 + 1)]
+    # def update_order(self):
+    #         '''обновляет порядок элементов с общим родителем'''
+    #         # получаем соседние объекты
+    #         menus = list(Menu.objects.filter(parent_id=self.parent_id).exclude(id=self.id))
+    #         menus_count = len(menus)
+    #         # формируем список новых ордеров
+    #         orders = [i for i in range(1, menus_count + 1 + 1)]
 
-            # если новый ордер за пределами возможных или равен 0
-            if (self.order > menus_count + 1) or (self.order <= 0):
+    #         # если новый ордер за пределами возможных или равен 0
+    #         if (self.order > menus_count + 1) or (self.order <= 0):
 
-                with transaction.atomic():
-                    # просто присваем последний ордер
-                    self.order = orders[-1]
-                    self.save(update_fields=['order'], lock_recursion=True)
-                    # обновляем соседние меню
-                    for i in orders[:-1]:
-                        menus[i-1].order = i
-                        menus[i-1].save(update_fields=['order'], lock_recursion=True)
+    #             with transaction.atomic():
+    #                 # просто присваем последний ордер
+    #                 self.order = orders[-1]
+    #                 self.save(update_fields=['order'], lock_recursion=True)
+    #                 # обновляем соседние меню
+    #                 for i in orders[:-1]:
+    #                     menus[i-1].order = i
+    #                     menus[i-1].save(update_fields=['order'], lock_recursion=True)
                     
-            else: # если новый ордер в пределах возможных
-                # резервируем нужный ордер для изменяемого меню, другие меню расставляем по остальным ордерам
-                obj_num = 0
-                with transaction.atomic():
-                    for i in orders:
-                        if i != self.order:
-                            menus[obj_num].order = i
-                            menus[obj_num].save(update_fields=['order'], lock_recursion=True)
-                            obj_num += 1
+    #         else: # если новый ордер в пределах возможных
+    #             # резервируем нужный ордер для изменяемого меню, другие меню расставляем по остальным ордерам
+    #             obj_num = 0
+    #             with transaction.atomic():
+    #                 for i in orders:
+    #                     if i != self.order:
+    #                         menus[obj_num].order = i
+    #                         menus[obj_num].save(update_fields=['order'], lock_recursion=True)
+    #                         obj_num += 1
 
     def update_list_order(self, parent_id=None, start_order=1):
             '''обновляет порядок всех элементов при выводе списком'''

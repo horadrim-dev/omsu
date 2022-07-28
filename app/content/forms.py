@@ -1,5 +1,5 @@
 from django import forms
-from .models import Content
+from .models import ExtraContent
 
 # from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
@@ -14,15 +14,15 @@ from .models import Content
 
 # AttachmentFormset = inlineformset_factory(Post, Attachment, extra=1)
 
-class ContentForm(forms.ModelForm):
+class ExtraContentForm(forms.ModelForm):
 
     class Meta:
-        model = Content
+        model = ExtraContent
         # fields = []
         exclude = []
     
     class Media:
-        js = ('content/js/content_form.js',)
+        js = ('content/js/extracontent_form.js',)
 
     def clean(self):
         # cleaned_data = super(WidgetForm, self).clean()

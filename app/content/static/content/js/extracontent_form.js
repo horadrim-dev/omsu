@@ -2,7 +2,7 @@
 $(document).ready(function(){
     (function($) {
         $(function() {
-            var modelname = 'content',
+            var modelname = 'extracontent',
                 suffix = '_form',
                 trigger_field_name = 'content_type'
                 // inline_group = $('#'+modelname+suffix+'-group');
