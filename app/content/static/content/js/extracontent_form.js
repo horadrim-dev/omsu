@@ -12,7 +12,7 @@ $(document).ready(function(){
                 function show_fields_by_value(target, value) {
                     target.find('.form-row').hide();
                     target.find('.order').show();
-                    target.find('.menu').show();
+                    target.find('.tied_to_menu').show();
                     target.find('.position').show();
                     target.find('.show_title').show();
                     target.find('.'+trigger_field_name).show();

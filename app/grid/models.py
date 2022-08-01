@@ -2,7 +2,7 @@ from turtle import position
 from django.db import models, transaction
 from django.db.models import Q
 # from django.forms import ValidationError
-from content.models import ContentMenuLayout
+from content.models import ContentLayout
 from app.models import OrderedModel
 from ckeditor_uploader.fields import RichTextUploadingField
 from menus.models import Menu
@@ -116,12 +116,12 @@ class Column(Base, OrderedModel):
         return True if self.module_set.published().count() else False
 
 class Module(Base, OrderedModel):
-    menu = models.ManyToManyField(Menu, verbose_name="Привязка к меню")
+    menu = models.ManyToManyField('menus.Menu', verbose_name="Привязка к меню")
     invert = models.BooleanField(default=False, verbose_name="Инвертировать выбор меню",
         help_text="Модуль будет привязан ко всем меню, кроме отмеченных.")
     show_on_every_page = models.BooleanField(default=False, verbose_name="Отображать на всех страницах сайта",
         help_text="Если выбрано - значения из поля \"меню\" будут проигнорированы.")
-    column = models.ForeignKey('Column', verbose_name="Позиция", on_delete=models.CASCADE)
+    column = models.ForeignKey('grid.Column', verbose_name="Позиция", on_delete=models.CASCADE)
     show_title = models.BooleanField(default=True, verbose_name="Заголовок")
     standart_design = models.BooleanField(default=True, verbose_name="Оформление по умолчанию")
     centrize = models.BooleanField(default=False, verbose_name="Центрировать содержимое")
@@ -148,7 +148,7 @@ class Module(Base, OrderedModel):
             )
 
 
-class ModuleContent(OrderedModel, ContentMenuLayout):
+class ModuleContent(OrderedModel, ContentLayout):
 
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Модуль")
 
@@ -165,16 +165,4 @@ class ModuleContent(OrderedModel, ContentMenuLayout):
             self.update_order(
                 list_of_objects = list(ModuleContent.objects.filter(module=self.module).exclude(id=self.id))
             )
-
-
-    # def check_width(self):
-    #     sum_width = self.width
-    #     blocks = Block.objects.filter(section=self.section).only('width').exclude(id=self.id)
-    #     for block in blocks:
-    #         sum_width += block.width
-
-    #     if sum_width > 12:
-    #         raise ValidationError('Суммарная ширина всех блоков в секции не должна превышать 12, ({}>12)'.format(sum_width))
-    #     else:
-    #         return True
 

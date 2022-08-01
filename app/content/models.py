@@ -1,12 +1,13 @@
 # from ast import arg
 # from re import A
 # from tabnanny import verbose
+from tkinter import CASCADE
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
 # from django.utils import timezone
 from django.conf import settings
-from menus.models import Menu
+# from menus.models import Menu
 from ckeditor_uploader.fields import RichTextUploadingField
 from ckeditor.fields import RichTextField
 from app.utils import slugify_rus, remove_empty_dirs
@@ -82,16 +83,16 @@ class ContentBase(models.Model):
 class Feed(ContentBase):
 
     # menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
-    COLUMN_CHOICES = [
-        (1, '1 колонка'),
-        (2, '2 колонки'),
-        (3, '3 колонки'),
-        (4, '4 колонки'),
-    ]
-    num_columns = models.PositiveSmallIntegerField(choices=COLUMN_CHOICES, default=COLUMN_CHOICES[0][0],
-        verbose_name="Количество колонок")
-    count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
-    description = RichTextUploadingField()
+    # COLUMN_CHOICES = [
+    #     (1, '1 колонка'),
+    #     (2, '2 колонки'),
+    #     (3, '3 колонки'),
+    #     (4, '4 колонки'),
+    # ]
+    # num_columns = models.PositiveSmallIntegerField(choices=COLUMN_CHOICES, default=COLUMN_CHOICES[0][0],
+    #     verbose_name="Количество колонок")
+    # count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
+    description = RichTextUploadingField(blank=True, null=True)
 
     def get_page(self, page=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
         paginator = Paginator(
@@ -237,7 +238,7 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 # @receiver(models.signals.post_save, sender=Post)
 # def relocate_attachments(sender, instance, **kwargs):
 
-class ContentLayout(models.Model):
+class ContentLayoutBase(models.Model):
 
     uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
@@ -310,14 +311,15 @@ class ContentLayout(models.Model):
         if self.content_type == 'post':
             return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'
 
-class ContentMenuLayout(ContentLayout):
 
-    CONTENT_TYPE_CHOICES =  ContentLayout.CONTENT_TYPE_CHOICES + [('menu', 'Меню')]
+class ContentLayout(ContentLayoutBase):
+
+    CONTENT_TYPE_CHOICES =  ContentLayoutBase.CONTENT_TYPE_CHOICES + [('menu', 'Меню')]
     content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
         verbose_name="Тип контента")
 
     content_menu = models.ForeignKey(
-        Menu, on_delete=models.SET_NULL, related_name="+", verbose_name="Меню", blank=True, null=True)
+        'menus.Menu', on_delete=models.SET_NULL, related_name="+", verbose_name="Меню", blank=True, null=True)
     MENU_STYLE_CHOICES = [
         ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
         ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
@@ -327,35 +329,37 @@ class ContentMenuLayout(ContentLayout):
         verbose_name="Макет меню")
 
     class Meta:
-        abstract = True
-        # verbose_name = "Контент"
+        # abstract = True
+        verbose_name = "Макет контента"
         # verbose_name_plural = "Контент"
         # ordering = ['order']
 
     def get_alias(self):
-        super().get_alias()
         if self.content_type == 'menu':
             return self.content_menu.alias
+        return super().get_alias()
 
     def get_title(self):
-        super().get_title()
         if self.content_type == 'menu':
             return self.content_menu.title
+        return super().get_title()
 
     def __str__(self):
-        super().__str__()
         if self.content_type == 'menu':
             return 'Меню: ({})'.format(self.content_menu.title) if self.content_menu else 'Не выбран'
+        return super().__str__()
 
 
-class ExtraContent(OrderedModel, ContentMenuLayout):
+class ExtraContent(OrderedModel, ContentLayout):
+    
+    # contentlayout_ptr = models.OneToOneField(to=ContentLayout, parent_link=True, on_delete=models.CASCADE, related_name='extracontent')
 
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, verbose_name="Привязка к меню")
+    tied_to_menu = models.ForeignKey('menus.Menu', on_delete=models.CASCADE, verbose_name="Привязка к меню")
 
     show_title = models.BooleanField(default=False, verbose_name="Отображать заголовок")
 
     POSITION_CHOICES = [
-        # ('content', 'Контент'),
+        ('content', 'Контент'),
         ('right', 'Справа'),
         ('left', 'Слева'),
         ('bottom', 'Внизу'),
@@ -366,8 +370,8 @@ class ExtraContent(OrderedModel, ContentMenuLayout):
         verbose_name="Расположение")
 
     class Meta:
-        verbose_name = "Контент"
-        verbose_name_plural = "Контент"
+        verbose_name = "дополнительный контент"
+        verbose_name_plural = "дополнительный контент"
         ordering = ['order']
 
     def save(self, lock_recursion=False, *args, **kwargs):
@@ -376,6 +380,6 @@ class ExtraContent(OrderedModel, ContentMenuLayout):
 
         if not lock_recursion:
             self.update_order(
-                list_of_objects = list(ExtraContent.objects.filter(menu=self.menu, position=self.position).exclude(id=self.id))
+                list_of_objects = list(ExtraContent.objects.filter(tied_to_menu=self.tied_to_menu, position=self.position).exclude(id=self.id))
             )
 

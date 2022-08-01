@@ -14,6 +14,8 @@ from .models import ExtraContent
 
 # AttachmentFormset = inlineformset_factory(Post, Attachment, extra=1)
 
+
+
 class ExtraContentForm(forms.ModelForm):
 
     class Meta:

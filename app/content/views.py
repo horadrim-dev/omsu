@@ -34,6 +34,8 @@ def get_content(menu:Menu=None, slug:str=None, module:Module=None):
 
     if menu:
         contents = {}
+        contents['content'] = [menu]
+
         for content in menu.extracontent_set.all():
             if content.position not in contents:
                 contents[content.position] = [content]
@@ -41,7 +43,7 @@ def get_content(menu:Menu=None, slug:str=None, module:Module=None):
                 contents[content.position].append(content)
 
     if slug:
-        Http404('UNKNOWN SLUG - hz')
+        raise Http404('UNKNOWN SLUG - hz')
         
 
     # has_content = False

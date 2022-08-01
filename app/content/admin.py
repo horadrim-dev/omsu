@@ -90,11 +90,9 @@ class PostAdmin(admin.ModelAdmin):
 class ExtraContentAdmin(admin.ModelAdmin):
     form = ExtraContentForm
     list_display = (
-        'menu', 'position', 'content_type', 'id'
+        'tied_to_menu', 'position', 'content_type', 'id'
     )
-    # list_filter = ('menu', 'content_type', 'position',)
-    # search_fields = ('title', )
-    # readonly_fields = ('id', 'hits')
+    list_filter = ('tied_to_menu', 'content_type', 'position',)
 
 
 admin.site.register(Post, PostAdmin)

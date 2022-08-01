@@ -6,8 +6,7 @@ from ckeditor_uploader.fields import RichTextUploadingField
 # from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
 from app.models import OrderedModel
-# import content
-# from content.models import ContentLayouts as Content
+from content.models import ContentLayout
 # import content.models as c_models
 # from django.db.models import F
 
@@ -18,12 +17,13 @@ class MenuManager(models.Manager):
     def published(self):
         return self.filter(published=True)
 
-class Menu(OrderedModel):
+class Menu(ContentLayout, OrderedModel):
+    # content_layout = models.OneToOneField(to=ContentLayout, default='', on_delete=models.CASCADE)
     title = models.CharField(max_length=100, verbose_name="Название")
     alias = models.SlugField(blank=True, unique=True,
                              max_length=100, help_text="Краткое название транслитом через тире (пример: 'kratkoe-nazvanie-translitom'). Чем короче тем лучше. Для автоматического заполнения - оставьте пустым.")
     parent = models.ForeignKey(
-        'Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
+        'menus.Menu', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родитель")
     # order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     list_order = models.PositiveSmallIntegerField(default=0, blank=True, null=True)
     level = models.PositiveSmallIntegerField(default=1, blank=True, null=True)
@@ -60,7 +60,7 @@ class Menu(OrderedModel):
         # обновляем порядок
         if not lock_recursion:
             self.update_order(
-                list_of_objects = list(Menu.objects.filter(menu=self.parent).exclude(id=self.id))
+                list_of_objects = list(Menu.objects.filter(parent=self.parent).exclude(id=self.id))
             )
             self.update_list_order()
             # обновляем URL в дочерних объектах
