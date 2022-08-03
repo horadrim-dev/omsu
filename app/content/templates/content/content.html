@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    {% if contents %}
+    {% comment %} {% if contents %} {% endcomment %}
     
         <div id="content-body">
 
@@ -28,14 +28,18 @@
                     {% endfor %}
                     </div>
                     {% endif %}
+                    
+                    {% if CONTENT_HTML %}
+                        {{CONTENT_HTML}}
+                    {% endif %}
 
-                    {% if contents.content %}
+                    {% comment %} {% if contents.content %}
                         {% if contents.content|length > 1 %}
                             {% include 'content/layout_multicontent.html' with contents=contents.content layout='normal' %}
                         {% else %}
                             {% include 'content/content_layout.html' with content=contents.content.0 layout='normal' uid=contents.content.0.uid %}
                         {% endif %}
-                    {% endif %}
+                    {% endif %} {% endcomment %}
 
                     {% if contents.stacked %}
                         <div class="content-stacked">
@@ -61,10 +65,10 @@
 
         </div>
 
-    {% else %}
+    {% comment %} {% else %}
     
         {{ block.super }}
     
-    {% endif %}
+    {% endif %} {% endcomment %}
 
 {% endblock content %}

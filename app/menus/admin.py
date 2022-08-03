@@ -12,6 +12,8 @@ class ExtraContentInline(admin.StackedInline):
     exclude = []
     extra = 0
     # readonly_fields = ('hits',)
+    class Media:
+        js = ('menus/js/extracontent_inline.js',)
 
 class MenuForm(forms.ModelForm):
     class Meta:

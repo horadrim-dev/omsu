@@ -359,7 +359,7 @@ class ExtraContent(OrderedModel, ContentLayout):
     show_title = models.BooleanField(default=False, verbose_name="Отображать заголовок")
 
     POSITION_CHOICES = [
-        ('content', 'Контент'),
+        # ('content', 'Контент'),
         ('right', 'Справа'),
         ('left', 'Слева'),
         ('bottom', 'Внизу'),

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import FileResponse, Http404
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.template.loader import render_to_string
 from toml import TomlDecodeError
 from .models import ContentBase, Post, Feed, Attachment
 from grid.models import Module
@@ -26,25 +27,21 @@ def get_content_if_exists(slug=None):
 
         return False
 
-def get_content(menu:Menu=None, slug:str=None, module:Module=None):
-    ''' Возвращает контент, привязанный к меню'''
+def get_extracontent(menu:Menu=None, module:Module=None):
+    ''' Возвращает экстраконтент, привязанный к меню или модулям'''
     # todo: Переделать в get_extracontent 
     if module:
         return module.modulecontent_set.all()
 
     if menu:
         contents = {}
-        contents['content'] = [menu]
+        # contents['content'] = [menu]
 
         for content in menu.extracontent_set.all():
             if content.position not in contents:
                 contents[content.position] = [content]
             else:
                 contents[content.position].append(content)
-
-    if slug:
-        raise Http404('UNKNOWN SLUG - hz')
-        
 
     # has_content = False
     # contents = {}
@@ -111,22 +108,61 @@ def get_content(menu:Menu=None, slug:str=None, module:Module=None):
 
 def render_content(request, context, unknown_slugs=None):
     if unknown_slugs:
+        # Если есть slug-и "не меню" то проверяем их и передаем на обработку
+        # разным функциям (зависит от контент-типа текущего меню)
+        unknown_objects = []
         for slug in unknown_slugs:
-            content = get_content_if_exists(slug)
-            if content:
-                context['bc_items'].append((content.title, slug))
+            obj = get_content_if_exists(slug)
+            ### Здесь должна быть проверка на родство [slugs между собой]
+            ### и [первого slug с последним меню]
+            if obj:
+                unknown_objects.append(obj)
+                context['bc_items'].append((obj.title, slug))
             else:
                 raise Http404('Контент не найден')
                 
-        context['page'] = content
-        context['contents'] = get_content(slug=slug)
+        # context['page'] = content
+        # context['contents'] = get_content(slug=slug)
+        if context['page'].content_type == 'feed':
+            # ПРОДУМАТЬ НАСЛЕДОВАНИИЕ ЛЕНТ
+            if len(unknown_objects) == 1 :
+                if (unknown_objects[0].__class__.__name__ == 'Post'):
+
+                    post = unknown_objects[0]
+
+                    if post.feed != context['page'].content_feed:
+                        raise Http404('Проверка на родство ленты и поста не пройдена')
+
+                    CONTENT_HTML = render_to_string(
+                        'content/layout_post.html', 
+                        {
+                            'uid': 'CONTENT_123', # ПРОДУМАТЬ UID
+                            'post' : post, 
+                            'attachments': post.get_attachments()
+                        }
+                    )
+                else:
+                    raise Http404('Для меню-ленты unknown_slug!=Post не предусмотрен.')
+            else:
+                raise Http404('Получено '+len(unknown_objects)+' unknown_slugs, не предусмотрено')
+        elif context['page'].content_type == 'post':
+            raise Http404('Не продумано.(unknown_slug после меню-поста)')
+        elif context['page'].content_type == 'menu':
+            raise Http404('Не продумано.(unknown_slug после меню-"меню")')
     else:
-        context['contents'] = get_content(menu=context['page'])
+        CONTENT_HTML = render_to_string(
+            'content/content_layout.html', 
+            {'content' : context['page']}
+        )
+
+
+    context['CONTENT_HTML'] = CONTENT_HTML
+    context['contents'] = get_extracontent(menu=context['page'])
 
     for section in context['sections']:
         for column in section['columns']:
             for module in column['modules']:
-                module['contents'] = get_content(module=module['obj'])
+                module['contents'] = get_extracontent(module=module['obj'])
 
 
     return render(request, 'content/content.html', context)
