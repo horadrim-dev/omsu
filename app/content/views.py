@@ -107,6 +107,8 @@ def get_extracontent(menu:Menu=None, module:Module=None):
     #     return False
 
 def render_content(request, context, unknown_slugs=None):
+    page_title = ''
+
     if unknown_slugs:
         # Если есть slug-и "не меню" то проверяем их и передаем на обработку
         # разным функциям (зависит от контент-типа текущего меню)
@@ -133,10 +135,11 @@ def render_content(request, context, unknown_slugs=None):
                     if post.feed != context['page'].content_feed:
                         raise Http404('Проверка на родство ленты и поста не пройдена')
 
+                    page_title = post.title
                     CONTENT_HTML = render_to_string(
                         'content/layout_post.html', 
                         {
-                            'uid': 'CONTENT_123', # ПРОДУМАТЬ UID
+                            'uid': 'content', 
                             'post' : post, 
                             'attachments': post.get_attachments()
                         }
@@ -155,8 +158,10 @@ def render_content(request, context, unknown_slugs=None):
             {'content' : context['page']}
         )
 
+    context['page_title'] = page_title if page_title else context['page'].title
 
     context['CONTENT_HTML'] = CONTENT_HTML
+
     context['contents'] = get_extracontent(menu=context['page'])
 
     for section in context['sections']:

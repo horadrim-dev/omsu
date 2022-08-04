@@ -4,11 +4,18 @@
 
   {% comment %} {% block content_block %} {% endcomment %}
 
+    {% comment %} {% if page.alias != 'home' %}
+    <button id="back" type="button" class="btn float-start">
+        <i class="bi bi-arrow-left"></i>
+    </button>
+    {% endif %}
+    <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
+
     <div class="page-description">
       {{ page.description|safe }}
     </div>
 
-    {% include 'menus/layout_menu_blocks.html' %}
+    {% include 'menus/layout_menu_blocks.html' %} {% endcomment %}
 
   {% comment %} {% endblock content_block %} {% endcomment %}
 

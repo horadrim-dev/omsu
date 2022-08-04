@@ -3,10 +3,11 @@
 # from unittest.util import _MAX_LENGTH
 from django.db import models, transaction
 from ckeditor_uploader.fields import RichTextUploadingField
+from django.forms import ValidationError
 # from ckeditor.fields import RichTextField
 from app.utils import slugify_rus
 from app.models import OrderedModel
-from content.models import ContentLayout
+from content.models import ContentLayout, Feed
 # import content.models as c_models
 # from django.db.models import F
 
@@ -39,6 +40,36 @@ class Menu(ContentLayout, OrderedModel):
     debug_info = models.TextField(default="", blank=True, null=True)
 
     objects = MenuManager()
+
+    def clean(self):
+
+        if self.content_type == 'menu':
+            # Проверка на выбор меню
+            if not self.content_menu:
+                raise ValidationError({'content_menu' : ('Необходимо выбрать меню')})
+        
+        if self.content_type == 'post':
+            # Проверка на выбор поста
+            if not self.content_post:
+                raise ValidationError({'content_post' : ('Необходимо выбрать пост')})
+
+        if self.content_type == 'feed':
+            # Проверка на выбор ленты
+            if not self.content_feed:
+                raise ValidationError({'content_feed' : ('Необходимо выбрать ленту')})
+            # Проверка "Одна лента - один меню"
+            qs = Menu.objects.filter(
+                content_type='feed', 
+                content_feed=self.content_feed
+                ).exclude(id=self.id)
+            if len(qs) > 0:
+                msg = 'Лента "{}" уже привязана к меню "{}". \
+                    Если вы хотите отобразить эту ленту на этой странице\
+                     - воспользуйтесь разделом "Дополнительный контент"'\
+                    .format(self.content_feed, qs[0].title)
+                raise ValidationError({
+                    'content_feed' : (msg)
+                    })
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # только при создании объекта, id еще не существует

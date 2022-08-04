@@ -6,6 +6,13 @@
     
         <div id="content-body">
 
+            {% if page.alias != 'home' %}
+            <button id="back" type="button" class="btn float-start">
+                <i class="bi bi-arrow-left"></i>
+            </button>
+            {% endif %}
+            <h2 id="content-title" class="border-bottom mb-4 pb-3">{{page_title}}</h2>
+
             <div class="row">
 
                 {% if contents.left %}

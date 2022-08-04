@@ -18,15 +18,7 @@
 
                         {% if module.obj.name == "CONTENT" %}
 
-                        <div id="content" class="shadow p-5 m-3">
-
-                            {% if page.alias != 'home' %}
-                            <button id="back" type="button" class="btn float-start">
-                                <i class="bi bi-arrow-left"></i>
-                            </button>
-                            {% endif %}
-
-                            <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
+                        <div id="content-container" class="shadow p-5 m-3">
 
                             {% block content %}
                             {% endblock content %}
