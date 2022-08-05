@@ -141,7 +141,10 @@ class Post(ContentBase):
             self.intro_text = '<p></p>'
 
         super(Post, self).save(*args, **kwargs)
-
+    
+    def get_url(self):
+        if self.feed:
+            assert False, dir(self.feed)
     def count_attachments(self):
         '''Возвращает количество связанных attachments'''
         return self.attachment_set.all().count()
