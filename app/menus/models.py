@@ -18,7 +18,7 @@ class MenuManager(models.Manager):
     def published(self):
         return self.filter(published=True)
 
-class Menu(ContentLayout, OrderedModel):
+class Menu(OrderedModel):
     # content_layout = models.OneToOneField(to=ContentLayout, default='', on_delete=models.CASCADE)
     title = models.CharField(max_length=100, verbose_name="Название")
     alias = models.SlugField(blank=True, unique=True,
@@ -42,34 +42,34 @@ class Menu(ContentLayout, OrderedModel):
     objects = MenuManager()
 
     def clean(self):
-
-        if self.content_type == 'menu':
-            # Проверка на выбор меню
-            if not self.content_menu:
-                raise ValidationError({'content_menu' : ('Необходимо выбрать меню')})
+        pass
+        # if self.content_type == 'menu':
+        #     # Проверка на выбор меню
+        #     if not self.content_menu:
+        #         raise ValidationError({'content_menu' : ('Необходимо выбрать меню')})
         
-        if self.content_type == 'post':
-            # Проверка на выбор поста
-            if not self.content_post:
-                raise ValidationError({'content_post' : ('Необходимо выбрать пост')})
+        # if self.content_type == 'post':
+        #     # Проверка на выбор поста
+        #     if not self.content_post:
+        #         raise ValidationError({'content_post' : ('Необходимо выбрать пост')})
 
-        if self.content_type == 'feed':
-            # Проверка на выбор ленты
-            if not self.content_feed:
-                raise ValidationError({'content_feed' : ('Необходимо выбрать ленту')})
-            # Проверка "Одна лента - один меню"
-            qs = Menu.objects.filter(
-                content_type='feed', 
-                content_feed=self.content_feed
-                ).exclude(id=self.id)
-            if len(qs) > 0:
-                msg = 'Лента "{}" уже привязана к меню "{}". \
-                    Если вы хотите отобразить эту ленту на этой странице\
-                     - воспользуйтесь разделом "Дополнительный контент"'\
-                    .format(self.content_feed, qs[0].title)
-                raise ValidationError({
-                    'content_feed' : (msg)
-                    })
+        # if self.content_type == 'feed':
+        #     # Проверка на выбор ленты
+        #     if not self.content_feed:
+        #         raise ValidationError({'content_feed' : ('Необходимо выбрать ленту')})
+        #     # Проверка "Одна лента - один меню"
+        #     qs = Menu.objects.filter(
+        #         content_type='feed', 
+        #         content_feed=self.content_feed
+        #         ).exclude(id=self.id)
+        #     if len(qs) > 0:
+        #         msg = 'Лента "{}" уже привязана к меню "{}". \
+        #             Если вы хотите отобразить эту ленту на этой странице\
+        #              - воспользуйтесь разделом "Дополнительный контент"'\
+        #             .format(self.content_feed, qs[0].title)
+        #         raise ValidationError({
+        #             'content_feed' : (msg)
+        #             })
 
     def save(self, lock_recursion=False, *args, **kwargs):
         # только при создании объекта, id еще не существует

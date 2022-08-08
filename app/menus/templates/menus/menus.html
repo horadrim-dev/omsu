@@ -4,18 +4,17 @@
 
   {% comment %} {% block content_block %} {% endcomment %}
 
-    {% comment %} {% if page.alias != 'home' %}
+     {% comment %} {% if page.alias != 'home' %}
     <button id="back" type="button" class="btn float-start">
         <i class="bi bi-arrow-left"></i>
     </button>
-    {% endif %}
-    <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2>
+    {% endif %} {% endcomment %}
+    {% comment %} <h2 id="content-title" class="border-bottom mb-4 pb-3">{{ page.title }}</h2> {% endcomment %}
 
     <div class="page-description">
       {{ page.description|safe }}
     </div>
-
-    {% include 'menus/layout_menu_blocks.html' %} {% endcomment %}
+    {% include 'menus/layout_menu_blocks.html' with menutree=menu_tree %}
 
   {% comment %} {% endblock content_block %} {% endcomment %}
 

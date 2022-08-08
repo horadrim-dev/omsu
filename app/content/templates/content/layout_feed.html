@@ -1,0 +1,20 @@
+{% load content_extras %}
+
+{% split_posts_by_columns posts columns sort_direction as posts_by_columns %}
+{% calc_max_posts_in_col posts columns as max_posts %}
+{% posts_by_columns_flatten posts_by_columns as posts %}
+
+{% if feed_style == 'feed' %}
+    {% include 'content/layout_feed_list.html' with show_introtext=True %}
+{% elif feed_style == 'compact_feed' %}
+    {% include 'content/layout_feed_list.html' %}
+{% elif feed_style == 'blocks' %}
+    {% include 'content/layout_feed_blocks.html' %}
+{% elif feed_style == 'blocks_with_images_left' %}
+    {% include 'content/layout_feed_blocks_with_images_left.html' %}
+{% elif feed_style == 'blocks_with_images_top' %}
+    {% include 'content/layout_feed_blocks_with_images_top.html' %}
+{% elif feed_style == 'slider' %}
+    {% comment %} {% posts_by_columns_flatten posts_by_columns as posts %} {% endcomment %}
+    {% include 'content/layout_feed_slider.html' %}
+{% endif %}

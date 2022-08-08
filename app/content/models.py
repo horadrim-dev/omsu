@@ -1,10 +1,13 @@
 # from ast import arg
 # from re import A
 # from tabnanny import verbose
+import re
 from tkinter import CASCADE
+from urllib.request import AbstractDigestAuthHandler
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
+from django.template.loader import render_to_string
 # from django.utils import timezone
 from django.conf import settings
 # from menus.models import Menu
@@ -49,6 +52,8 @@ class ContentManager(models.Manager):
 
 class ContentBase(models.Model):
 
+    menu = models.ForeignKey(
+        'menus.Menu', on_delete=models.SET_NULL, verbose_name="Привязка к меню", blank=True, null=True)
     title = models.CharField(
         default="", max_length=1000, verbose_name="Заголовок")
     alias = models.SlugField(default="", blank=True, unique=True,
@@ -71,6 +76,9 @@ class ContentBase(models.Model):
             self.alias = slugify_rus(self.title)
 
         super(ContentBase, self).save(*args, **kwargs)
+    
+    def render_html(self):
+        assert False, 'Добавь контенту метод render_html, идиот'
 
     def __str__(self):
         return self.title
@@ -80,18 +88,42 @@ class ContentBase(models.Model):
         ordering = ['-published_at']
 
 
-class Feed(ContentBase):
+class FeedLayout(models.Model):
 
-    # menu = models.ForeignKey(Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
-    # COLUMN_CHOICES = [
-    #     (1, '1 колонка'),
-    #     (2, '2 колонки'),
-    #     (3, '3 колонки'),
-    #     (4, '4 колонки'),
-    # ]
-    # num_columns = models.PositiveSmallIntegerField(choices=COLUMN_CHOICES, default=COLUMN_CHOICES[0][0],
-    #     verbose_name="Количество колонок")
-    # count_objects = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
+    FEED_STYLE_CHOICES = [
+        ('feed', 'Список постов'),
+        ('compact_feed', 'Список постов (только заголовки)'),
+        ('blocks', 'Посты в виде блоков (без изображений)'),
+        ('blocks_with_images_left', 'Посты в виде блоков (изображения слева)'),
+        ('blocks_with_images_top', 'Посты в виде блоков (изображения сверху)'),
+        ('slider', 'Слайдер постов'),
+    ]
+    feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
+        verbose_name="Макет ленты постов")
+    FEED_COLUMN_CHOICES = [
+        (1, '1 колонка'),
+        (2, '2 колонки'),
+        (3, '3 колонки'),
+        (4, '4 колонки'),
+    ]
+    feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
+        verbose_name="Количество колонок")
+    feed_count_items = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
+    feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
+    FEED_SORT_DIRECTION_CHOICES = [
+        ('horizontal', 'Построчно'),
+        ('vertical', 'По колонкам'),
+    ]
+    feed_sort_direction = models.CharField(max_length=16, choices=FEED_SORT_DIRECTION_CHOICES, default=FEED_SORT_DIRECTION_CHOICES[0][0],
+        verbose_name="Направление сортировки")
+
+    class Meta:
+        abstract = True
+
+
+class Feed(ContentBase, FeedLayout):
+
+    menu = models.ForeignKey('menus.Menu', on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
     description = RichTextUploadingField(blank=True, null=True)
 
     def get_page(self, page=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
@@ -99,31 +131,32 @@ class Feed(ContentBase):
             self.post_set.published().all(), posts_per_page
         )
         return paginator.get_page(page)
-
-    # def get_page_by_columns
-    # def get_posts_by_columns(self):
-    #     posts = self.get_page()
-
-    # @property
-    # def divider_1_2(self):
-    #     return content_settings.NUM_POSTS_ON_FEED_PAGE // 2
-
-    # @property
-    # def divider_1_2(self):
-    #     return content_settings.NUM_POSTS_ON_FEED_PAGE // 2
-
-    # @property
-    # def divider_1_3(self):
-    #     return content_settings.NUM_POSTS_ON_FEED_PAGE // 3
+    
+    def render_html(self):
+        return render_to_string(
+                'content/layout_feed.html', 
+                {
+                    'feed':self, 
+                    'posts':self.get_page(posts_per_page=self.feed_count_items),
+                    'feed_style':self.feed_style,
+                    'columns': self.feed_num_columns,
+                    'count_items': self.feed_count_items,
+                    'sort_direction': self.feed_sort_direction,
+                    'readmore': self.feed_readmore
+                })
 
     class Meta:
         verbose_name = "Лента постов"
         verbose_name_plural = "Ленты постов"
 
-class Post(ContentBase):
 
-    # menu = models.ForeignKey(
-    #     Menu, on_delete=models.SET_NULL, verbose_name="Привязка к меню", blank=True, null=True)
+class PostLayout(models.Model):
+    class Meta:
+        abstract = True
+
+
+class Post(ContentBase, PostLayout):
+
     feed = models.ForeignKey(
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
@@ -143,8 +176,8 @@ class Post(ContentBase):
         super(Post, self).save(*args, **kwargs)
     
     def get_url(self):
-        if self.feed:
-            assert False, dir(self.feed)
+        if self.feed and self.feed.menu:
+            return self.feed.menu.url + self.alias
     def count_attachments(self):
         '''Возвращает количество связанных attachments'''
         return self.attachment_set.all().count()
@@ -162,10 +195,18 @@ class Post(ContentBase):
         
         return len(attachments)
 
+    def render_html(self):
+        # для поста пока макет только один, поэтому все просто:
+        return render_to_string(
+                'content/layout_post.html', 
+                {'post':self, 'attachments':self.get_attachments()}
+                )
+
     class Meta:
         verbose_name = "Пост"
         verbose_name_plural = "Посты"
         ordering = ['-published_at']
+
 
 @receiver(models.signals.post_delete, sender=Post)
 def auto_delete_image_on_delete(sender, instance, **kwargs):
@@ -241,7 +282,31 @@ def auto_delete_file_on_delete(sender, instance, **kwargs):
 # @receiver(models.signals.post_save, sender=Post)
 # def relocate_attachments(sender, instance, **kwargs):
 
+
+class MenuLayout(models.Model):
+
+    MENU_STYLE_CHOICES = [
+        ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
+        ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
+        ('vertical_without_submenus', 'Вертикальное меню (без дочерних меню)'),
+    ]
+    menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
+        verbose_name="Макет меню")
+
+    class Meta:
+        abstract = True
+
+
 class ContentLayoutBase(models.Model):
+
+    class Meta:
+        abstract = True
+        # verbose_name = "Контент"
+        # verbose_name_plural = "Контент"
+        # ordering = ['order']
+
+
+class ContentLayout(ContentLayoutBase, FeedLayout, MenuLayout, PostLayout):
 
     uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
@@ -249,6 +314,7 @@ class ContentLayoutBase(models.Model):
         ('', '---'),
         ('post', 'Пост'),
         ('feed', 'Лента постов'),
+        ('menu', 'Меню'),
     ]
     content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
         verbose_name="Тип контента")
@@ -260,76 +326,9 @@ class ContentLayoutBase(models.Model):
 
     content_feed = models.ForeignKey(
         Feed, on_delete=models.SET_NULL, verbose_name="Лента постов", blank=True, null=True)
-    FEED_STYLE_CHOICES = [
-        ('feed', 'Список постов'),
-        ('compact_feed', 'Список постов (только заголовки)'),
-        ('blocks', 'Посты в виде блоков (без изображений)'),
-        ('blocks_with_images_left', 'Посты в виде блоков (изображения слева)'),
-        ('blocks_with_images_top', 'Посты в виде блоков (изображения сверху)'),
-        ('slider', 'Слайдер постов'),
-    ]
-    feed_style = models.CharField(max_length=64, choices=FEED_STYLE_CHOICES, default=FEED_STYLE_CHOICES[0][0],
-        verbose_name="Макет ленты постов")
-    FEED_COLUMN_CHOICES = [
-        (1, '1 колонка'),
-        (2, '2 колонки'),
-        (3, '3 колонки'),
-        (4, '4 колонки'),
-    ]
-    feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
-        verbose_name="Количество колонок")
-    feed_count_items = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
-    feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
-    FEED_SORT_DIRECTION_CHOICES = [
-        ('horizontal', 'Построчно'),
-        ('vertical', 'По колонкам'),
-    ]
-    feed_sort_direction = models.CharField(max_length=16, choices=FEED_SORT_DIRECTION_CHOICES, default=FEED_SORT_DIRECTION_CHOICES[0][0],
-        verbose_name="Направление сортировки")
-
-    class Meta:
-        abstract = True
-        # verbose_name = "Контент"
-        # verbose_name_plural = "Контент"
-        # ordering = ['order']
-
-    def get_feed_page(self):
-        return self.content_feed.get_page(posts_per_page=self.feed_count_items)
-
-    def get_alias(self):
-        if self.content_type == 'post':
-            return self.content_post.alias
-        if self.content_type == 'feed':
-            return self.content_feed.alias
-
-    def get_title(self):
-        if self.content_type == 'post':
-            return self.content_post.title
-        if self.content_type == 'feed':
-            return self.content_feed.title
-
-    def __str__(self):
-        if self.content_type == 'feed':
-            return 'Лента постов: ({})'.format(self.content_feed.title) if self.content_feed else 'Не выбран'
-        if self.content_type == 'post':
-            return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'
-
-
-class ContentLayout(ContentLayoutBase):
-
-    CONTENT_TYPE_CHOICES =  ContentLayoutBase.CONTENT_TYPE_CHOICES + [('menu', 'Меню')]
-    content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
-        verbose_name="Тип контента")
 
     content_menu = models.ForeignKey(
         'menus.Menu', on_delete=models.SET_NULL, related_name="+", verbose_name="Меню", blank=True, null=True)
-    MENU_STYLE_CHOICES = [
-        ('horizontal_blocks', 'Горизонтальное меню (блоки)'),
-        ('vertical_with_submenus', 'Вертикальное меню (с дочерними меню)'),
-        ('vertical_without_submenus', 'Вертикальное меню (без дочерних меню)'),
-    ]
-    menu_style = models.CharField(max_length=64, choices=MENU_STYLE_CHOICES, default=MENU_STYLE_CHOICES[0][0],
-        verbose_name="Макет меню")
 
     class Meta:
         # abstract = True
@@ -338,19 +337,35 @@ class ContentLayout(ContentLayoutBase):
         # ordering = ['order']
 
     def get_alias(self):
+        if self.content_type == 'post':
+            return self.content_post.alias
+        if self.content_type == 'feed':
+            return self.content_feed.alias
         if self.content_type == 'menu':
             return self.content_menu.alias
         return super().get_alias()
 
     def get_title(self):
+        if self.content_type == 'post':
+            return self.content_post.title
+        if self.content_type == 'feed':
+            return self.content_feed.title
         if self.content_type == 'menu':
             return self.content_menu.title
         return super().get_title()
 
     def __str__(self):
+        if self.content_type == 'feed':
+            return 'Лента постов: ({})'.format(self.content_feed.title) if self.content_feed else 'Не выбран'
+        if self.content_type == 'post':
+            return 'Пост: ({})'.format(self.content_post.title) if self.content_post else 'Не выбран'
         if self.content_type == 'menu':
             return 'Меню: ({})'.format(self.content_menu.title) if self.content_menu else 'Не выбран'
         return super().__str__()
+
+    def get_feed_page(self):
+        if self.content_type == 'feed' and self.content_feed:
+            return self.content_feed.get_page(posts_per_page=self.feed_count_items)
 
 
 class ExtraContent(OrderedModel, ContentLayout):

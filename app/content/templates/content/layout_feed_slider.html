@@ -18,7 +18,7 @@
                 <div class="slider-description bg-dark bg-opacity-50">
                     <h5 class="mb-5">{{post.title}}</h5>
                     <p>{{post.intro_text|striptags|truncatechars:600}}</p>
-                    <a href="{{post.alias}}" type="button" class="readmore btn btn-outline-secondary float-end">
+                    <a href="{{post.get_url}}" type="button" class="readmore btn btn-outline-secondary float-end">
                         <i class="bi bi-book me-0"></i>
                         Читать
                     </a>

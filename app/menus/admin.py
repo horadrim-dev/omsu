@@ -32,12 +32,12 @@ class MenuAdmin(admin.ModelAdmin):
         ('Общее', {
             'fields': ('title', 'alias', 'parent', 'published', 'megamenu', 'icon', 'short_description', 'description',)
         }),
-        ('Контент', {
-                'fields': ('content_type', 'content_post', 
-                        'content_feed', 'feed_style', 'feed_num_columns', 'feed_count_items', 'feed_readmore', 'feed_sort_direction',
-                        'content_menu', 'menu_style')
-                # 'fields':('content_layout',)
-        }),
+        # ('Контент', {
+        #         'fields': ('content_type', 'content_post', 
+        #                 'content_feed', 'feed_style', 'feed_num_columns', 'feed_count_items', 'feed_readmore', 'feed_sort_direction',
+        #                 'content_menu', 'menu_style')
+        #         # 'fields':('content_layout',)
+        # }),
     )
     inlines = (ExtraContentInline, )
 

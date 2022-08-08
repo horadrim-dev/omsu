@@ -9,7 +9,7 @@
                     <div class="d-flex align-items-center justify-content-between my-2 ">
                         <div class="mb-0"> 
                             <div>
-                            <a href="{{post.alias}}" class="w-100">
+                            <a href="{{post.get_url}}" class="w-100">
                                 <h5>{{post.title}}</h5>
                             </a>
                             </div>
@@ -47,7 +47,7 @@
                         <div class="" style="min-width:6rem;">
                             <div class="flex-shrink-1">
                                 {% comment %} {% include 'content/post_readmore.html' %} {% endcomment %}
-                                <a href="#modal-2" post="{{post.alias}}" target="_modal" class="btn btn-outline-primary ">
+                                <a href="#modal-2" post="{{post.get_url}}" target="_modal" class="btn btn-outline-primary ">
                                     <i class="bi bi-book me-0"></i>
                                     Читать
                                 </a>
@@ -62,7 +62,7 @@
                         </div>
                         <div class="clearfix"></div>
                         <div class="d-flex justify-content-end">
-                            <a href="{{post.alias}}" type="button" class="btn btn-outline-primary">
+                            <a href="{{post.get_url}}" type="button" class="btn btn-outline-primary">
                                 <i class="bi bi-book me-0"></i>
                                 Читать
                             </a>

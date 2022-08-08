@@ -11,21 +11,38 @@ import os
 # from menus.models import Menu
 # Create your views here.
 
-def get_content_if_exists(slug=None):
-    '''возвращает объект контента по slug'''
-    if slug:
-        for content_type in ContentBase.__subclasses__():
-            # try:
-                # return content_type.objects.get(alias=slug)
-            obj = content_type.objects.published().filter(alias=slug)
-            if len(obj) > 1:
-                raise Http404('Получено несколько объектов с одинаковым alias')
-            elif len(obj) == 1:
-                return obj[0]
-            # except:
-            #     continue
+# def get_content_if_exists(slug=None):
+#     '''возвращает объект контента по slug'''
+#     if slug:
+#         for content_type in ContentBase.__subclasses__():
+#             # try:
+#                 # return content_type.objects.get(alias=slug)
+#             obj = content_type.objects.published().filter(alias=slug)
+#             if len(obj) > 1:
+#                 raise Http404('Получено несколько объектов с одинаковым alias')
+#             elif len(obj) == 1:
+#                 return obj[0]
+#             # except:
+#             #     continue
 
-        return False
+#         return False
+
+def get_related_content(menu:Menu=None, slug=None):
+    
+    for content_type in ContentBase.__subclasses__():
+
+        if menu:
+            obj = content_type.objects.published().filter(menu=menu)
+        elif slug:
+            obj = content_type.objects.published().filter(alias=slug)
+
+        if len(obj) > 1:
+            raise Http404('Получено несколько объектов')
+        elif len(obj) == 1:
+            return obj[0]
+
+    return None
+
 
 def get_extracontent(menu:Menu=None, module:Module=None):
     ''' Возвращает экстраконтент, привязанный к меню или модулям'''
@@ -107,14 +124,16 @@ def get_extracontent(menu:Menu=None, module:Module=None):
     #     return False
 
 def render_content(request, context, unknown_slugs=None):
-    page_title = ''
+
+    page_content = get_related_content(menu=context['page'])
+    page_title = context['page'].title
 
     if unknown_slugs:
         # Если есть slug-и "не меню" то проверяем их и передаем на обработку
         # разным функциям (зависит от контент-типа текущего меню)
         unknown_objects = []
         for slug in unknown_slugs:
-            obj = get_content_if_exists(slug)
+            obj = get_related_content(slug=slug)
             ### Здесь должна быть проверка на родство [slugs между собой]
             ### и [первого slug с последним меню]
             if obj:
@@ -125,43 +144,44 @@ def render_content(request, context, unknown_slugs=None):
                 
         # context['page'] = content
         # context['contents'] = get_content(slug=slug)
-        if context['page'].content_type == 'feed':
+        if page_content.__class__.__name__ == 'Feed':
             # ПРОДУМАТЬ НАСЛЕДОВАНИИЕ ЛЕНТ
             if len(unknown_objects) == 1 :
+
                 if (unknown_objects[0].__class__.__name__ == 'Post'):
 
                     post = unknown_objects[0]
 
-                    if post.feed != context['page'].content_feed:
+                    if post.feed != page_content:
                         raise Http404('Проверка на родство ленты и поста не пройдена')
 
                     page_title = post.title
-                    CONTENT_HTML = render_to_string(
-                        'content/layout_post.html', 
-                        {
-                            'uid': 'content', 
-                            'post' : post, 
-                            'attachments': post.get_attachments()
-                        }
-                    )
+                    CONTENT_HTML = post.render_html()
+                    # CONTENT_HTML = render_to_string(
+                    #     'content/layout_post.html', 
+                    #     {
+                    #         'uid': 'content', 
+                    #         'post' : post, 
+                    #         'attachments': post.get_attachments()
+                    #     }
+                    # )
                 else:
                     raise Http404('Для меню-ленты unknown_slug!=Post не предусмотрен.')
             else:
                 raise Http404('Получено '+len(unknown_objects)+' unknown_slugs, не предусмотрено')
-        elif context['page'].content_type == 'post':
+
+        elif page_content.__class__.__name__ == 'Post':
             raise Http404('Не продумано.(unknown_slug после меню-поста)')
-        elif context['page'].content_type == 'menu':
-            raise Http404('Не продумано.(unknown_slug после меню-"меню")')
+        else:
+            raise Http404('Не продумано.(unknown_slug = {})'.format())
+
     else:
-        CONTENT_HTML = render_to_string(
-            'content/content_layout.html', 
-            {'content' : context['page']}
-        )
 
-    context['page_title'] = page_title if page_title else context['page'].title
+        CONTENT_HTML = page_content.render_html() if page_content else None
 
+
+    context['page_title'] = page_title  
     context['CONTENT_HTML'] = CONTENT_HTML
-
     context['contents'] = get_extracontent(menu=context['page'])
 
     for section in context['sections']:
