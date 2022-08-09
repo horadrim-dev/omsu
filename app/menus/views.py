@@ -26,6 +26,7 @@ def menus(request, *args, **kwargs):
     unknown_slugs = []
     # bc_items = [(current_menu.title, current_menu.alias)]
     bc_items = [('Главная', '/')]
+    menu_objects = []
     # перебираем кварги пока не наткнемся на несуществующий в меню
     # все кварги-меню заносим в breadcrumbs
     # все неизвестные кварги передаем дальше в контент
@@ -36,6 +37,22 @@ def menus(request, *args, **kwargs):
             obj = get_menu_if_exists(slug)
             if obj:
                 current_menu = obj
+                menu_objects.append(current_menu)
+
+                # Проверка на опубликованность
+                if not current_menu.published:
+                    raise Http404('Проверка на опубликованность: меню {} не опубликовано'.format(current_menu))
+
+                if i==0: 
+                    # ПРОВЕРКА: Первый slug(меню) не должен иметь родителя.
+                    if current_menu.parent is not None:
+                        raise Http404('Первый slug(меню) не должен иметь родителя.')
+
+                else: 
+                    # ПРОВЕРКА: Найденные объекты меню должны быть родственниками (Menu.parent)
+                    if current_menu.parent != menu_objects[i-1]:
+                        raise Http404('Проверка на родство slugs(menu) не пройдена: переданные объекты {}'.format(menu_objects))
+                
                 if current_menu.alias != 'home':
                     bc_items.append((current_menu.title, current_menu.url))
             else:

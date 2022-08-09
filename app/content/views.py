@@ -168,7 +168,7 @@ def render_content(request, context, unknown_slugs=None):
                 else:
                     raise Http404('Для меню-ленты unknown_slug!=Post не предусмотрен.')
             else:
-                raise Http404('Получено '+len(unknown_objects)+' unknown_slugs, не предусмотрено')
+                raise Http404('Получено {} unknown_slugs, не предусмотрено'.format(len(unknown_objects)))
 
         elif page_content.__class__.__name__ == 'Post':
             raise Http404('Не продумано.(unknown_slug после меню-поста)')
