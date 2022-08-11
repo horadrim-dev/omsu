@@ -7,6 +7,7 @@ from urllib.request import AbstractDigestAuthHandler
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
+from django.forms import ValidationError
 from django.template.loader import render_to_string
 # from django.utils import timezone
 from django.conf import settings
@@ -77,6 +78,24 @@ class ContentBase(models.Model):
 
         super(ContentBase, self).save(*args, **kwargs)
     
+    def clean(self):
+        # Проверка один меню - один контент
+        if self.menu:
+            objs = []
+            for content_type in ContentBase.__subclasses__():
+                objs = objs + list(content_type.objects.filter(menu=self.menu))
+                
+            if len(objs) >= 1:
+                raise ValidationError(
+                    {'menu' : ('К меню "{}" уже привязан контент "{}". \
+                            Больше одной привязки не допускается. \
+                            Воспользуйтесь Дополнительным контентом (Меню->Дополнительный контент)'.format(
+                                self.menu, [obj.title for obj in objs]
+                            )
+                        )
+                    }
+                )
+    
     def render_html(self):
         assert False, 'Добавь контенту метод render_html, идиот'
 
@@ -133,6 +152,8 @@ class Feed(ContentBase, FeedLayout):
         return paginator.get_page(page)
     
     def render_html(self):
+        from .forms import FeedFilterForm
+        
         return render_to_string(
                 'content/layout_feed.html', 
                 {
@@ -142,7 +163,8 @@ class Feed(ContentBase, FeedLayout):
                     'columns': self.feed_num_columns,
                     'count_items': self.feed_count_items,
                     'sort_direction': self.feed_sort_direction,
-                    'readmore': self.feed_readmore
+                    'readmore': self.feed_readmore,
+                    'feed_filter_form' : FeedFilterForm
                 })
 
     class Meta:

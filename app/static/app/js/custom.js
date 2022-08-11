@@ -36,8 +36,8 @@ document.addEventListener('click', function (e) {
 })
 
 $(document).ready(function () {
-	// вешаем lightbox на все картинки в #content
-	$('#content img').wrap(function () {
+	// вешаем lightbox на все картинки 
+	$('img').wrap(function () {
 			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 		})
 		.parent()
@@ -76,7 +76,7 @@ $(document).ready(function () {
 			$(this).find('.dropdown-menu').first().removeClass('show');
 			$(this).find('.dropdown-menu').first().removeAttr('data-bs-popper')
 		});
-		
+
 	};
 
 	// при клике по tab обновляем хеш в URL
@@ -88,6 +88,23 @@ $(document).ready(function () {
 	if (lastTab) {
 		$('[href="' + lastTab + '"]').tab('show');
 	};
+
+
+	// MODALLY PLUGIN (NESTED MODALS)
+	// https://www.jqueryscript.net/lightbox/nested-modal-modally.html
+	$('#modal-1').modally('modal-1', {
+		max_width: 800,
+		in_duration: 0,
+		in_easing: 0,
+		out_duration: 0,
+		out_easing: 0
+	});
+	$('#modal-2').modally('modal-2', {
+		max_width: 600,
+	});
+	$('#modal-3').modally();
+	
+
 
 	// ajax
 	// $( document ).ajaxStart(function() {
@@ -118,7 +135,9 @@ $(document).ready(function () {
 
 	// плавающие блоки
 	// $("#right-side-content").stick_in_parent({offset_top:100});
-	$("#mainmenu-bar").stick_in_parent({parent:'body'});
+	$("#mainmenu-bar").stick_in_parent({
+		parent: 'body'
+	});
 
 	// активируем подсказки
 	const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

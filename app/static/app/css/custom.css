@@ -27,9 +27,9 @@ tbody, td, tfoot, th, thead, tr {
   /* border-style: solid; */
   border-width: 1px;
 }
-.container-fluid {
+/* .container-fluid {
 	--bs-gutter-x: 0;
-}
+} */
 /* #content,
 header,
 .right {
@@ -41,10 +41,14 @@ header,
 img {
 	border-color: #dfdfdf;
 }
-#content .card-body:hover, .module .card-body:hover{
-box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+/* MENU-BLOCKS */
+.menu-blocks .card .card-body:hover {
+   box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }
-#content .card a, .module .card a{
+/* #content .card-body:hover, .module .card-body:hover{
+box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+} */
+#content .card a:not(.link), .module .card a:not(.link){
 	text-decoration:none;
 	color:inherit;
 }
@@ -91,7 +95,12 @@ header .navbar-nav .dropdown-menu {
 header .dropdown-menu {
 	border-top: 0;
 }
-
+header .nav-item.dropdown.dropdown-mega .dropdown-menu {
+	width: 100%;
+	top: auto;
+	left: 0;
+	border-radius: 0;
+}
 header .navbar-nav .nav-item a {
 	white-space: nowrap;
 }
@@ -104,10 +113,13 @@ header .nav-item:hover {
 header .navbar-nav .nav-item a i {
 	margin-right: 4px;
 }
-
-.row {
-  --bs-gutter-x: 0;
+header .dropdown-menu.show {
+  -webkit-animation: fadeIn 0s alternate;
+  animation: fadeIn 0s alternate;
 }
+/* .row {
+  --bs-gutter-x: 0;
+} */
 
 .logo {
 	height: 80px;
@@ -182,10 +194,12 @@ header .navbar-nav .nav-item a i {
 .main_overlay_block{
   position: relative;
 }
-
 /* MODULE MENU */
 nav.module-menu .accordion {
 	--bs-accordion-border-radius: 0;
+}
+nav.module-menu .accordion .accordion-item {
+	background: inherit;
 }
 nav.module-menu .accordion-button {
 	border-top-left-radius: 0 !important;
@@ -200,8 +214,11 @@ nav.module-menu .accordion .accordion .accordion .accordion-item {
 /* nav.module-menu .active {
 	background-color: var(--bs-cyan) !important;
 } */
-nav.module-menu .accordion-header:hover {
-	background-color: var(--bs-gray-300);
+nav.module-menu .accordion-header a.nav-link:hover {
+	box-shadow: 2px 2px 5px rgba(174, 174, 174, 0.5), 1px 1px 5px rgb(255, 255, 255);
+}
+nav.module-menu .accordion-header a.nav-link.active {
+	box-shadow: inset 2px 2px 5px rgba(100, 100, 100, 0.5), 1px 1px 5px rgb(255, 255, 255);
 }
 /* TABS / PILLS */
 .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
@@ -241,6 +258,7 @@ nav.module-menu .accordion-header:hover {
 	position: relative;
 	margin-left: 0.5rem;
 	margin-right: 0;
+	margin-bottom:0;
 	display: block;
 	text-align: left;
 }
@@ -256,10 +274,11 @@ nav.module-menu .accordion-header:hover {
 } 
 .carousel-slider .carousel-item {
 	overflow: hidden;
+	height: 100%;
 }
 .carousel-slider .carousel-item img {
-	height: 400px;
-	max-height: 400px;
+	/* height: 100%; */
+	/* max-height: 400px; */
 	max-width:100%;
 	object-fit: cover;
 }
@@ -288,4 +307,38 @@ nav.module-menu .accordion-header:hover {
 }
 .carousel-slider .slider-description:hover .readmore {
 	display: block;
+}
+.carousel-indicators .active {
+  opacity: .5;
+}
+.carousel-indicators .active h6 {
+  font-weight: 600;
+}
+* {
+  scrollbar-width: thin;
+  /* scrollbar-color: var(--bs-success) var(--bs-white); */
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+/* *::-webkit-scrollbar-track {
+  background: var(--bs-white); 
+} */
+
+*::-webkit-scrollbar-thumb {
+  /* background-color: blue; */
+  border-radius: 20px;
+  border: 3px solid green;
+}
+/* FEED-BLOCKS */
+.feed-blocks img{
+	object-fit: cover;
+}
+
+/* MODAL */
+.modal-body {
+	-webkit-transition: .2s ease-in-out;
+	transition: .2s ease-in-out;
 }

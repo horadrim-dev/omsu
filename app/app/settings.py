@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     # 'newsfeed',
     'ckeditor',
     'ckeditor_uploader',
+    'bootstrap_datepicker_plus'
 ]
 
 MIDDLEWARE = [

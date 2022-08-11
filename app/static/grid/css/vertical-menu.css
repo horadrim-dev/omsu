@@ -1,0 +1,133 @@
+ul.vertical-menu {
+  padding: 0;
+  list-style: none;
+  width: 100%;
+  margin: 20px auto;
+  clear: both;
+  display: table;
+}
+
+ul.vertical-menu .list {
+  font-size: 14px;
+  border-bottom: 1px solid #324252;
+  position: relative;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  height: 50px;
+  vertical-align: sub;
+  clear: both;
+}
+
+ul.vertical-menu .list:after {
+  position: absolute;
+  right: 17px;
+  top: 17px;
+  padding: 0px 5px;
+  color: #fff;
+}
+
+ul.vertical-menu .list:before {
+  position: absolute;
+  left: 17px;
+  top: 17px;
+  padding: 0px 5px;
+  color: #fff;
+}
+
+ul.vertical-menu .list a {
+  text-decoration: none;
+  color: #000;
+  padding: 17px 0px 17px 45px;
+  display: block;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+ul.vertical-menu .list a:hover {
+  background-color: #eee;
+  -webkit-transition: 300ms all;
+  transition: 300ms all;
+  color: #000;
+}
+
+ul.vertical-menu .list .items {
+  height: 0px;
+  overflow: hidden;
+}
+
+ul.vertical-menu .list .items a {
+  padding: 17px;
+}
+
+ul.vertical-menu .list .items a:hover {
+  background-color: #eee;
+  color: #000;
+  -webkit-transition: 300ms all;
+  transition: 300ms all;
+}
+
+ul.vertical-menu .list:last-child {
+  border-bottom: none;
+}
+
+ul.vertical-menu .active:after {
+  position: absolute;
+  right: 17px;
+  top: 17px;
+  padding: 0px 5px;
+  color: #fff;
+}
+
+ul.vertical-menu .active:before {
+  position: absolute;
+  left: 17px;
+  top: 17px;
+  padding: 0px 5px;
+  color: #fff;
+}
+
+ul.vertical-menu .active > .items {
+  display: block;
+  padding: 0px;
+  height: auto;
+  color: #000;
+  -webkit-transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+          transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+  -webkit-transition: all 200ms;
+  transition: all 200ms;
+  clear: both;
+  float: left;
+  width: 100%;
+}
+
+ul.vertical-menu .active > .items li {
+  padding: 0px;
+  border-bottom: 1px solid #324252;
+  list-style: none;
+}
+
+ul.vertical-menu .active > .items li:last-child {
+  border-color: transparent;
+  padding-bottom: 0px;
+}
+
+ul.vertical-menu .active > .items .active > .items {
+  background-color: #ddd;
+}
+
+ul.vertical-menu .active > a {
+  color: #646464;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+ul.vertical-menu .active .list {
+  background: #b6b6b6;
+}
+
+ul.vertical-menu .active .list a {
+  padding: 17px 0px 17px 45px;
+}
+/*# sourceMappingURL=vertical-menu.css.map */

@@ -4,6 +4,10 @@
 {% calc_max_posts_in_col posts columns as max_posts %}
 {% posts_by_columns_flatten posts_by_columns as posts %}
 
+<div class="feed-filter-form pb-3 mb-4 border-bottom">
+    {{feed_filter_form}}
+</div>
+
 {% if feed_style == 'feed' %}
     {% include 'content/layout_feed_list.html' with show_introtext=True %}
 {% elif feed_style == 'compact_feed' %}
