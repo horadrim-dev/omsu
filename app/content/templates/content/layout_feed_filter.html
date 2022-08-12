@@ -1,10 +1,10 @@
 {{form.media}}
 
-<form action="" method="get" class="row g-3 d-flex mb-3 align-items-center ">
+<form action="" method="get" class="row g-3 d-flex align-items-center ">
     {% csrf_token %}
 
     {% comment %} {% for field in form %} {% endcomment %}
-    {% comment %} <div class="flex-grow w-100 row align-items-center"> {% endcomment %}
+    <div class="flex-grow row align-items-center">
         <div class="col">
             <label for="id_q" class="form-label">{{ form.q.label_tag }}</label>
             {{ form.q.errors }}
@@ -35,10 +35,10 @@
                 </div>
             </div>
         </div>
-    {% comment %} </div> {% endcomment %}
+    </div>
     {% comment %} {% endfor %} {% endcomment %}
 
-    <div class="col">
-        <input type="submit" class="btn btn-outline-primary w-100 " value="Применить">
+    <div class="">
+        <input type="submit" class="btn btn-primary w-100 " value="Применить">
     </div>
 </form> 

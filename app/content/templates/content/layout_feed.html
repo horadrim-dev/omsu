@@ -4,8 +4,16 @@
 {% calc_max_posts_in_col posts columns as max_posts %}
 {% posts_by_columns_flatten posts_by_columns as posts %}
 
-<div class="feed-filter-form pb-3 mb-4 border-bottom">
-    {{feed_filter_form}}
+{# ФИЛЬТР #}
+<div class="d-flex mb-3 justify-content-end">
+    <div class="feed-filter-form w-100 pb-3 border-bottom" style="display:none;">
+        {{feed_filter_form}}
+    </div>
+    <div class="flex-shrink-1 ms-3 pb-3 ">
+        <button class="filter-toggle btn btn-outline-secondary h-100" target=".feed-filter-form">
+            <i class="bi bi-funnel"></i>
+        </button>
+    </div>
 </div>
 
 {% if feed_style == 'feed' %}
