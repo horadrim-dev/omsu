@@ -2,6 +2,7 @@ from logging import PlaceHolder
 from django import forms
 from .models import ExtraContent
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
+import datetime
 # from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 # Create the form class.
@@ -44,24 +45,39 @@ class ExtraContentForm(forms.ModelForm):
 
 
 class FeedFilterForm(forms.Form):
-    template_name = 'content/layout_feed_filter.html'
+    template_name = 'content/form_filter_feed.html'
     q = forms.CharField(
         label="Содержит", 
+        required=False,
         max_length=100,
         widget=forms.TextInput(
             attrs={
                 'class':"form-control", 
-                'placeholder':'Введите фразу для поиска',
+                'placeholder':'Введите текст для поиска',
             }
         )
     )
     date_start = forms.DateField(
         label='с',
-        widget=DateTimePickerInput(format="%d.%m.%Y",)
+        required=False,
+        widget=DateTimePickerInput(
+            format="%d.%m.%Y",
+            options={
+                'locale':'ru',
+                'showClose': False, 'showClear':True, 'showTodayButton':False
+            }
+        )
     )
     date_end = forms.DateField(
         label='по',
-        widget=DateTimePickerInput(format="%d.%m.%Y",)
+        required=False,
+        widget=DateTimePickerInput(
+            format="%d.%m.%Y",
+            options={
+                'locale':'ru',
+                'showClose': False, 'showClear':True, 'showTodayButton':False
+            }
+        )
     )
     # max_date = forms.DateField(
     #     widget=forms.DateInput(

@@ -8,6 +8,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
 from django.forms import ValidationError
+from django.http import Http404
 from django.template.loader import render_to_string
 # from django.utils import timezone
 from django.conf import settings
@@ -83,9 +84,14 @@ class ContentBase(models.Model):
         if self.menu:
             objs = []
             for content_type in ContentBase.__subclasses__():
-                objs = objs + list(content_type.objects.filter(menu=self.menu))
+                qs = content_type.objects.filter(menu=self.menu)
+
+                if self.id:
+                    qs = qs.exclude(id=self.id)
+
+                objs = objs + list(qs)
                 
-            if len(objs) >= 1:
+            if len(objs) > 0:
                 raise ValidationError(
                     {'menu' : ('К меню "{}" уже привязан контент "{}". \
                             Больше одной привязки не допускается. \
@@ -145,27 +151,46 @@ class Feed(ContentBase, FeedLayout):
     menu = models.ForeignKey('menus.Menu', on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
     description = RichTextUploadingField(blank=True, null=True)
 
-    def get_page(self, page=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
+
+    def get_url(self):
+        if self.menu:
+            return self.feed.menu.url
+
+    def get_posts(self, post_filter):
+        qs = self.post_set.published()
+
+        if post_filter:
+            if post_filter['date_start']:
+                qs = qs.filter(published_at__gte=post_filter['date_start'])
+            if post_filter['date_end']:
+                qs = qs.filter(published_at__lte=post_filter['date_end'])
+            if post_filter['q']:
+                qs = qs.filter(models.Q(title__icontains=post_filter['q'])) #| models.Q(text__icontains=q))
+
+        return qs
+    
+    def get_page(self, page=None, post_filter=None, posts_per_page=content_settings.NUM_POSTS_ON_FEED_PAGE):
         paginator = Paginator(
-            self.post_set.published().all(), posts_per_page
+            # self.post_set.published().all(), posts_per_page
+            self.get_posts(post_filter=post_filter), posts_per_page
         )
         return paginator.get_page(page)
     
-    def render_html(self):
-        from .forms import FeedFilterForm
+    # def render_html(self, request):
+    #     from .forms import FeedFilterForm # circular import
         
-        return render_to_string(
-                'content/layout_feed.html', 
-                {
-                    'feed':self, 
-                    'posts':self.get_page(posts_per_page=self.feed_count_items),
-                    'feed_style':self.feed_style,
-                    'columns': self.feed_num_columns,
-                    'count_items': self.feed_count_items,
-                    'sort_direction': self.feed_sort_direction,
-                    'readmore': self.feed_readmore,
-                    'feed_filter_form' : FeedFilterForm
-                })
+    #     return render_to_string(
+    #             'content/layout_feed.html', 
+    #             {
+    #                 'feed':self, 
+    #                 'posts':self.get_page(request, posts_per_page=self.feed_count_items),
+    #                 'feed_style':self.feed_style,
+    #                 'columns': self.feed_num_columns,
+    #                 'count_items': self.feed_count_items,
+    #                 'sort_direction': self.feed_sort_direction,
+    #                 'readmore': self.feed_readmore,
+    #                 'feed_filter_form' : FeedFilterForm
+    #             })
 
     class Meta:
         verbose_name = "Лента постов"
@@ -217,12 +242,12 @@ class Post(ContentBase, PostLayout):
         
         return len(attachments)
 
-    def render_html(self):
-        # для поста пока макет только один, поэтому все просто:
-        return render_to_string(
-                'content/layout_post.html', 
-                {'post':self, 'attachments':self.get_attachments()}
-                )
+    # def render_html(self, request):
+    #     # для поста пока макет только один, поэтому все просто:
+    #     return render_to_string(
+    #             'content/layout_post.html', 
+    #             {'post':self, 'attachments':self.get_attachments()}
+    #             )
 
     class Meta:
         verbose_name = "Пост"

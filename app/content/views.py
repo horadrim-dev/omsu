@@ -1,12 +1,16 @@
 from django.shortcuts import render
-from django.http import FileResponse, Http404
+from django.views.generic import View, TemplateView, DetailView
+from django.http import HttpResponse, FileResponse, Http404
 from django.conf import settings
+from django.contrib import messages
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from toml import TomlDecodeError
+from .forms import FeedFilterForm
 from .models import ContentBase, Post, Feed, Attachment
 from grid.models import Module
 from menus.models import Menu
+import datetime
 import os
 # from menus.models import Menu
 # Create your views here.
@@ -123,6 +127,91 @@ def get_extracontent(menu:Menu=None, module:Module=None):
     # else:
     #     return False
 
+class FeedView(DetailView):
+    template_name = 'content/layout_feed.html'
+    obj = None
+    model = Feed
+    post_filter = {}
+    post_filter_form = FeedFilterForm
+    open_filter_form = False
+    
+    def dispatch(self, request, *args, **kwargs):
+            # if request.is_ajax():
+            if request.GET.get('ajax'):
+                return self.ajax_get(request, *args, **kwargs)
+
+            return super().dispatch(request, *args, **kwargs)
+
+    def render_feed_to_string(self):
+        return render_to_string(
+                'content/layout_feed.html', 
+                {   
+                    'layout': 'normal',
+                    'uid' : 'content',
+                    'feed':self.obj, 
+                    'paginator':self.obj.get_page(post_filter=self.post_filter, posts_per_page=self.obj.feed_count_items),
+                    'feed_style':self.obj.feed_style,
+                    'columns': self.obj.feed_num_columns,
+                    'count_items': self.obj.feed_count_items,
+                    'sort_direction': self.obj.feed_sort_direction,
+                    'readmore': self.obj.feed_readmore,
+                    'post_filter_form' : self.post_filter_form,
+                    'open_filter_form' : self.open_filter_form
+                },
+                request=self.request
+            )   
+
+    def get(self, request):
+        return self.render_feed_to_string()
+    
+    def ajax_get(self, request, *args, **kwargs):
+        assert False, self.model
+        return HttpResponse(self.render_feed_to_string())
+
+    def post(self, request):
+        self.post_filter_form = self.post_filter_form(request.POST)
+
+        if self.post_filter_form.is_valid():
+            # передаем в фильтр чистые данные
+            self.post_filter = self.post_filter_form.cleaned_data
+
+            messages.success(request, 'Данные отфильтрованы')
+            # открываем форму фильтра
+            self.open_filter_form = True 
+        else:
+            # очищаем форму
+            self.post_filter_form = FeedFilterForm()
+
+        return self.render_feed_to_string()
+
+    # def ajax(self, request, slug):
+    #     if feed:
+
+    # def render_to_response(self, context, **response_kwargs):
+    #     """ Allow AJAX requests to be handled more gracefully """
+    #     if self.request.is_ajax():
+    #         return JSONResponse('Success',safe=False, **response_kwargs)
+    #     else:
+    #         return super(TemplateView,self).render_to_response(context, **response_kwargs)
+
+
+class PostView(View):
+    template_name = 'content/layout_post.html'
+    obj = None
+
+    def render_post_to_string(self):
+        return render_to_string(
+                self.template_name,
+                {'post':self.obj, 'attachments':self.obj.get_attachments()}
+                )
+
+    def get(self, request):
+        return self.render_post_to_string()
+
+    def post(self, request):
+        return self.render_post_to_string()
+
+
 def render_content(request, context, unknown_slugs=None):
 
     page_content = get_related_content(menu=context['page'])
@@ -156,15 +245,8 @@ def render_content(request, context, unknown_slugs=None):
                         raise Http404('Проверка на родство ленты и поста не пройдена')
 
                     page_title = post.title
-                    CONTENT_HTML = post.render_html()
-                    # CONTENT_HTML = render_to_string(
-                    #     'content/layout_post.html', 
-                    #     {
-                    #         'uid': 'content', 
-                    #         'post' : post, 
-                    #         'attachments': post.get_attachments()
-                    #     }
-                    # )
+                    # CONTENT_HTML = post.render_html()
+                    CONTENT_HTML = PostView.as_view(obj=post)(request)
                 else:
                     raise Http404('Для меню-ленты unknown_slug!=Post не предусмотрен.')
             else:
@@ -176,8 +258,12 @@ def render_content(request, context, unknown_slugs=None):
             raise Http404('Не продумано.(unknown_slug = {})'.format())
 
     else:
-
-        CONTENT_HTML = page_content.render_html() if page_content else None
+        if page_content.__class__.__name__ == 'Post':
+            CONTENT_HTML = PostView.as_view(obj=page_content)(request)
+        elif page_content.__class__.__name__ == 'Feed':
+            CONTENT_HTML = FeedView.as_view(obj=page_content)(request)
+        else:
+            CONTENT_HTML = page_content.render_html(request) if page_content else None
 
 
     context['page_title'] = page_title  
@@ -241,22 +327,23 @@ def ajax_feed_page(request, slug, *args, **kwargs):
 
     context['uid'] = request.GET.get('uid') # для использования в качестве уникального id в шаблоне
     context['layout'] = request.GET.get('layout')
+    context['feed_style'] = request.GET.get('layout')
 
-    return render(request, 'content/layout_feed_list.html', context)
+    return render(request, 'content/layout_feed.html', context)
 
-def ajax_post(request, *args, **kwargs):
-    # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
-    #     raise Http404()
-    if not request.GET.get('post'):
-        return Http404()
+# def ajax_post(request, *args, **kwargs):
+#     # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
+#     #     raise Http404()
+#     if not request.GET.get('post'):
+#         return Http404()
 
-    context = {}
-    try:
-        post = Post.objects.published().get(alias=request.GET.get('post'))
-    except Exception:
-        raise Http404('Пост не найден')
+#     context = {}
+#     try:
+#         post = Post.objects.published().get(alias=request.GET.get('post'))
+#     except Exception:
+#         raise Http404('Пост не найден')
     
-    context['post'] = post
-    context['attachments'] = post.get_attachments()
+#     context['post'] = post
+#     context['attachments'] = post.get_attachments()
 
-    return render(request, 'content/layout_post.html', context)
+#     return render(request, 'content/layout_post.html', context)

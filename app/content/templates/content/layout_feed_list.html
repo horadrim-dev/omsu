@@ -1,16 +1,14 @@
-<div id="{{uid}}">
+{% comment %} <div id="{{uid}}"> {% endcomment %}
 
     {% if layout == 'normal' %}
-        {{feed.description|safe }}
-        <div class="clearfix"></div>
+        <div class="description">
+            {{feed.description|safe }}
+            <div class="clearfix"></div>
+        </div>
     {% endif %}
 
     {% comment %} {% with postfeed.posts as posts %} {% endcomment %}
         {% include 'content/layout_feed_list_page.html' %}
     {% comment %} {% endwith %} {% endcomment %}
 
-    {% if readmore %}
-        {% include 'content/layout_feed_readmore.html' %}
-    {% endif %}
-
-</div>
+{% comment %} </div> {% endcomment %}

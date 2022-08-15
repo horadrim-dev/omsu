@@ -1,0 +1,44 @@
+
+{% if paginator.has_next %}
+
+    <div id="{{uid}}-feed-loadbox" class="d-grid gap-2">
+        <div class="my-2 border-top"></div>
+        <button 
+            id="{{uid}}-feed-loadmore"
+            style="height:75px;"
+            class="btn btn-outline-primary" type="button">
+            Загрузить еще
+        </button>
+    </div>
+
+    <script>
+        $('#{{uid}}-feed-loadmore').on('click', function (e) {
+            var parent = "#{{uid}}-feed",
+                target = parent + " #{{uid}}-feed-loadbox";
+            $.ajax({
+                url: "{% url 'ajax_feed_page' feed.alias %}?page={{paginator.next_page_number}}{% if count_items %}&items_per_page={{count_items}}{% endif %}&uid={{uid}}{% if layout %}&layout={{layout}}{%endif%}",
+                method: 'get',
+                dataType: 'html',
+                beforeSend: function(xhr){
+                    // старт анимации загрузки
+                    $(target).wrap( '<div class="main_overlay_block"></div>' );
+                    $(parent + ' .main_overlay_block').prepend('<div class="overlay_block"></div>');
+                    $(target).addClass('loading_process');
+                },
+                success: function (data) {
+                    $(target).html(data); // добавляем полученный html
+                    // прокрутка к блоку
+                    //$("html,body").animate({
+                     //   scrollTop: $('#{{uid}}-page-{{paginator.next_page_number}}').offset().top - 100
+                    //}, 200);
+                },
+                complete: function (){
+                    // снимаем анимацию загрузки
+                    $(target).removeClass('loading_process');
+                    $(parent + ' .overlay_block').remove();
+                    $(target + ' > div').unwrap().unwrap();
+                }
+            });
+        });
+    </script>
+{% endif %}
