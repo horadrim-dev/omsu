@@ -10,7 +10,7 @@
         </a>
     </div>
 </div>
-
+{% comment %} 
 <script>
     $('a[href="#modal-1"][feed="{{feed.alias}}"]').on('click', function (e) {
         var target = '#modal-1 .modal-body';
@@ -25,7 +25,7 @@
                 $(target).addClass('loading_process');
             },
             success: function (data) {
-                //{% comment %} $(target).replaceWith(data); // добавляем полученный html {% endcomment %}
+                // $(target).replaceWith(data); // добавляем полученный html
                 $(target).html(data); // добавляем полученный html
             },
             complete: function (){
@@ -36,4 +36,4 @@
             }
         });
     });
-</script>
+</script> {% endcomment %}

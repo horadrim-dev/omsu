@@ -16,7 +16,7 @@
             var parent = "#{{uid}}-feed",
                 target = parent + " #{{uid}}-feed-loadbox";
             $.ajax({
-                url: "{% url 'ajax_feed_page' feed.alias %}?page={{paginator.next_page_number}}{% if count_items %}&items_per_page={{count_items}}{% endif %}&uid={{uid}}{% if layout %}&layout={{layout}}{%endif%}",
+                url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}&items_per_page={{feed.feed_count_items}}&uid={{uid}}{% if layout %}&layout={{layout}}{%endif%}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){

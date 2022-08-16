@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import View, TemplateView, DetailView
+from django.views.generic import View, TemplateView, DetailView, ListView
 from django.http import HttpResponse, FileResponse, Http404
 from django.conf import settings
 from django.contrib import messages
@@ -126,47 +126,68 @@ def get_extracontent(menu:Menu=None, module:Module=None):
     #     return contents
     # else:
     #     return False
+class TestView(DetailView):
+    model = Feed
+    template_name = 'content/feed_detail.html'
+    # slug_field = 'alias'
+    # slug_url_kwarg = 'slug'
+    # def get_object(self):
+    #         object = super().get_object()
+    #         return object
 
-class FeedView(DetailView):
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        # assert False, context
+        return context
+
+class FeedDetailView(DetailView): 
     template_name = 'content/layout_feed.html'
-    obj = None
+    object = None
     model = Feed
     post_filter = {}
     post_filter_form = FeedFilterForm
     open_filter_form = False
     
     def dispatch(self, request, *args, **kwargs):
-            # if request.is_ajax():
-            if request.GET.get('ajax'):
-                return self.ajax_get(request, *args, **kwargs)
+        # if request.is_ajax():
+        if request.GET.get('ajax'):
+            return self.ajax_get(request, *args, **kwargs)
 
-            return super().dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
-    def render_feed_to_string(self):
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(**kwargs)
+        # assert False, context
+        context.update({   
+            'layout': 'normal',
+            'uid' : 'content',
+            # 'feed':self.object, 
+            'paginator':self.object.get_page(post_filter=self.post_filter, posts_per_page=self.object.feed_count_items),
+            'post_filter_form' : self.post_filter_form,
+            'open_filter_form' : self.open_filter_form
+        })
+        # assert False, context
+        return context
+        # context[''] = 'content'
+
+
+    def render_feed_to_string(self, context):
+        # assert False, context
         return render_to_string(
-                'content/layout_feed.html', 
-                {   
-                    'layout': 'normal',
-                    'uid' : 'content',
-                    'feed':self.obj, 
-                    'paginator':self.obj.get_page(post_filter=self.post_filter, posts_per_page=self.obj.feed_count_items),
-                    'feed_style':self.obj.feed_style,
-                    'columns': self.obj.feed_num_columns,
-                    'count_items': self.obj.feed_count_items,
-                    'sort_direction': self.obj.feed_sort_direction,
-                    'readmore': self.obj.feed_readmore,
-                    'post_filter_form' : self.post_filter_form,
-                    'open_filter_form' : self.open_filter_form
-                },
-                request=self.request
+                self.template_name, context, request=self.request
             )   
 
-    def get(self, request):
-        return self.render_feed_to_string()
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        # assert False, context
+        return self.render_to_string(context)
     
     def ajax_get(self, request, *args, **kwargs):
-        assert False, self.model
-        return HttpResponse(self.render_feed_to_string())
+        # assert False, self.get_context_data()
+        # self.object = self.get_object()
+        context = self.get_context_data(**kwargs)
+        return HttpResponse(self.render_feed_to_string(context))
+        # return self.render_to_response()
 
     def post(self, request):
         self.post_filter_form = self.post_filter_form(request.POST)
@@ -182,7 +203,7 @@ class FeedView(DetailView):
             # очищаем форму
             self.post_filter_form = FeedFilterForm()
 
-        return self.render_feed_to_string()
+        return self.render_to_string()
 
     # def ajax(self, request, slug):
     #     if feed:
@@ -194,22 +215,34 @@ class FeedView(DetailView):
     #     else:
     #         return super(TemplateView,self).render_to_response(context, **response_kwargs)
 
+class PostListView(ListView):
+    model = Post
+    feed = None
+    context_object_name = 'hui_list'
+    def get_context_data(self, **kwargs):
+        assert False, super().get_context_data(**kwargs)
 
-class PostView(View):
+
+class PostDetailView(DetailView):
     template_name = 'content/layout_post.html'
-    obj = None
+    object = None
+    model = Post
 
-    def render_post_to_string(self):
-        return render_to_string(
-                self.template_name,
-                {'post':self.obj, 'attachments':self.obj.get_attachments()}
-                )
+    def render_to_string(self, context):
+        return render_to_string(self.template_name, context, self.request)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['attachments'] = self.object.get_attachments()
+        return context
 
     def get(self, request):
-        return self.render_post_to_string()
+        context = self.get_context_data()
+
+        return self.render_to_string(context)
 
     def post(self, request):
-        return self.render_post_to_string()
+        return self.render_to_string()
 
 
 def render_content(request, context, unknown_slugs=None):
@@ -246,7 +279,7 @@ def render_content(request, context, unknown_slugs=None):
 
                     page_title = post.title
                     # CONTENT_HTML = post.render_html()
-                    CONTENT_HTML = PostView.as_view(obj=post)(request)
+                    CONTENT_HTML = PostDetailView.as_view(object=post)(request)
                 else:
                     raise Http404('Для меню-ленты unknown_slug!=Post не предусмотрен.')
             else:
@@ -259,9 +292,10 @@ def render_content(request, context, unknown_slugs=None):
 
     else:
         if page_content.__class__.__name__ == 'Post':
-            CONTENT_HTML = PostView.as_view(obj=page_content)(request)
+            CONTENT_HTML = PostDetailView.as_view(object=page_content)(request)
         elif page_content.__class__.__name__ == 'Feed':
-            CONTENT_HTML = FeedView.as_view(obj=page_content)(request)
+            CONTENT_HTML = FeedDetailView.as_view(object=page_content)(request)
+            # CONTENT_HTML = PostListView.as_view()(request)
         else:
             CONTENT_HTML = page_content.render_html(request) if page_content else None
 

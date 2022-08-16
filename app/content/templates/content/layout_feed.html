@@ -1,10 +1,10 @@
 {% load content_extras %}
 
-{% split_posts_by_columns paginator columns sort_direction as posts_by_columns %}
-{% calc_max_posts_in_col paginator columns as max_posts %}
+{% split_posts_by_columns paginator feed.feed_num_columns feed.feed_sort_direction as posts_by_columns %}
+{% calc_max_posts_in_col paginator feed.feed_num_columns as max_posts %}
 {% posts_by_columns_flatten posts_by_columns as posts %}
 
-<div id="{{uid}}-feed">
+{% comment %} <div id="{{uid}}-feed"> {% endcomment %}
 
     {# ФИЛЬТР #}
     {% if layout == 'normal' %}
@@ -31,20 +31,27 @@
     </div>
     {% endif %}
 
+    {% if layout == 'normal' %}
+    <div class="description">
+        {{feed.description|safe }}
+        <div class="clearfix"></div>
+    </div>
+    {% endif %}
+
     <div id="{{uid}}-page-{{paginator.number}}">
 
         {# ВЫБОР МАКЕТА #}
-        {% if feed_style == 'feed' %}
+        {% if feed.feed_style == 'feed' %}
             {% include 'content/layout_feed_list.html' with show_introtext=True %}
-        {% elif feed_style == 'compact_feed' %}
+        {% elif feed.feed_style == 'compact_feed' %}
             {% include 'content/layout_feed_list.html' %}
-        {% elif feed_style == 'blocks' %}
+        {% elif feed.feed_style == 'blocks' %}
             {% include 'content/layout_feed_blocks.html' %}
-        {% elif feed_style == 'blocks_with_images_left' %}
+        {% elif feed.feed_style == 'blocks_with_images_left' %}
             {% include 'content/layout_feed_blocks_with_images_left.html' %}
-        {% elif feed_style == 'blocks_with_images_top' %}
+        {% elif feed.feed_style == 'blocks_with_images_top' %}
             {% include 'content/layout_feed_blocks_with_images_top.html' %}
-        {% elif feed_style == 'slider' %}
+        {% elif feed.feed_style == 'slider' %}
             {% comment %} {% posts_by_columns_flatten posts_by_columns as posts %} {% endcomment %}
             {% include 'content/layout_feed_slider.html' %}
         {% endif %}
@@ -58,4 +65,4 @@
         {% include 'content/layout_feed_readmore.html' %}
     {% endif %}
 
-</div>
+{% comment %} </div> {% endcomment %}

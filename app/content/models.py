@@ -134,7 +134,7 @@ class FeedLayout(models.Model):
     feed_num_columns = models.PositiveSmallIntegerField(choices=FEED_COLUMN_CHOICES, default=FEED_COLUMN_CHOICES[1][0],
         verbose_name="Количество колонок")
     feed_count_items = models.PositiveSmallIntegerField(default=6, verbose_name="Количество выводимых постов")
-    feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
+    # feed_readmore = models.BooleanField(default=True, verbose_name="Отображать кнопку \"Читать больше\"")
     FEED_SORT_DIRECTION_CHOICES = [
         ('horizontal', 'Построчно'),
         ('vertical', 'По колонкам'),
