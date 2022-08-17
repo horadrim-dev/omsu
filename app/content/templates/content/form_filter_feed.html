@@ -1,7 +1,7 @@
     {% comment %} {% csrf_token %} {% endcomment %}
 
     {% comment %} {% for field in form %} {% endcomment %}
-    <div class="flex-grow row align-items-center">
+    <div class="flex-grow row align-items-center gy-2">
         <div class="col">
             <label for="id_q" class="form-label">{{ form.q.label_tag }}</label>
             {{ form.q.errors }}

@@ -5,6 +5,7 @@
 {% posts_by_columns_flatten posts_by_columns as posts %}
 
 {% comment %} <div id="{{uid}}-feed"> {% endcomment %}
+{% if not requested_with_ajax %}
 
     {# ФИЛЬТР #}
     {% if layout == 'normal' %}
@@ -38,7 +39,10 @@
     </div>
     {% endif %}
 
-    <div id="{{uid}}-page-{{paginator.number}}">
+{% endif %}
+
+
+    <div id="{{uid}}-page-{{paginator.number}}" class="mb-3">
 
         {# ВЫБОР МАКЕТА #}
         {% if feed.feed_style == 'feed' %}
@@ -58,8 +62,7 @@
 
     </div>
 
-    {% comment %} {% if readmore %} {% endcomment %}
-    {% if layout == 'normal' %}
+    {% if layout == 'normal' or requested_with_ajax %}
         {% include 'content/layout_feed_loadmore.html' %}
     {% elif layout == 'compact' %}
         {% include 'content/layout_feed_readmore.html' %}

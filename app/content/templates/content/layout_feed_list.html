@@ -1,8 +1,8 @@
 {% comment %} <div id="{{uid}}-page-{{posts.number}}"> {% endcomment %}
     {% comment %} <div class="row"> {% endcomment %}
-    <div class="row row-cols-1 row-cols-md-{{columns}} gx-4 mb-3">
+    <div class="row row-cols-1 row-cols-md-{{feed.feed_num_columns}} gx-4 ">
         {% for post in posts %}
-        <div class="col border-bottom">
+        <div class="col border-bottom py-3">
             {% comment %} <ul class="list-group list-group-flush">
                 <li class="list-group-item my-2"> {% endcomment %}
                 <div class="">

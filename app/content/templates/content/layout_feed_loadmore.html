@@ -2,7 +2,7 @@
 {% if paginator.has_next %}
 
     <div id="{{uid}}-feed-loadbox" class="d-grid gap-2">
-        <div class="my-2 border-top"></div>
+        {% comment %} <div class="my-2 border-top"></div> {% endcomment %}
         <button 
             id="{{uid}}-feed-loadmore"
             style="height:75px;"
@@ -13,10 +13,10 @@
 
     <script>
         $('#{{uid}}-feed-loadmore').on('click', function (e) {
-            var parent = "#{{uid}}-feed",
+            var parent = "#{{uid}}",
                 target = parent + " #{{uid}}-feed-loadbox";
             $.ajax({
-                url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}&items_per_page={{feed.feed_count_items}}&uid={{uid}}{% if layout %}&layout={{layout}}{%endif%}",
+                url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){
@@ -26,17 +26,17 @@
                     $(target).addClass('loading_process');
                 },
                 success: function (data) {
-                    $(target).html(data); // добавляем полученный html
+                    $(target).replaceWith(data); // добавляем полученный html
                     // прокрутка к блоку
-                    //$("html,body").animate({
-                     //   scrollTop: $('#{{uid}}-page-{{paginator.next_page_number}}').offset().top - 100
-                    //}, 200);
+                    $("html,body").animate({
+                        scrolltop: $('#{{uid}}-page-{{paginator.next_page_number}}').offset().top - 100
+                    }, 200);
                 },
                 complete: function (){
                     // снимаем анимацию загрузки
                     $(target).removeClass('loading_process');
                     $(parent + ' .overlay_block').remove();
-                    $(target + ' > div').unwrap().unwrap();
+                    $(target).unwrap();
                 }
             });
         });

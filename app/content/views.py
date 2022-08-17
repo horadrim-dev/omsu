@@ -4,6 +4,7 @@ from django.http import HttpResponse, FileResponse, Http404
 from django.conf import settings
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from toml import TomlDecodeError
 from .forms import FeedFilterForm
@@ -148,46 +149,61 @@ class FeedDetailView(DetailView):
     post_filter_form = FeedFilterForm
     open_filter_form = False
     
+    def setup(self, request, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+
+        # используем форму для валидации get параметров
+        form = FeedFilterForm(request.GET)
+        if not form.is_valid():
+            # assert False,(form.errors.keys())
+            messages.warning(
+                request, 
+                'Некорректные параметры запроса: "{}"'
+                .format(', '.join(form.errors.keys()))
+            )
+        self.cleaned_GET = form.cleaned_data
+
     def dispatch(self, request, *args, **kwargs):
-        # if request.is_ajax():
-        if request.GET.get('ajax'):
+        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' or request.GET.get('ajax'):
             return self.ajax_get(request, *args, **kwargs)
 
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
-        # assert False, context
-        context.update({   
+
+        context.update({
             'layout': 'normal',
             'uid' : 'content',
-            # 'feed':self.object, 
-            'paginator':self.object.get_page(post_filter=self.post_filter, posts_per_page=self.object.feed_count_items),
+            'paginator':self.object.get_page(
+                page=self.cleaned_GET.get('page', 1),
+                post_filter=self.post_filter, 
+                posts_per_page=self.object.feed_count_items
+                ),
             'post_filter_form' : self.post_filter_form,
             'open_filter_form' : self.open_filter_form
         })
-        # assert False, context
+
         return context
-        # context[''] = 'content'
 
-
-    def render_feed_to_string(self, context):
+    def render_to_string(self, context):
         # assert False, context
         return render_to_string(
                 self.template_name, context, request=self.request
-            )   
+            )
 
     def get(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
-        # assert False, context
+        # object получать не надо - он уже передан в атрибут
+        # получаем контекст
+        context = self.get_context_data(object = self.object)
         return self.render_to_string(context)
     
     def ajax_get(self, request, *args, **kwargs):
-        # assert False, self.get_context_data()
-        # self.object = self.get_object()
+        # return super().get(request, *args, **kwargs)
+        self.object = self.get_object()
         context = self.get_context_data(**kwargs)
-        return HttpResponse(self.render_feed_to_string(context))
-        # return self.render_to_response()
+        context['requested_with_ajax'] = True
+        return HttpResponse(self.render_to_string(context))
 
     def post(self, request):
         self.post_filter_form = self.post_filter_form(request.POST)
@@ -237,12 +253,12 @@ class PostDetailView(DetailView):
         return context
 
     def get(self, request):
+        # object получать не надо - он уже передан в атрибут
         context = self.get_context_data()
-
         return self.render_to_string(context)
 
-    def post(self, request):
-        return self.render_to_string()
+    # def post(self, request):
+    #     return self.render_to_string()
 
 
 def render_content(request, context, unknown_slugs=None):

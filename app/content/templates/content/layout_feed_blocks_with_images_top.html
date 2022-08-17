@@ -1,6 +1,6 @@
 <div id="module-{{module.obj.id}}-feed-blocks-{{feed.alias}}" class="feed-blocks">
 
-    <div class="row row-cols-1 row-cols-md-{{columns}} g-3">
+    <div class="row row-cols-1 row-cols-md-{{feed.feed_num_columns}} g-3">
         {% for post in posts %}
         <div class="col">
             <div class="card h-100 mb-3 overflow-hidden border-secondary border-opacity-10">

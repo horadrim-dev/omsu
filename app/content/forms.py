@@ -46,8 +46,11 @@ class ExtraContentForm(forms.ModelForm):
 
 class FeedFilterForm(forms.Form):
     template_name = 'content/form_filter_feed.html'
+
+    page = forms.IntegerField(required=False) # отсутствует в шаблоне, нужен для валидации get
+
     q = forms.CharField(
-        label="Содержит", 
+        label="Заголовок", 
         required=False,
         max_length=100,
         widget=forms.TextInput(
