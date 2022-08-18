@@ -10,14 +10,14 @@
     {# ФИЛЬТР #}
     {% if layout == 'normal' %}
     <div class="d-flex mb-3 justify-content-end">
-        <div class="post-filter-form w-100 pb-3 border-bottom" style="display:{% if open_filter_form %}block{% else %}none{% endif %};">
+        <div class="post-filter-form w-100 pb-3 border-bottom" style="display:{% if show_filter %}block{% else %}none{% endif %};">
             {{post_filter_form.media}}
-            <form action="" method="post" class="row g-3 d-flex align-items-center ">
-                {% csrf_token %}
+            <form action="" method="get" class="row g-3 d-flex align-items-center ">
+                {% comment %} {% csrf_token %} {% endcomment %}
                 {{post_filter_form}}
                 <div class="d-flex">
                     <input type="submit" class="btn btn-primary w-100 " value="Применить">
-                    <a href="" class="btn btn-outline-primary ms-3 flex-shrink-0" value="Сбросить">
+                    <a href="{{feed.get_url}}" class="btn btn-outline-primary ms-3 flex-shrink-0" value="Сбросить">
                         <i class="bi bi-trash"></i>
                         Сбросить
                     </a>

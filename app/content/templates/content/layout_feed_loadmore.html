@@ -16,7 +16,7 @@
             var parent = "#{{uid}}",
                 target = parent + " #{{uid}}-feed-loadbox";
             $.ajax({
-                url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}",
+                url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}&{{filter_params_row|safe}}",
                 method: 'get',
                 dataType: 'html',
                 beforeSend: function(xhr){

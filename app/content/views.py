@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from toml import TomlDecodeError
-from .forms import FeedFilterForm
+from .forms import FeedFilterForm, FeedValidationForm
 from .models import ContentBase, Post, Feed, Attachment
 from grid.models import Module
 from menus.models import Menu
@@ -147,15 +147,31 @@ class FeedDetailView(DetailView):
     model = Feed
     post_filter = {}
     post_filter_form = FeedFilterForm
-    open_filter_form = False
+    show_filter = False
     
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-
-        # используем форму для валидации get параметров
+        
+        # валидируем get параметры формы - фильтра
         form = FeedFilterForm(request.GET)
         if not form.is_valid():
-            # assert False,(form.errors.keys())
+            messages.warning(
+                request, 
+                'Некорректные параметры запроса: "{}"'
+                .format(', '.join(form.errors.keys()))
+            )
+        self.post_filter = form.cleaned_data
+        self.post_filter_form = form
+        for value in self.post_filter.values():
+            if value:
+                # assert False, self.post_filter
+                messages.success(request, 'Данные отфильтрованы')
+                self.show_filter = True
+                break
+
+        # используем форму для валидации остальных get параметров
+        form = FeedValidationForm(request.GET)
+        if not form.is_valid():
             messages.warning(
                 request, 
                 'Некорректные параметры запроса: "{}"'
@@ -168,10 +184,24 @@ class FeedDetailView(DetailView):
             return self.ajax_get(request, *args, **kwargs)
 
         return super().dispatch(request, *args, **kwargs)
+    
+    def post_filter_params_as_row(self):
+        '''Возвращает строку параметров для использования в форме в url'''
+        params_list = []
+        for key, value in self.post_filter.items():
+            # проверка на дату
+            if isinstance(value, datetime.date):
+                # переформатируем дату в требуемый формой формат
+                value = value.strftime("%d.%m.%Y")
+            if not value:
+                value = ''
+            params_list.append( str(key) + '=' + str(value) )
+
+        return '&' . join(params_list)
 
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
-
+        # assert False, (self.post_filter, self.cleaned_GET)
         context.update({
             'layout': 'normal',
             'uid' : 'content',
@@ -181,7 +211,8 @@ class FeedDetailView(DetailView):
                 posts_per_page=self.object.feed_count_items
                 ),
             'post_filter_form' : self.post_filter_form,
-            'open_filter_form' : self.open_filter_form
+            'show_filter' : self.show_filter,
+            'filter_params_row' : self.post_filter_params_as_row()
         })
 
         return context
@@ -193,7 +224,11 @@ class FeedDetailView(DetailView):
             )
 
     def get(self, request, *args, **kwargs):
-        # object получать не надо - он уже передан в атрибут
+        # object получать не надо - он уже должен быть передан в атрибут FeedView
+        # Проверка что объект feed задан - если нет - 
+        # значит ктото пытается открыть форму для ajax загрузки страниц "/content/ajax/feed/*/?params"
+        if not self.object:
+            raise Http404()
         # получаем контекст
         context = self.get_context_data(object = self.object)
         return self.render_to_string(context)
@@ -205,21 +240,21 @@ class FeedDetailView(DetailView):
         context['requested_with_ajax'] = True
         return HttpResponse(self.render_to_string(context))
 
-    def post(self, request):
-        self.post_filter_form = self.post_filter_form(request.POST)
+    # def post(self, request):
+    #     self.post_filter_form = self.post_filter_form(request.POST)
 
-        if self.post_filter_form.is_valid():
-            # передаем в фильтр чистые данные
-            self.post_filter = self.post_filter_form.cleaned_data
+    #     if self.post_filter_form.is_valid():
+    #         # передаем в фильтр чистые данные
+    #         self.post_filter = self.post_filter_form.cleaned_data
 
-            messages.success(request, 'Данные отфильтрованы')
-            # открываем форму фильтра
-            self.open_filter_form = True 
-        else:
-            # очищаем форму
-            self.post_filter_form = FeedFilterForm()
+    #         messages.success(request, 'Данные отфильтрованы')
+    #         # открываем форму фильтра
+    #         self.show_filter = True 
+    #     else:
+    #         # очищаем форму
+    #         self.post_filter_form = FeedFilterForm()
 
-        return self.render_to_string()
+    #     return self.render_to_string()
 
     # def ajax(self, request, slug):
     #     if feed:

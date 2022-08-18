@@ -44,10 +44,12 @@ class ExtraContentForm(forms.ModelForm):
                 self.add_error('content_post', 'Поле "Пост" обязательно для заполнения!')
 
 
-class FeedFilterForm(forms.Form):
-    template_name = 'content/form_filter_feed.html'
+class FeedValidationForm(forms.Form):
 
     page = forms.IntegerField(required=False) # отсутствует в шаблоне, нужен для валидации get
+
+class FeedFilterForm(forms.Form):
+    template_name = 'content/form_filter_feed.html'
 
     q = forms.CharField(
         label="Заголовок", 

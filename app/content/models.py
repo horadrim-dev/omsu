@@ -154,17 +154,17 @@ class Feed(ContentBase, FeedLayout):
 
     def get_url(self):
         if self.menu:
-            return self.feed.menu.url
+            return self.menu.url
 
     def get_posts(self, post_filter):
         qs = self.post_set.published()
 
         if post_filter:
-            if post_filter['date_start']:
+            if post_filter.get('date_start', None):
                 qs = qs.filter(published_at__gte=post_filter['date_start'])
-            if post_filter['date_end']:
+            if post_filter.get('date_end', None):
                 qs = qs.filter(published_at__lte=post_filter['date_end'])
-            if post_filter['q']:
+            if post_filter.get('q', None):
                 qs = qs.filter(models.Q(title__icontains=post_filter['q'])) #| models.Q(text__icontains=q))
 
         return qs
