@@ -16,22 +16,6 @@ import os
 # from menus.models import Menu
 # Create your views here.
 
-# def get_content_if_exists(slug=None):
-#     '''возвращает объект контента по slug'''
-#     if slug:
-#         for content_type in ContentBase.__subclasses__():
-#             # try:
-#                 # return content_type.objects.get(alias=slug)
-#             obj = content_type.objects.published().filter(alias=slug)
-#             if len(obj) > 1:
-#                 raise Http404('Получено несколько объектов с одинаковым alias')
-#             elif len(obj) == 1:
-#                 return obj[0]
-#             # except:
-#             #     continue
-
-#         return False
-
 def get_related_content(menu:Menu=None, slug=None):
     
     for content_type in ContentBase.__subclasses__():
@@ -65,86 +49,15 @@ def get_extracontent(menu:Menu=None, module:Module=None):
             else:
                 contents[content.position].append(content)
 
-    # has_content = False
-    # contents = {}
-    # contents['posts'] = []
-    # contents['postfeeds'] = []
-    # contents['menus'] = []
-    # if from_menu_id:
-    #     posts = Post.objects.published().filter(menu_id=from_menu_id) # собираем посты
-    #     feeds = Feed.objects.published().filter(menu__id=from_menu_id) # собираем ленты
-    #     menus = None
-    # elif from_slug: # контент на абстрактных страницах
-    #     posts =  Post.objects.published().filter(alias=from_slug)
-    #     feeds = None
-    #     menus = None
-    # elif module:
-        # posts = Post.objects.published().filter(id=module.post_content_id)
-        # feeds = Feed.objects.published().filter(id=module.feed_content_id)
-        # # menus = Menu.objects.published().filter(id=module.menu_content_id)
-        # posts = []
-        # feeds = None
-        # menus = []
-        # assert False, (module, Menu.objects.published)
-        # assert False, (module, module.modulecontent_set.all())
-    # post_ids = posts.values_list('id', flat=True)
-    # attachments = Attachment.objects.filter(post__in=post_ids)#[x.attachment_set.all() for x in contents['posts']]
-    # for post in posts:
-    #     contents['posts'].append({
-    #         'post' : post,
-    #         'attachments': post.get_attachments()
-    #     })
-
-    # if menus:
-    #     for menu in menus:
-    #         contents['menus'].append({
-    #             'parent': menu,
-    #             'subitems': menu.get_subitems()
-    #         })
-
-    # if feeds:
-    #     for feed in feeds:
-    #         contents['postfeeds'].append({
-    #             'feed': feed,
-    #             'posts': feed.get_page(page=1),
-    #         })
-
-    # собираем информацию
-    # num_total = 0
-    # info = {'count':{}}
-    # for key, content  in contents.items():
-    #     if len(content) > 0:
-    #         has_content = True
-    #         num_total += len(content)
-    #         info['count'].update({key: len(content)})
-
-    # info['count']['total'] = num_total
-
-    # contents['info'] = info
-
     return contents
-    # if has_content:
-    #     return contents
-    # else:
-    #     return False
-class TestView(DetailView):
-    model = Feed
-    template_name = 'content/feed_detail.html'
-    # slug_field = 'alias'
-    # slug_url_kwarg = 'slug'
-    # def get_object(self):
-    #         object = super().get_object()
-    #         return object
 
-    def get_context_data(self, **kwargs):
-        context =  super().get_context_data(**kwargs)
-        # assert False, context
-        return context
 
 class FeedDetailView(DetailView): 
+
     template_name = 'content/layout_feed.html'
     object = None
     model = Feed
+
     post_filter = {}
     post_filter_form = FeedFilterForm
     show_filter = False
@@ -201,7 +114,6 @@ class FeedDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context =  super().get_context_data(**kwargs)
-        # assert False, (self.post_filter, self.cleaned_GET)
         context.update({
             'layout': 'normal',
             'uid' : 'content',
@@ -218,7 +130,6 @@ class FeedDetailView(DetailView):
         return context
 
     def render_to_string(self, context):
-        # assert False, context
         return render_to_string(
                 self.template_name, context, request=self.request
             )
@@ -226,7 +137,7 @@ class FeedDetailView(DetailView):
     def get(self, request, *args, **kwargs):
         # object получать не надо - он уже должен быть передан в атрибут FeedView
         # Проверка что объект feed задан - если нет - 
-        # значит ктото пытается открыть форму для ajax загрузки страниц "/content/ajax/feed/*/?params"
+        # значит ктото пытается открыть форму для ajax подгрузки страниц "/content/ajax/feed/*/?params"
         if not self.object:
             raise Http404()
         # получаем контекст
@@ -256,25 +167,9 @@ class FeedDetailView(DetailView):
 
     #     return self.render_to_string()
 
-    # def ajax(self, request, slug):
-    #     if feed:
-
-    # def render_to_response(self, context, **response_kwargs):
-    #     """ Allow AJAX requests to be handled more gracefully """
-    #     if self.request.is_ajax():
-    #         return JSONResponse('Success',safe=False, **response_kwargs)
-    #     else:
-    #         return super(TemplateView,self).render_to_response(context, **response_kwargs)
-
-class PostListView(ListView):
-    model = Post
-    feed = None
-    context_object_name = 'hui_list'
-    def get_context_data(self, **kwargs):
-        assert False, super().get_context_data(**kwargs)
-
 
 class PostDetailView(DetailView):
+
     template_name = 'content/layout_post.html'
     object = None
     model = Post
@@ -291,9 +186,6 @@ class PostDetailView(DetailView):
         # object получать не надо - он уже передан в атрибут
         context = self.get_context_data()
         return self.render_to_string(context)
-
-    # def post(self, request):
-    #     return self.render_to_string()
 
 
 def render_content(request, context, unknown_slugs=None):
@@ -346,9 +238,8 @@ def render_content(request, context, unknown_slugs=None):
             CONTENT_HTML = PostDetailView.as_view(object=page_content)(request)
         elif page_content.__class__.__name__ == 'Feed':
             CONTENT_HTML = FeedDetailView.as_view(object=page_content)(request)
-            # CONTENT_HTML = PostListView.as_view()(request)
         else:
-            CONTENT_HTML = page_content.render_html(request) if page_content else None
+            raise NotImplementedError('НУЖНА НОВАЯ ВЬЮХА!!!')
 
 
     context['page_title'] = page_title  
@@ -362,8 +253,6 @@ def render_content(request, context, unknown_slugs=None):
 
 
     return render(request, 'content/content.html', context)
-
-# def render_module
 
 def download_attachment(request, uuid, *args, **kwargs):
     # media_root = settings.MEDIA_ROOT
@@ -384,51 +273,3 @@ def download_attachment(request, uuid, *args, **kwargs):
         raise Http404(
             'Файл "{}" в хранилище не найден.'.format(attachment.attached_file.path)
         )
-
-def ajax_feed_page(request, slug, *args, **kwargs):
-    # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
-    #     raise Http404()
-
-    context = {}
-    try:
-        feed = Feed.objects.published().get(alias=slug)
-    except Exception:
-        raise Http404('Лента не найдена')
-    
-    context['feed'] = feed
-
-    if request.GET.get('items_per_page'):
-        context['count_items'] = int(request.GET.get('items_per_page'))
-
-    if request.GET.get('page'):
-        if request.GET.get('items_per_page') :
-            context['posts'] = feed.get_page(
-                page=request.GET.get('page'), posts_per_page=context['count_items']
-            )
-        else:
-            context['posts'] = feed.get_page(page=request.GET.get('page'))
-    else:
-        context['posts'] = feed.get_page()
-
-    context['uid'] = request.GET.get('uid') # для использования в качестве уникального id в шаблоне
-    context['layout'] = request.GET.get('layout')
-    context['feed_style'] = request.GET.get('layout')
-
-    return render(request, 'content/layout_feed.html', context)
-
-# def ajax_post(request, *args, **kwargs):
-#     # if not request.headers.get('x-requested-with') == 'XMLHttpRequest':
-#     #     raise Http404()
-#     if not request.GET.get('post'):
-#         return Http404()
-
-#     context = {}
-#     try:
-#         post = Post.objects.published().get(alias=request.GET.get('post'))
-#     except Exception:
-#         raise Http404('Пост не найден')
-    
-#     context['post'] = post
-#     context['attachments'] = post.get_attachments()
-
-#     return render(request, 'content/layout_post.html', context)
