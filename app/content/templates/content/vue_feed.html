@@ -1,0 +1,17 @@
+{% load static %}
+
+<script src="{% static 'app/js/vue3.2.37.global.js' %}"></script>
+
+<div id="app">{{ message }}</div>
+
+<script>
+  const { createApp } = Vue
+
+  createApp({
+    data() {
+      return {
+        message: 'Hello Vue!'
+      }
+    }
+  }).mount('#app')
+</script>

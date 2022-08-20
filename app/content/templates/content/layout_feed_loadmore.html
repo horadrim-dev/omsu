@@ -15,6 +15,7 @@
         $('#{{uid}}-feed-loadmore').on('click', function (e) {
             var parent = "#{{uid}}",
                 target = parent + " #{{uid}}-feed-loadbox";
+                loaded_block = '#{{uid}}-page-{{paginator.next_page_number}}';
             $.ajax({
                 url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}&{{filter_params_row|safe}}",
                 method: 'get',
@@ -27,9 +28,11 @@
                 },
                 success: function (data) {
                     $(target).replaceWith(data); // добавляем полученный html
+                    app_js_after_ajax(loaded_block);
+                    //$(loaded_block)
                     // прокрутка к блоку
                     $("html,body").animate({
-                        scrolltop: $('#{{uid}}-page-{{paginator.next_page_number}}').offset().top - 100
+                        scrolltop: $(loaded_block).offset().top - 100
                     }, 200);
                 },
                 complete: function (){
