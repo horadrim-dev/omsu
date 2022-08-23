@@ -117,6 +117,8 @@ class FeedDetailView(DetailView):
         context.update({
             'layout': 'normal',
             'uid' : 'content',
+            'feed_style' : self.object.feed_style,
+            'columns' : self.object.feed_num_columns,
             'paginator':self.object.get_page(
                 page=self.cleaned_GET.get('page', 1),
                 post_filter=self.post_filter, 
@@ -188,60 +190,6 @@ class PostDetailView(DetailView):
         return self.render_to_string(context)
 
 
-class TestVueView(DetailView): 
-
-    template_name = 'content/vue_feed.html'
-    object = None
-    model = Feed
-
-
-    def dispatch(self, request, *args, **kwargs):
-        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' or request.GET.get('ajax'):
-            return self.ajax_get(request, *args, **kwargs)
-
-        return super().dispatch(request, *args, **kwargs)
-    
-
-    def get_context_data(self, **kwargs):
-        context =  super().get_context_data(**kwargs)
-        context.update({
-            'layout': 'normal',
-            'uid' : 'content',
-            'paginator':self.object.get_page(
-                page=self.request.GET.get('page', 1),
-                # post_filter=self.post_filter, 
-                posts_per_page=self.object.feed_count_items
-                )
-            # 'post_filter_form' : self.post_filter_form,
-            # 'show_filter' : self.show_filter,
-            # 'filter_params_row' : self.post_filter_params_as_row()
-        })
-
-        return context
-
-    def render_to_string(self, context):
-        return render_to_string(
-                self.template_name, context, request=self.request
-            )
-
-    def get(self, request, *args, **kwargs):
-        # object получать не надо - он уже должен быть передан в атрибут FeedView
-        # Проверка что объект feed задан - если нет - 
-        # значит ктото пытается открыть форму для ajax подгрузки страниц "/content/ajax/feed/*/?params"
-        if not self.object:
-            raise Http404()
-        # получаем контекст
-        context = self.get_context_data(object = self.object)
-        return self.render_to_string(context)
-    
-    def ajax_get(self, request, *args, **kwargs):
-        # return super().get(request, *args, **kwargs)
-        self.object = self.get_object()
-        context = self.get_context_data(**kwargs)
-        context['requested_with_ajax'] = True
-        return HttpResponse(self.render_to_string(context))
-
-
 def render_content(request, context, unknown_slugs=None):
 
     page_content = get_related_content(menu=context['page'])
@@ -291,8 +239,8 @@ def render_content(request, context, unknown_slugs=None):
         if page_content.__class__.__name__ == 'Post':
             CONTENT_HTML = PostDetailView.as_view(object=page_content)(request)
         elif page_content.__class__.__name__ == 'Feed':
-            # CONTENT_HTML = FeedDetailView.as_view(object=page_content)(request)
-            CONTENT_HTML = TestVueView.as_view(object=page_content)(request)
+            CONTENT_HTML = FeedDetailView.as_view(object=page_content)(request)
+            # CONTENT_HTML = TestVueView.as_view(object=page_content)(request)
         else:
             CONTENT_HTML = 'XYU TEBE A NE CONTENT'
             # assert False, page_content.__class__.__name__

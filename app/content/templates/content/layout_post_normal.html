@@ -18,6 +18,20 @@
         </small> {% endcomment %}
     </div>
     <div class="text">
+        {% if post.image and not post.image_position == 'hide' %}
+        <div class="post-image 
+                {% if post.image_position == 'left'%}
+                w-50 float-start me-3 mb-3
+                {% elif post.image_position == 'right'%}
+                w-50 float-end ms-3 mb-3
+                {% elif post.image_position == 'stretch' %}
+                w-100 mb-3
+                {% endif %}
+            " 
+            style="height:200px;">
+            <img src="{{post.image.url}}" alt="{{post.title}}" class="img-fluid w-100 h-100" style="object-fit:cover;" >
+        </div>
+        {% endif %}
         {{post.text|safe }}
     </div>
     <div class="clearfix"></div>

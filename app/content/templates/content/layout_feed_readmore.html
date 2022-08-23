@@ -1,13 +1,13 @@
 <div class="row mt-3">
     <div class="col">
-        {% comment %} <a href="#" class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3">
+        <a href="{{feed.get_url}}" class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3">
             Читать ленту
-        </a> {% endcomment %}
-        <a href="#modal-1" feed="{{feed.alias}}" target="_modal" 
+        </a>
+        {% comment %} <a href="#modal-1" feed="{{feed.alias}}" target="_modal" 
             class="btn btn-outline-secondary border-secondary border-opacity-10 d-block w-100 py-3" 
             >
             Читать ленту
-        </a>
+        </a> {% endcomment %}
     </div>
 </div>
 {% comment %} 

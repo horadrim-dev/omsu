@@ -23,6 +23,7 @@ from . import app_settings as content_settings
 import datetime
 import os
 import uuid
+from taggit_selectize.managers import TaggableManager
 # Create your models here.
 
 
@@ -149,16 +150,30 @@ class FeedLayout(models.Model):
 class Feed(ContentBase, FeedLayout):
 
     menu = models.ForeignKey('menus.Menu', on_delete=models.SET_NULL, verbose_name="Привязка к меню", null=True)
+    parent = models.ForeignKey(
+        'content.Feed', on_delete=models.CASCADE, blank=True, null=True, verbose_name="Родительская лента")
+    show_childs = models.BooleanField(default=True, verbose_name="Отображать посты из дочерних лент")
     description = RichTextUploadingField(blank=True, null=True)
-
 
     def get_url(self):
         if self.menu:
             return self.menu.url
 
-    def get_posts(self, post_filter):
-        qs = self.post_set.published()
+    def get_child_feeds(self):
+        return Feed.objects.published().filter(parent=self)
 
+    def get_posts(self, post_filter):
+        # запрашиваем посты в зависимости от опции показа дочерних лент
+        if self.show_childs:
+            qs = Post.objects.published().filter(
+                models.Q(feed__in=self.get_child_feeds())
+                |
+                models.Q(feed=self)
+            )
+        else:
+            qs = self.post_set.published()
+
+        # если фильтр задан - применяем
         if post_filter:
             if post_filter.get('date_start', None):
                 qs = qs.filter(published_at__gte=post_filter['date_start'])
@@ -209,6 +224,15 @@ class Post(ContentBase, PostLayout):
     # feed = models.ManyToManyField(Feed, blank=True, verbose_name="Лента")
     image = models.ImageField(upload_to="uploads/%Y/%m/%d/", verbose_name="Изображение поста",
         blank=True, null=True)
+    IMAGE_POSITION_CHOICES = [
+        ('left', 'Слева'),
+        ('stretch', 'Растянуть'),
+        ('right', 'Справа'),
+        ('hide', 'Скрыть'),
+    ]
+    image_position = models.CharField(max_length=64, choices=IMAGE_POSITION_CHOICES, default=IMAGE_POSITION_CHOICES[0][0],
+        verbose_name="Расположение изображения")
+    tags = TaggableManager()
     intro_text = RichTextField(blank=True)
     text = RichTextUploadingField()
 
@@ -263,6 +287,7 @@ def auto_delete_image_on_delete(sender, instance, **kwargs):
     if instance.image:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
+
 
 
 class Attachment(models.Model):

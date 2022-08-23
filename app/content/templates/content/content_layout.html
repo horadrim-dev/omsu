@@ -28,7 +28,7 @@
 
 {% if content.content_type == 'feed' %}
 
-    {% with feed=content.content_feed paginator=content.get_feed_page %}
+    {% with feed=content.content_feed columns=content.feed_num_columns feed_style=content.feed_style paginator=content.get_feed_page %}
 
         {% include 'content/layout_feed.html' %}
 

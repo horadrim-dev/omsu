@@ -16,6 +16,17 @@ class PostForm(forms.ModelForm):
         model = Post
         # fields = []
         exclude = ['intro_text']
+        # widgets = {
+        #     'tags': forms.TextInput(attrs={'data-role' : "tagsinput"})
+        # }
+
+    # class Media:
+    #     js = (
+    #         # 'app/js/bootstrap.bundle.min.js', 
+    #         'app/js/typeahead.bundle.min.js', 
+    #         'app/js/bootstrap-tagsinput.min.js',)
+        # css = ('app/css/bootstrap-tagsinput.css')
+
 
 class PostAdmin(admin.ModelAdmin):
     # view_on_site = True

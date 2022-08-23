@@ -43,19 +43,18 @@
 
 
     <div id="{{uid}}-page-{{paginator.number}}" class="mb-3">
-
         {# ВЫБОР МАКЕТА #}
-        {% if feed.feed_style == 'feed' %}
+        {% if feed_style == 'feed' %}
             {% include 'content/layout_feed_list.html' with show_introtext=True %}
-        {% elif feed.feed_style == 'compact_feed' %}
+        {% elif feed_style == 'compact_feed' %}
             {% include 'content/layout_feed_list.html' %}
-        {% elif feed.feed_style == 'blocks' %}
+        {% elif feed_style == 'blocks' %}
             {% include 'content/layout_feed_blocks.html' %}
-        {% elif feed.feed_style == 'blocks_with_images_left' %}
+        {% elif feed_style == 'blocks_with_images_left' %}
             {% include 'content/layout_feed_blocks_with_images_left.html' %}
-        {% elif feed.feed_style == 'blocks_with_images_top' %}
+        {% elif feed_style == 'blocks_with_images_top' %}
             {% include 'content/layout_feed_blocks_with_images_top.html' %}
-        {% elif feed.feed_style == 'slider' %}
+        {% elif feed_style == 'slider' %}
             {% comment %} {% posts_by_columns_flatten posts_by_columns as posts %} {% endcomment %}
             {% include 'content/layout_feed_slider.html' %}
         {% endif %}

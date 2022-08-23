@@ -13,35 +13,11 @@
 
     <script>
         $('#{{uid}}-feed-loadmore').on('click', function (e) {
-            var parent = "#{{uid}}",
-                target = parent + " #{{uid}}-feed-loadbox";
-                loaded_block = '#{{uid}}-page-{{paginator.next_page_number}}';
-            $.ajax({
-                url: "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}&{{filter_params_row|safe}}",
-                method: 'get',
-                dataType: 'html',
-                beforeSend: function(xhr){
-                    // старт анимации загрузки
-                    $(target).wrap( '<div class="main_overlay_block"></div>' );
-                    $(parent + ' .main_overlay_block').prepend('<div class="overlay_block"></div>');
-                    $(target).addClass('loading_process');
-                },
-                success: function (data) {
-                    $(target).replaceWith(data); // добавляем полученный html
-                    app_js_after_ajax(loaded_block);
-                    //$(loaded_block)
-                    // прокрутка к блоку
-                    $("html,body").animate({
-                        scrolltop: $(loaded_block).offset().top - 100
-                    }, 200);
-                },
-                complete: function (){
-                    // снимаем анимацию загрузки
-                    $(target).removeClass('loading_process');
-                    $(parent + ' .overlay_block').remove();
-                    $(target).unwrap();
-                }
-            });
+            var parent_block = "#{{uid}}",
+                target_block = parent_block + " #{{uid}}-feed-loadbox",
+                loaded_block = '#{{uid}}-page-{{paginator.next_page_number}}',
+                url = "{% url 'ajax_feed_page' feed.id %}?page={{paginator.next_page_number}}&{{filter_params_row|safe}}";
+            $(this).ajax_get_html_wrapper(url, parent_block, target_block, loaded_block);
         });
     </script>
 {% endif %}

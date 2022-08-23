@@ -40,7 +40,13 @@ document.addEventListener('click', function (e) {
 function app_js_after_ajax(selector){
 
 	// вешаем lightbox на все картинки 
-	$(selector + ' img').wrap(function () {
+	// $(selector + ' img').wrap(function () {
+	$(selector + ' img')
+		.filter(function(){ //отсеиваем картинки обернутые в ссылку
+			return $(this).parent().is(":not(a)");
+		})
+		.wrap(function () {
+			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 		})
 		.parent()
@@ -62,31 +68,31 @@ function app_js_after_ajax(selector){
 };
 
 jQuery.fn.extend({
-    ajax_wrapper: function (parent, target, loaded_block) {
+    ajax_get_html_wrapper: function (url, parent_block, target_block, loaded_block) {
 			
 		$.ajax({
-			url: "",
+			url: url,
 			method: 'get',
 			dataType: 'html',
 			beforeSend: function(xhr){
 				// старт анимации загрузки
-				$(target).wrap( '<div class="main_overlay_block"></div>' );
-				$(parent + ' .main_overlay_block').prepend('<div class="overlay_block"></div>');
-				$(target).addClass('loading_process');
+				$(target_block).wrap( '<div class="main_overlay_block"></div>' );
+				$(parent_block + ' .main_overlay_block').prepend('<div class="overlay_block"></div>');
+				$(target_block).addClass('loading_process');
 			},
 			success: function (data) {
-				$(target).replaceWith(data); // добавляем полученный html
+				$(target_block).replaceWith(data); // добавляем полученный html
 				app_js_after_ajax(loaded_block);
 				// прокрутка к блоку
-				$("html,body").animate({
-					scrolltop: $(loaded_block).offset().top - 100
-				}, 200);
+				// $("html,body").animate({
+				// 	scrolltop: $(loaded_block).offset().top - 100
+				// }, 200);
 			},
 			complete: function (){
 				// снимаем анимацию загрузки
-				$(target).removeClass('loading_process');
-				$(parent + ' .overlay_block').remove();
-				$(target).unwrap();
+				$(target_block).removeClass('loading_process');
+				$(parent_block + ' .overlay_block').remove();
+				$(target_block).unwrap();
 			}
 		});
         // var text = $(this).text();
