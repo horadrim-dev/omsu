@@ -46,11 +46,16 @@ INSTALLED_APPS = [
     'menus', 
     'content', 
     # 'newsfeed',
+    'crispy_forms',
+    'crispy_bootstrap5',
     'ckeditor',
     'ckeditor_uploader',
     'bootstrap_datepicker_plus',
-    'taggit', # https://github.com/jazzband/django-taggit
-    'taggit_selectize', # https://github.com/chhantyal/taggit-selectize
+    'tags', # Адаптированные для проекты теги
+    # 'taggit', # https://github.com/jazzband/django-taggit
+    # 'taggit_selectize', # https://github.com/chhantyal/taggit-selectize
+    'taggit_labels', # https://github.com/bennylope/django-taggit-labels
+    'colorfield' # https://pypi.org/project/django-colorfield/
 ]
 
 MIDDLEWARE = [
@@ -197,3 +202,7 @@ TAGGIT_SELECTIZE = {
     'DRAG_DROP': False,
     'DELIMITER': ','
 }
+
+#### CRISPY FORMS
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

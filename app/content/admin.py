@@ -1,7 +1,7 @@
 from turtle import position
 from django.contrib import admin,  messages
-from .models import Post, Feed, Attachment, ExtraContent
-from .forms import ExtraContentForm
+from .models import Post, Feed, Attachment, ExtraContent, Tag
+from .forms import ExtraContentForm, PostForm
 import uuid
 from django import forms
 # Register your models here.
@@ -11,21 +11,13 @@ class AttachmentInline(admin.TabularInline):
     exclude = ['extension']
     readonly_fields = ('hits',)
 
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        # fields = []
-        exclude = ['intro_text']
-        # widgets = {
-        #     'tags': forms.TextInput(attrs={'data-role' : "tagsinput"})
-        # }
 
-    # class Media:
-    #     js = (
-    #         # 'app/js/bootstrap.bundle.min.js', 
-    #         'app/js/typeahead.bundle.min.js', 
-    #         'app/js/bootstrap-tagsinput.min.js',)
-        # css = ('app/css/bootstrap-tagsinput.css')
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ["name", "slug"]
+    ordering = ["name", "slug"]
+    search_fields = ["name"]
+    prepopulated_fields = {"slug": ["name"]}
 
 
 class PostAdmin(admin.ModelAdmin):
@@ -44,6 +36,7 @@ class PostAdmin(admin.ModelAdmin):
     inlines = (AttachmentInline,)
 
     actions = ('publish', 'unpublish', 'duplicate')
+
     def publish(self, request, queryset):
         queryset.update(published=True)
         message = str(len(queryset)) + ' элемент(ов) опубликован(ы)'
@@ -108,4 +101,5 @@ class ExtraContentAdmin(admin.ModelAdmin):
 
 admin.site.register(Post, PostAdmin)
 admin.site.register(Feed)
+# admin.site.register(Tag, TagAdmin)
 admin.site.register(ExtraContent, ExtraContentAdmin)

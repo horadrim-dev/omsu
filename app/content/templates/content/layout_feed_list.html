@@ -61,12 +61,15 @@
                         {% include 'content/layout_feed_post_label.html' %}
                     {% endif %}
 
+
                     {% if show_introtext %}
                         <div class="mt-1">
                             {{post.intro_text|safe}}
                         </div>
                         <div class="clearfix"></div>
-                        <div class="d-flex justify-content-end">
+                        <div class="d-flex justify-content-between">
+
+                            {% include 'content/layout_feed_post_tags.html' %}
                             <a href="{{post.get_url}}" type="button" class="btn btn-outline-primary">
                                 <i class="bi bi-book me-0"></i>
                                 Читать

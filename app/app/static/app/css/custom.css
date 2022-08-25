@@ -333,10 +333,14 @@ nav.module-menu .accordion-header a.nav-link.active {
   border: 3px solid green;
 }
 /* FEED-BLOCKS */
-.feed-blocks img{
+.feed-blocks img.post-image{
 	object-fit: cover;
 }
 
+.feed-blocks-with-images-left img.post-image,
+.feed-blocks-with-images-top img.post-image{
+	object-fit: cover;
+}
 /* MODAL */
 .modal-body {
 	-webkit-transition: .2s ease-in-out;

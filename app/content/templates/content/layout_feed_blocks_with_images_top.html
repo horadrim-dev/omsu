@@ -1,4 +1,4 @@
-<div id="module-{{module.obj.id}}-feed-blocks-{{feed.alias}}" class="feed-blocks">
+<div id="module-{{module.obj.id}}-feed-blocks-{{feed.alias}}" class="feed-blocks-with-images-top">
 
     <div class="row row-cols-1 row-cols-md-{{columns}} g-3">
         {% for post in posts %}
@@ -7,7 +7,7 @@
                 <div style="height:200px;">
                     {% if post.image %}
                     <a href="{{post.get_url}}" class="link">
-                    <img src="{{post.image.url}}" class="card-img-top img-fluid rounded-start w-100 h-100" alt="...">
+                    <img src="{{post.image.url}}" class="post-image card-img-top img-fluid rounded-start w-100 h-100" alt="...">
                     </a>
                     {% else %}
                      <div class="card-img-top w-100 h-100 bg-secondary d-flex justify-content-center align-items-center">
@@ -24,8 +24,13 @@
                     <p class="card-text"><small class="text-muted">{{post.published_at}}</small></p>
 
                     {% if feed.show_childs %}
-                        {% include 'content/layout_feed_post_label.html' %}
+                        <div class="float-start me-2">
+                            {% include 'content/layout_feed_post_label.html' %}
+                        </div>
                     {% endif %}
+                    <div>
+                        {% include 'content/layout_feed_post_tags.html' %}
+                    </div>
                 </div>
             </div>
         </div>

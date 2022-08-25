@@ -1,36 +1,24 @@
+{% load crispy_forms_tags %}
     {% comment %} {% csrf_token %} {% endcomment %}
 
     {% comment %} {% for field in form %} {% endcomment %}
     <div class="flex-grow row align-items-center gy-2">
         <div class="col">
-            <label for="id_q" class="form-label">{{ form.q.label_tag }}</label>
-            {{ form.q.errors }}
-            {{ form.q }}
+            {{ form.tag|as_crispy_field}}
         </div>
         <div class="col-12 col-xxl">
-            <label for="content-filter-range" class="form-label">
-                Дата публикации:
-            </label>
             <div class="row align-items-center g-3">
-                <div id="content-filter-range" class="col-auto">
-                    <label for="id_date_start" class="col-form-label">
-                        {{ form.date_start.label_tag }}
-                    </label>
+                <div class="col">
+                    {{ form.date_start|as_crispy_field }}
                 </div>
                 <div class="col">
-                    {{ form.date_start }}
-                    {{ form.date_start.errors }}
-                </div>
-                <div class="col-auto">
-                    <label for="id_date_end" class="col-form-label">
-                        {{ form.date_end.label_tag }}
-                    </label>
-                </div>
-                <div class="col">
-                    {{ form.date_end }}
-                    {{ form.date_end.errors }}
+                    {{ form.date_end|as_crispy_field }}
                 </div>
             </div>
         </div>
     </div>
-    {% comment %} {% endfor %} {% endcomment %}
+    {% comment %} <div class="row">
+        <div class="col">
+            {{ form.tags|as_crispy_field }}
+        </div>
+    </div> {% endcomment %}

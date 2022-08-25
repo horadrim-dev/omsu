@@ -70,9 +70,10 @@ class FeedDetailView(DetailView):
         if not form.is_valid():
             messages.warning(
                 request, 
-                'Некорректные параметры запроса: "{}"'
+                'Некорректные параметры запроса: ["{}"]'
                 .format(', '.join(form.errors.keys()))
             )
+            self.show_filter = True
         self.post_filter = form.cleaned_data
         self.post_filter_form = form
         for value in self.post_filter.values():

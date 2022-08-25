@@ -35,9 +35,18 @@ document.addEventListener('click', function (e) {
 	}
 })
 
-$(document).ready(function () {
+
+
+function app_js_after_ajax(selector){
+
 	// вешаем lightbox на все картинки 
-	$('img').wrap(function () {
+	// $(selector + ' img').wrap(function () {
+	$(selector + ' img')
+		.filter(function(){ //отсеиваем картинки обернутые в ссылку
+			return $(this).parent().is(":not(a)");
+		})
+		.wrap(function () {
+			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 			return '<a href="' + this.src + '" class="zoom-wrapper" title="' + this.alt + '" />';
 		})
 		.parent()
@@ -56,8 +65,54 @@ $(document).ready(function () {
 			}
 		})
 
+};
+
+jQuery.fn.extend({
+    ajax_get_html_wrapper: function (url, parent_block, target_block, loaded_block) {
+			
+		$.ajax({
+			url: url,
+			method: 'get',
+			dataType: 'html',
+			beforeSend: function(xhr){
+				// старт анимации загрузки
+				$(target_block).wrap( '<div class="main_overlay_block"></div>' );
+				$(parent_block + ' .main_overlay_block').prepend('<div class="overlay_block"></div>');
+				$(target_block).addClass('loading_process');
+			},
+			success: function (data) {
+				$(target_block).replaceWith(data); // добавляем полученный html
+				app_js_after_ajax(loaded_block);
+				// прокрутка к блоку
+				// $("html,body").animate({
+				// 	scrolltop: $(loaded_block).offset().top - 100
+				// }, 200);
+			},
+			complete: function (){
+				// снимаем анимацию загрузки
+				$(target_block).removeClass('loading_process');
+				$(parent_block + ' .overlay_block').remove();
+				$(target_block).unwrap();
+			}
+		});
+        // var text = $(this).text();
+        // var zigzagText = '';
+        // var toggle = true; //lower/uppper toggle
+		// 	$.each(text, function(i, nome) {
+		// 		zigzagText += (toggle) ? nome.toUpperCase() : nome.toLowerCase();
+		// 		toggle = (toggle) ? false : true;
+		// 	});
+		// return zigzagText;
+    }
+});
+
+$(document).ready(function () {
+
+	// функции загружаемые также после ajax вызовов
+	app_js_after_ajax('body');
+
 	// кнопка "назад"
-	$('#back').click(function () {
+	$(document).on('click', '#back', function () {
 		history.back();
 	});
 
@@ -80,7 +135,7 @@ $(document).ready(function () {
 	};
 
 	// при клике по tab обновляем хеш в URL
-	$('#content a[role="tab"]').click(function (e) {
+	$(document).on('click', '#content a[role="tab"]', function (e) {
 		window.location.hash = this.hash;
 	});
 	// обрабатываем хеш из URL (открываем вкладку)
@@ -105,34 +160,6 @@ $(document).ready(function () {
 	$('#modal-3').modally();
 	
 
-
-	// ajax
-	// $( document ).ajaxStart(function() {
-	// // $( "#loading" ).show();
-	// 	$(block).wrap( '<div class="main_overlay_block"></div>' );
-	// 	$('.main_overlay_block').prepend('<div class="overlay_block"></div>');
-	// 	$(block).addClass('loading_process');
-	// });
-
-	// $( document ).ajaxComplete(function() {
-	// 	$(block).unwrap();
-	// 	$('.overlay_block').remove();
-	// 	$(block).removeClass('loading_process');
-	// });
-	// $('a.ajax').on('click', function (e) {
-	// 	// alert(this.href + " /// " + this.target);
-	// 	var target = "#" + this.target;
-	// 	$.ajax({
-	// 		url: this.href,
-	// 		method: 'get',
-	// 		dataType: 'html',
-	// 		success: function (data) {
-	// 			$(target).html(data);
-	// 		}
-	// 	});
-	// 	e.preventDefault();
-	// });
-
 	// плавающие блоки
 	// $("#right-side-content").stick_in_parent({offset_top:100});
 	$("#mainmenu-bar").stick_in_parent({
@@ -142,6 +169,13 @@ $(document).ready(function () {
 	// активируем подсказки
 	const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
 	const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+
+	// переключатель фильтров
+	$(document).on('click', '.filter-toggle', function (e) {
+		var target = $($(this).attr('target'));
+		target.slideToggle('fast');
+	});
 
 });
 /*

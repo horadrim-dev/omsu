@@ -1,17 +1,19 @@
-<div id="module-{{module.obj.id}}-feed-blocks-{{feed.alias}}" class="feed-blocks">
+<div id="module-{{module.obj.id}}-feed-blocks-{{feed.alias}}" class="feed-blocks-with-images-left">
     <div class="row row-cols-1 row-cols-md-{{columns}} g-3">
         {% for post in posts %}
         <div class="col">
             <div class="card h-100 mb-3 overflow-hidden border-secondary border-opacity-10">
                 <div class="row h-100 g-0">
                     <div class="col-md-4">
-                        {% if post.image %}
-                        <img src="{{post.image.url}}" class="img-fluid rounded-start w-100 h-100" alt="...">
-                        {% else %}
-                            <div class="w-100 h-100 bg-secondary d-flex justify-content-center align-items-center">
-                                <i class="bi bi-card-image text-light fs-1"></i>
-                            </div>
-                        {% endif %}
+                        <a href="{{post.get_url}}" class="link">
+                            {% if post.image %}
+                            <img src="{{post.image.url}}" class="post-image img-fluid rounded-start w-100 h-100" alt="...">
+                            {% else %}
+                                <div class="w-100 h-100 bg-secondary d-flex justify-content-center align-items-center">
+                                    <i class="bi bi-card-image text-light fs-1"></i>
+                                </div>
+                            {% endif %}
+                        </a>
                     </div>
                     <div class="col-md-8">
                         <div class="card-body">
@@ -23,8 +25,12 @@
                             <p class="card-text"><small class="text-muted">{{post.published_at}}</small></p>
 
                             {% if feed.show_childs %}
+                            <div class="mb-2">
                                 {% include 'content/layout_feed_post_label.html' %}
+                            </div>
                             {% endif %}
+
+                            {% include 'content/layout_feed_post_tags.html' %}
                         </div>
                     </div>
                 </div>

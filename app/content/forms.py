@@ -1,8 +1,9 @@
-from logging import PlaceHolder
 from django import forms
-from .models import ExtraContent
+from .models import ExtraContent, Post, Tag
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 import datetime
+from taggit.forms import TagField
+from .widgets import TaggedPostLabelWidget
 # from django.forms.models import inlineformset_factory, BaseInlineFormSet
 
 # Create the form class.
@@ -17,6 +18,22 @@ import datetime
 # AttachmentFormset = inlineformset_factory(Post, Attachment, extra=1)
 
 
+class PostForm(forms.ModelForm):
+    tags = TagField(required=False, widget=TaggedPostLabelWidget)
+    class Meta:
+        model = Post
+        # fields = []
+        exclude = ['intro_text']
+        # widgets = {
+        #     'tags': forms.TextInput(attrs={'data-role' : "tagsinput"})
+        # }
+
+    # class Media:
+    #     js = (
+    #         # 'app/js/bootstrap.bundle.min.js', 
+    #         'app/js/typeahead.bundle.min.js', 
+    #         'app/js/bootstrap-tagsinput.min.js',)
+        # css = ('app/css/bootstrap-tagsinput.css')
 
 class ExtraContentForm(forms.ModelForm):
 
@@ -59,11 +76,12 @@ class FeedFilterForm(forms.Form):
             attrs={
                 'class':"form-control", 
                 'placeholder':'Введите текст для поиска',
-            }
+                }
+            )
         )
-    )
+
     date_start = forms.DateField(
-        label='с',
+        label='Дата публикации (от)',
         required=False,
         widget=DateTimePickerInput(
             format="%d.%m.%Y",
@@ -74,7 +92,7 @@ class FeedFilterForm(forms.Form):
         )
     )
     date_end = forms.DateField(
-        label='по',
+        label='(до)',
         required=False,
         widget=DateTimePickerInput(
             format="%d.%m.%Y",
@@ -83,6 +101,13 @@ class FeedFilterForm(forms.Form):
                 'showClose': False, 'showClear':True, 'showTodayButton':False
             }
         )
+    )
+    # tags = TagField(required=False, widget=TaggedPostLabelWidget)
+    tag = forms.ModelChoiceField(
+        label='Тег',
+        required=False,
+        queryset=Tag.objects
+        # widget=TaggedPostLabelWidget()
     )
     # max_date = forms.DateField(
     #     widget=forms.DateInput(

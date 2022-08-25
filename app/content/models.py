@@ -1,9 +1,6 @@
 # from ast import arg
 # from re import A
 # from tabnanny import verbose
-import re
-from tkinter import CASCADE
-from urllib.request import AbstractDigestAuthHandler
 from django.db import models
 from django.dispatch import receiver
 from django.shortcuts import reverse
@@ -23,7 +20,9 @@ from . import app_settings as content_settings
 import datetime
 import os
 import uuid
-from taggit_selectize.managers import TaggableManager
+from taggit.managers import TaggableManager
+from taggit.models import TagBase, GenericTaggedItemBase, TaggedItemBase
+# from colorfield.fields import ColorField
 # Create your models here.
 
 
@@ -179,8 +178,10 @@ class Feed(ContentBase, FeedLayout):
                 qs = qs.filter(published_at__gte=post_filter['date_start'])
             if post_filter.get('date_end', None):
                 qs = qs.filter(published_at__lte=post_filter['date_end'])
-            if post_filter.get('q', None):
-                qs = qs.filter(models.Q(title__icontains=post_filter['q'])) #| models.Q(text__icontains=q))
+            if post_filter.get('tag', None):
+                qs = qs.filter(taggedpost__tag_id=post_filter['tag']) #| models.Q(text__icontains=q))
+            # if post_filter.get('q', None):
+            #     qs = qs.filter(models.Q(title__icontains=post_filter['q'])) #| models.Q(text__icontains=q))
 
         return qs
     
@@ -217,6 +218,45 @@ class PostLayout(models.Model):
         abstract = True
 
 
+
+class Tag(TagBase):
+    '''
+    Переопределенный класс taggit.Tag (можно добавить свои поля к тегам)
+    https://django-taggit.readthedocs.io/en/latest/custom_tagging.html
+    '''
+    # COLOR_PALETTE = [
+    #         ("#000000", "black", ),
+    #         ("#000000", "black", ),
+    #         ("#000000", "black", ),
+    #         ("#000000", "black", ),
+    #         ("#800000", "black", ),
+    #         ("#800000", "black", ),
+    #         ("#800000", "black", ),
+    #         ("#800000", "black", ),
+    #     ]
+
+    # color = ColorField(choices=COLOR_PALETTE, default=COLOR_PALETTE[0][0])
+
+    class Meta:
+        verbose_name = "Тег"
+        verbose_name_plural = "Теги"
+
+
+class TaggedPost(TaggedItemBase):
+    '''
+    Переопределенный класс taggit.TaggedItemBase - позволяет делать запросы тегов 
+    постов напрямую, а не через лишний join (content_type), как сделано в taggit.
+    https://django-taggit.readthedocs.io/en/latest/custom_tagging.html
+    '''
+    content_object = models.ForeignKey('content.Post', on_delete=models.CASCADE)
+
+    tag = models.ForeignKey(
+        Tag,
+        on_delete=models.CASCADE,
+        related_name="%(app_label)s_%(class)s_items",
+    )
+
+
 class Post(ContentBase, PostLayout):
 
     feed = models.ForeignKey(
@@ -232,10 +272,11 @@ class Post(ContentBase, PostLayout):
     ]
     image_position = models.CharField(max_length=64, choices=IMAGE_POSITION_CHOICES, default=IMAGE_POSITION_CHOICES[0][0],
         verbose_name="Расположение изображения")
-    tags = TaggableManager()
+    tags = TaggableManager(through=TaggedPost)
+    # tags = TaggableManager()
     intro_text = RichTextField(blank=True)
     text = RichTextUploadingField()
-
+    
     def save(self, *args, **kwargs):
 
         intro = self.text.split('</p>')
@@ -246,6 +287,9 @@ class Post(ContentBase, PostLayout):
 
         super(Post, self).save(*args, **kwargs)
     
+    def get_tags(self):
+        return self.tags.all()
+
     def get_url(self):
         if self.feed and self.feed.menu:
             return self.feed.menu.url + self.alias
@@ -287,6 +331,7 @@ def auto_delete_image_on_delete(sender, instance, **kwargs):
     if instance.image:
         if os.path.isfile(instance.image.path):
             os.remove(instance.image.path)
+
 
 
 
