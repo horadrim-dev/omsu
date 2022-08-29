@@ -36,11 +36,11 @@
                             {{post.title}}
                         </a>
                     </h5>
-                    <p class="card-text"><small class="text-muted">{{post.published_at}}</small></p>
-
-                    {% if feed.show_childs %}
-                        {% include 'content/layout_feed_post_label.html' %}
-                    {% endif %}
+                    <p class="card-text float-start"><small class="text-muted">{{post.published_at}}</small></p>
+                    
+                    {% include 'content/layout_feed_post_label.html' %}
+                    
+                    <div class="clearfix"></div>
 
                     {% include 'content/layout_feed_post_tags.html' %}
                 </div>

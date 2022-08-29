@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import View, TemplateView, DetailView, ListView
 from django.http import HttpResponse, FileResponse, Http404
 from django.conf import settings
@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 from toml import TomlDecodeError
 from .forms import FeedFilterForm, FeedValidationForm
-from .models import ContentBase, Post, Feed, Attachment
+from .models import ContentBase, Post, Feed, Attachment, Tag, TaggedPost
 from grid.models import Module
 from menus.models import Menu
 import datetime
@@ -16,8 +16,9 @@ import os
 # from menus.models import Menu
 # Create your views here.
 
-def get_related_content(menu:Menu=None, slug=None):
-    
+
+def get_related_content(menu: Menu = None, slug=None):
+
     for content_type in ContentBase.__subclasses__():
 
         if menu:
@@ -33,9 +34,9 @@ def get_related_content(menu:Menu=None, slug=None):
     return None
 
 
-def get_extracontent(menu:Menu=None, module:Module=None):
+def get_extracontent(menu: Menu = None, module: Module = None):
     ''' Возвращает экстраконтент, привязанный к меню или модулям'''
-    # todo: Переделать в get_extracontent 
+    # todo: Переделать в get_extracontent
     if module:
         return module.modulecontent_set.all()
 
@@ -52,7 +53,7 @@ def get_extracontent(menu:Menu=None, module:Module=None):
     return contents
 
 
-class FeedDetailView(DetailView): 
+class FeedDetailView(DetailView):
 
     template_name = 'content/layout_feed.html'
     object = None
@@ -61,15 +62,15 @@ class FeedDetailView(DetailView):
     post_filter = {}
     post_filter_form = FeedFilterForm
     show_filter = False
-    
+
     def setup(self, request, *args, **kwargs):
         super().setup(request, *args, **kwargs)
-        
+
         # валидируем get параметры формы - фильтра
         form = FeedFilterForm(request.GET)
         if not form.is_valid():
             messages.warning(
-                request, 
+                request,
                 'Некорректные параметры запроса: ["{}"]'
                 .format(', '.join(form.errors.keys()))
             )
@@ -87,7 +88,7 @@ class FeedDetailView(DetailView):
         form = FeedValidationForm(request.GET)
         if not form.is_valid():
             messages.warning(
-                request, 
+                request,
                 'Некорректные параметры запроса: "{}"'
                 .format(', '.join(form.errors.keys()))
             )
@@ -98,7 +99,7 @@ class FeedDetailView(DetailView):
             return self.ajax_get(request, *args, **kwargs)
 
         return super().dispatch(request, *args, **kwargs)
-    
+
     def post_filter_params_as_row(self):
         '''Возвращает строку параметров для использования в форме в url'''
         params_list = []
@@ -109,44 +110,44 @@ class FeedDetailView(DetailView):
                 value = value.strftime("%d.%m.%Y")
             if not value:
                 value = ''
-            params_list.append( str(key) + '=' + str(value) )
+            params_list.append(str(key) + '=' + str(value))
 
         return '&' . join(params_list)
 
     def get_context_data(self, **kwargs):
-        context =  super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         context.update({
             'layout': 'normal',
-            'uid' : 'content',
-            'feed_style' : self.object.feed_style,
-            'columns' : self.object.feed_num_columns,
-            'paginator':self.object.get_page(
+            'uid': 'content',
+            'feed_style': self.object.feed_style,
+            'columns': self.object.feed_num_columns,
+            'paginator': self.object.get_page(
                 page=self.cleaned_GET.get('page', 1),
-                post_filter=self.post_filter, 
+                post_filter=self.post_filter,
                 posts_per_page=self.object.feed_count_items
-                ),
-            'post_filter_form' : self.post_filter_form,
-            'show_filter' : self.show_filter,
-            'filter_params_row' : self.post_filter_params_as_row()
+            ),
+            'post_filter_form': self.post_filter_form,
+            'show_filter': self.show_filter,
+            'filter_params_row': self.post_filter_params_as_row()
         })
 
         return context
 
     def render_to_string(self, context):
         return render_to_string(
-                self.template_name, context, request=self.request
-            )
+            self.template_name, context, request=self.request
+        )
 
     def get(self, request, *args, **kwargs):
         # object получать не надо - он уже должен быть передан в атрибут FeedView
-        # Проверка что объект feed задан - если нет - 
+        # Проверка что объект feed задан - если нет -
         # значит ктото пытается открыть форму для ajax подгрузки страниц "/content/ajax/feed/*/?params"
         if not self.object:
             raise Http404()
         # получаем контекст
-        context = self.get_context_data(object = self.object)
+        context = self.get_context_data(object=self.object)
         return self.render_to_string(context)
-    
+
     def ajax_get(self, request, *args, **kwargs):
         # return super().get(request, *args, **kwargs)
         self.object = self.get_object()
@@ -163,12 +164,61 @@ class FeedDetailView(DetailView):
 
     #         messages.success(request, 'Данные отфильтрованы')
     #         # открываем форму фильтра
-    #         self.show_filter = True 
+    #         self.show_filter = True
     #     else:
     #         # очищаем форму
     #         self.post_filter_form = FeedFilterForm()
 
     #     return self.render_to_string()
+
+
+class PostListView(ListView):
+    '''
+    Представление списка постов. Используется на странице тегов
+    для отображения всех публикаций (без привязки к ленте) привязанных к тегу. 
+    '''
+    model = Post
+    filter_by_tag = None
+    template_name = 'content/tag.html'
+    context_object_name = 'posts'
+    paginate_by = 3
+
+    def setup(self, request, pk=None, *args, **kwargs):
+        super().setup(request, *args, **kwargs)
+        if pk:
+            self.filter_by_tag = get_object_or_404(Tag, pk=pk)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['main_menu_tree'] = Menu.get_subitems(parent=None, maxlevel=3)
+        context['columns'] = 3
+        context['tags'] = Tag.objects.all()
+        if self.filter_by_tag:
+            context['page_title'] = 'Публикации, найденные по тегу "{}"'.format(self.filter_by_tag)
+        return context
+
+    def get_queryset(self):
+        if self.filter_by_tag:
+            return self.model.objects.filter(taggedpost__tag=self.filter_by_tag)
+        return super().get_queryset()
+
+
+# class TagTemplateView(TemplateView):
+#     template_name = 'content/tag.html'
+#     tag = None
+
+#     def setup(self, request, pk=None, *args, **kwargs):
+#         super().setup(request, *args, **kwargs)
+#         if pk:
+#             self.tag = get_object_or_404(Tag, pk=pk)
+
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['main_menu_tree'] = Menu.get_subitems(parent=None, maxlevel=3)
+#         # context['posts'] = PostListView.as_view(by_tag=self.tag)(self.request)
+#         context['posts'] = Post.objects.filter(taggedpost__tag=self.tag)
+#         # context
+#         return context
 
 
 class PostDetailView(DetailView):
@@ -202,34 +252,37 @@ def render_content(request, context, unknown_slugs=None):
         unknown_objects = []
         for slug in unknown_slugs:
             obj = get_related_content(slug=slug)
-            ### Здесь должна быть проверка на родство [slugs между собой]
-            ### и [первого slug с последним меню]
+            # Здесь должна быть проверка на родство [slugs между собой]
+            # и [первого slug с последним меню]
             if obj:
                 unknown_objects.append(obj)
                 context['bc_items'].append((obj.title, slug))
             else:
                 raise Http404('Контент не найден')
-                
+
         # context['page'] = content
         # context['contents'] = get_content(slug=slug)
         if page_content.__class__.__name__ == 'Feed':
             # ПРОДУМАТЬ НАСЛЕДОВАНИИЕ ЛЕНТ
-            if len(unknown_objects) == 1 :
+            if len(unknown_objects) == 1:
 
                 if (unknown_objects[0].__class__.__name__ == 'Post'):
 
                     post = unknown_objects[0]
 
                     if post.feed != page_content:
-                        raise Http404('Проверка на родство ленты и поста не пройдена')
+                        raise Http404(
+                            'Проверка на родство ленты и поста не пройдена')
 
                     page_title = post.title
                     # CONTENT_HTML = post.render_html()
                     CONTENT_HTML = PostDetailView.as_view(object=post)(request)
                 else:
-                    raise Http404('Для меню-ленты unknown_slug!=Post не предусмотрен.')
+                    raise Http404(
+                        'Для меню-ленты unknown_slug!=Post не предусмотрен.')
             else:
-                raise Http404('Получено {} unknown_slugs, не предусмотрено'.format(len(unknown_objects)))
+                raise Http404('Получено {} unknown_slugs, не предусмотрено'.format(
+                    len(unknown_objects)))
 
         elif page_content.__class__.__name__ == 'Post':
             raise Http404('Не продумано.(unknown_slug после меню-поста)')
@@ -247,8 +300,7 @@ def render_content(request, context, unknown_slugs=None):
             # assert False, page_content.__class__.__name__
             # raise NotImplementedError('НУЖНА НОВАЯ ВЬЮХА!!!')
 
-
-    context['page_title'] = page_title  
+    context['page_title'] = page_title
     context['CONTENT_HTML'] = CONTENT_HTML
     context['contents'] = get_extracontent(menu=context['page'])
 
@@ -257,8 +309,8 @@ def render_content(request, context, unknown_slugs=None):
             for module in column['modules']:
                 module['contents'] = get_extracontent(module=module['obj'])
 
-
     return render(request, 'content/content.html', context)
+
 
 def download_attachment(request, uuid, *args, **kwargs):
     # media_root = settings.MEDIA_ROOT
@@ -273,9 +325,11 @@ def download_attachment(request, uuid, *args, **kwargs):
         return FileResponse(
             open(attachment.attached_file.path, 'rb'),
             as_attachment=True,
-            filename='{}.{}'.format(attachment.name[:100], attachment.extension)
+            filename='{}.{}'.format(
+                attachment.name[:100], attachment.extension)
         )
     else:
         raise Http404(
-            'Файл "{}" в хранилище не найден.'.format(attachment.attached_file.path)
+            'Файл "{}" в хранилище не найден.'.format(
+                attachment.attached_file.path)
         )

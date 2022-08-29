@@ -4,6 +4,7 @@ $(document).ready(function(){
         $(function() {
             var modelname = 'extracontent',
                 suffix = '_set',
+                field_prefix = 'field-'
                 trigger_field_name = 'content_type'
                 inline_group = $('#'+modelname+suffix+'-group');
 
@@ -11,12 +12,13 @@ $(document).ready(function(){
 
                 function show_fields_by_value(target, value) {
                     target.find('.form-row').hide();
-                    target.find('.order').show();
+                    target.find('.' + field_prefix + 'order').show();
+                    target.find('.' + field_prefix + 'position').show();
+                    target.find('.' + field_prefix + 'show_title').show();
                     // target.find('.tied_to_menu').show();
-                    target.find('.position').show();
-                    target.find('.show_title').show();
-                    target.find('.'+trigger_field_name).show();
+                    target.find('.' + field_prefix +  trigger_field_name).show();
                     if(value){
+                        console.log(value);
                         target.find('div[class*=form-row][class*='+ value+']').show();
                     }
                 }

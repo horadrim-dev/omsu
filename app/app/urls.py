@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
-
+from content.views import PostListView
 # УДАЛИТЬ +static() и эти библиотеки на боевом сервере
 from django.conf import settings
 from django.conf.urls.static import static
@@ -27,6 +27,8 @@ urlpatterns = [
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('content/', include('content.urls')),
     path('sitemap/', views.sitemap),
+    # path('tag/', TagTemplateView.as_view()),
+    path('tag/<int:pk>', PostListView.as_view(), name="tag"),
     path('', views.route, {'cat1':'home'}),
 
     path('<slug:cat1>/', views.route), #, name='index'),

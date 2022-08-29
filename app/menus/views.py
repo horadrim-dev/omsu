@@ -96,4 +96,5 @@ def sitemap(request, *args, **kwargs):
     context = {}
     context['menu_tree'] = Menu.get_subitems(parent=None, maxlevel=None)
     context['bc_items'] = [('Карта сайта', 'sitemap')]
+    context['main_menu_tree'] = Menu.get_subitems(parent=None, maxlevel=3) #Menu.objects.filter(parent_id=current_menu.id)
     return render(request, 'menus/sitemap.html', context)

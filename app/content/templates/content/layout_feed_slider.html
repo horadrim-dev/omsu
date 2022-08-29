@@ -62,9 +62,6 @@
                                         {% comment %} <p class="card-text">{{post.intro_text|striptags|truncatechars:50 }}</p> {% endcomment %}
                                     </div>
                                 </button>
-                                {% if feed.show_childs %}
-                                    {% include 'content/layout_feed_post_label.html' %}
-                                {% endif %}
                             </div>
                             {% endfor %}
                         </div>

@@ -21,16 +21,13 @@
                             {{post.title}}
                         </a>
                     </h6>
-                    <p class="card-text"><small class="text-muted">{{post.published_at}}</small></p>
+                    <p class="card-text float-start"><small class="text-muted">{{post.published_at}}</small></p>
+                    
+                    {% include 'content/layout_feed_post_label.html' %}
+                    
+                    <div class="clearfix"></div>
 
-                    {% if feed.show_childs %}
-                        <div class="float-start me-2">
-                            {% include 'content/layout_feed_post_label.html' %}
-                        </div>
-                    {% endif %}
-                    <div>
-                        {% include 'content/layout_feed_post_tags.html' %}
-                    </div>
+                    {% include 'content/layout_feed_post_tags.html' %}
                 </div>
             </div>
         </div>
