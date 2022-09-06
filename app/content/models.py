@@ -430,7 +430,7 @@ class ContentLayoutBase(models.Model):
 
 
 class ContentLayout(ContentLayoutBase, FeedLayout, MenuLayout, PostLayout, TagCloudLayout):
-
+xui
     uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     CONTENT_TYPE_CHOICES = [
