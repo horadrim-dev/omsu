@@ -35,3 +35,13 @@
     {% endwith %}
 
 {% endif %}
+
+{% if content.content_type == 'tagcloud' %}
+
+    {% with style=content.tagcloud_style %}
+
+        {% include 'content/layout_tagcloud.html' %}
+
+    {% endwith %}
+
+{% endif %}

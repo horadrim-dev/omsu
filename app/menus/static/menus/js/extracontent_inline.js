@@ -19,7 +19,8 @@ $(document).ready(function(){
                     target.find('.' + field_prefix +  trigger_field_name).show();
                     if(value){
                         console.log(value);
-                        target.find('div[class*=form-row][class*='+ value+']').show();
+                        // alert(fieldset.attr('class'));
+                        target.find('[class*='+ value+']').show();
                     }
                 }
                 inline_group.find('[id^='+modelname+suffix+']').each(function(){
@@ -30,6 +31,7 @@ $(document).ready(function(){
                     show_fields_by_value(fieldset, trigger_field.val());
 
                     trigger_field.change(function(){
+                        // alert(fieldset.attr('class'));
                         show_fields_by_value(fieldset, $(this).val());
                     });
                 });
@@ -37,7 +39,7 @@ $(document).ready(function(){
 
             process_the_fieldsets();
 
-            inline_group.find('a.grp-add-handler').click(function(){
+            inline_group.find('div.add-row a').click(function(){
                 inline_group.find('[id^='+modelname+suffix+']').each(function(){
                     process_the_fieldsets();
                 });

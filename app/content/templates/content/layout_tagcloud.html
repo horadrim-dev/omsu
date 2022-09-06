@@ -1,0 +1,6 @@
+{# Здесь определяется макет #}
+{% if style == 'classic_cloud' %}
+    {% include 'content/layout_tagcloud_classic.html' %}
+{% elif style == 'structured_cloud' %}
+    {% include 'content/layout_tagcloud_structured.html' %}
+{% endif %}

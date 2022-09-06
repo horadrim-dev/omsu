@@ -1,0 +1,10 @@
+<div class="post-tags">
+    {% for tag in tags %}
+        <a href="{% url 'tag' tag.pk %}" class="link btn btn-outline-secondary rounded-5 btn-sm border border-opacity-10 py-0 px-2 mb-1">
+            {% comment %} <small> {% endcomment %}
+                <i class="bi bi-tag"></i>
+                {{tag.name}}
+            {% comment %} </small> {% endcomment %}
+        </a>
+    {% endfor %}
+</div>

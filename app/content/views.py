@@ -175,7 +175,7 @@ class FeedDetailView(DetailView):
 class PostListView(ListView):
     '''
     Представление списка постов. Используется на странице тегов
-    для отображения всех публикаций (без привязки к ленте) привязанных к тегу. 
+    для отображения всех публикаций привязанных к тегу. 
     '''
     model = Post
     filter_by_tag = None
@@ -303,6 +303,7 @@ def render_content(request, context, unknown_slugs=None):
     context['page_title'] = page_title
     context['CONTENT_HTML'] = CONTENT_HTML
     context['contents'] = get_extracontent(menu=context['page'])
+    context['tags'] = Tag.objects.all()
 
     for section in context['sections']:
         for column in section['columns']:

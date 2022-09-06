@@ -4,37 +4,44 @@ $(document).ready(function(){
         $(function() {
             var modelname = 'modulecontent',
                 suffix = '_set',
-                trigger_field_name = 'content_type',
+                field_prefix = 'field-'
+                trigger_field_name = 'content_type'
                 inline_group = $('#'+modelname+suffix+'-group');
 
-            function process_the_forms(){
+            function process_the_fieldsets(){
 
                 function show_fields_by_value(target, value) {
                     target.find('.form-row').hide();
-                    target.find('.order').show();
-                    target.find('.'+trigger_field_name).show();
+                    target.find('.' + field_prefix + 'order').show();
+                    target.find('.' + field_prefix + 'position').show();
+                    target.find('.' + field_prefix + 'show_title').show();
+                    // target.find('.tied_to_menu').show();
+                    target.find('.' + field_prefix +  trigger_field_name).show();
                     if(value){
-                        target.find('div[class*=form-row][class*='+ value+']').show();
+                        console.log(value);
+                        // alert(fieldset.attr('class'));
+                        target.find('[class*='+ value+']').show();
                     }
                 }
                 inline_group.find('[id^='+modelname+suffix+']').each(function(){
-                    var field_set = $(this),
-                        num = $(this).attr('id').substring(modelname.length + suffix.length),
-                        trigger_field = $(this).find('select[id$='+ trigger_field_name +']');
-
-                    show_fields_by_value(field_set, trigger_field.val());
+                    var fieldset = $(this).find('fieldset'),
+                        // num = $(this).attr('id').substring(modelname.length + suffix.length),
+                        trigger_field = fieldset.find('select[id^=id_'+modelname+suffix+'][id$='+ trigger_field_name +']');
+                    // alert(trigger_field.attr('id'));
+                    show_fields_by_value(fieldset, trigger_field.val());
 
                     trigger_field.change(function(){
-                        show_fields_by_value(field_set, $(this).val());
+                        // alert(fieldset.attr('class'));
+                        show_fields_by_value(fieldset, $(this).val());
                     });
                 });
             }
 
-            process_the_forms();
+            process_the_fieldsets();
 
-            inline_group.find('a.grp-add-handler').click(function(){
+            inline_group.find('div.add-row a').click(function(){
                 inline_group.find('[id^='+modelname+suffix+']').each(function(){
-                    process_the_forms();
+                    process_the_fieldsets();
                 });
             });
 

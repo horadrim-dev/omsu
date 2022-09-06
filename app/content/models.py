@@ -227,12 +227,6 @@ class Tag(TagBase):
     # COLOR_PALETTE = [
     #         ("#000000", "black", ),
     #         ("#000000", "black", ),
-    #         ("#000000", "black", ),
-    #         ("#000000", "black", ),
-    #         ("#800000", "black", ),
-    #         ("#800000", "black", ),
-    #         ("#800000", "black", ),
-    #         ("#800000", "black", ),
     #     ]
 
     # color = ColorField(choices=COLOR_PALETTE, default=COLOR_PALETTE[0][0])
@@ -256,6 +250,18 @@ class TaggedPost(TaggedItemBase):
         related_name="%(app_label)s_%(class)s_items",
     )
 
+
+class TagCloudLayout(models.Model):
+
+    TAG_CLOUD_CHOICES = [
+        ('classic_cloud', 'В виде облака'),
+        ('structured_cloud', 'В виде таблицы'),
+    ]
+    tagcloud_style = models.CharField(max_length=64, choices=TAG_CLOUD_CHOICES, default=TAG_CLOUD_CHOICES[0][0],
+        verbose_name="Макет облака тегов")
+
+    class Meta:
+        abstract = True
 
 class Post(ContentBase, PostLayout):
 
@@ -423,7 +429,7 @@ class ContentLayoutBase(models.Model):
         # ordering = ['order']
 
 
-class ContentLayout(ContentLayoutBase, FeedLayout, MenuLayout, PostLayout):
+class ContentLayout(ContentLayoutBase, FeedLayout, MenuLayout, PostLayout, TagCloudLayout):
 
     uid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
@@ -432,6 +438,7 @@ class ContentLayout(ContentLayoutBase, FeedLayout, MenuLayout, PostLayout):
         ('post', 'Пост'),
         ('feed', 'Лента постов'),
         ('menu', 'Меню'),
+        ('tagcloud', 'Облако тегов'),
     ]
     content_type = models.CharField(max_length=64, choices=CONTENT_TYPE_CHOICES , default=CONTENT_TYPE_CHOICES[0][0],
         verbose_name="Тип контента")
